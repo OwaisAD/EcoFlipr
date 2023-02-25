@@ -1,3 +1,7 @@
+# How to run the project
+
+...
+
 # Project description
 
 ...
