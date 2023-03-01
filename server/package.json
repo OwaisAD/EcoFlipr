@@ -4,7 +4,8 @@
   "description": "backend built with typescript with following npm dependencies:",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "json-server": "json-server --watch Category.json User.json SaleOffer.json Comment.json --port 3008"
   },
   "keywords": [],
   "author": "",
