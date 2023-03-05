@@ -1,3 +1,7 @@
+# To see the answers, check out the doc below: [here](https://docs.google.com/document/d/10sMMaLOVtc_BvnQ9Vex5iBIQ9JwFXJkzIGE3BPa0lm0/edit?usp=sharing)
+
+---
+
 # Week 5: Semester project part 1: React and Typescript
 
 ## Objectives
