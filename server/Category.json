@@ -35,6 +35,38 @@
       },
       "price": 499,
       "imgs": ["https://cdn.shopify.com/s/files/1/2255/0639/products/2300004517.gif?v=1597833324"],
+      "threads": [
+        {
+          "id": "6ad595c1-7219-4f23-a3fa-7465db3a6494",
+          "creator_id": "6ad545d1-7219-4f23-a3fa-74656b556494",
+          "comments": [
+            {
+              "id": "6ad595c1-7219-4f23-a3fa-7465db556494",
+              "user_id": "6ad595c1-7219-4f23-a3fa-7465db556494",
+              "content": "Lækre sko. Hvad siger du til 300,-??",
+              "is_read": false,
+              "created_at": "2017-01-26",
+              "edited_at": "2017-01-26"
+            },
+            {
+              "id": "6ad575c1-7219-4g23-a3fa-7465db556494",
+              "user_id": "6ad595c1-7219-4f23-a3fa-7465db556494",
+              "content": "Hmm. Hvad siger du til 310?",
+              "is_read": false,
+              "created_at": "2017-01-27",
+              "edited_at": "2017-01-27"
+            }
+          ]
+        }
+      ],
+      "created_at": "2017-01-26",
+      "edited_at": "2017-01-26"
+    }
+  ],
+  "Thread": [
+    {
+      "id": "6ad595c1-7219-4f23-a3fa-7465db3a6494",
+      "creator_id": "6ad545d1-7219-4f23-a3fa-74656b556494",
       "comments": [
         {
           "id": "6ad595c1-7219-4f23-a3fa-7465db556494",
@@ -43,11 +75,18 @@
           "is_read": false,
           "created_at": "2017-01-26",
           "edited_at": "2017-01-26"
+        },
+        {
+          "id": "6ad575c1-7219-4g23-a3fa-7465db556494",
+          "user_id": "6ad595c1-7219-4f23-a3fa-7465db556494",
+          "content": "Hmm. Hvad siger du til 310?",
+          "is_read": false,
+          "created_at": "2017-01-27",
+          "edited_at": "2017-01-27"
         }
-      ],
-      "created_at": "2017-01-26",
-      "edited_at": "2017-01-26"
-    }
+      ]
+    },
+    {}
   ],
   "Comment": [
     {
@@ -57,6 +96,14 @@
       "is_read": false,
       "created_at": "2017-01-26",
       "edited_at": "2017-01-26"
+    },
+    {
+      "id": "6ad575c1-7219-4g23-a3fa-7465db556494",
+      "user_id": "6ad595c1-7219-4f23-a3fa-7465db556494",
+      "content": "Hmm. Hvad siger du til 310?",
+      "is_read": false,
+      "created_at": "2017-01-27",
+      "edited_at": "2017-01-27"
     }
   ],
   "Category": [
