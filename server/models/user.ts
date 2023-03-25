@@ -1,12 +1,32 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
-  email: {},
-  first_name: {},
-  last_name: {},
-  phone_number: {},
-  address: {},
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: [validator.isEmail, "Please provide a valid email"],
+  },
+  first_name: {
+    type: String,
+    required: true,
+    minLength: 2,
+  },
+  last_name: {
+    type: String,
+    required: true,
+    minLength: 2,
+  },
+  phone_number: {
+    validate: [validator.isMobilePhone, "da-DK", "Please provide a valid phone number"],
+  },
+  address: {
+    type: String,
+    required: true,
+    minLength: 5,
+  },
   username: {
     type: String,
     required: true,

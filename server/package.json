@@ -22,7 +22,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.10.4",
     "mongoose-unique-validator": "^3.1.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
