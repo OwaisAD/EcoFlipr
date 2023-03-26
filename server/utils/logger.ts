@@ -1,10 +1,10 @@
-export const info = (...params: any[]) => {
+export const infoLog = (...params: any[]) => {
   if (process.env.NODE_ENV !== "test") {
     console.log(...params);
   }
 };
 
-export const error = (...params: any[]) => {
+export const errorLog = (...params: any[]) => {
   if (process.env.NODE_ENV !== "test") {
     console.log(...params);
   }
