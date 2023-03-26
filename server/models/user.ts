@@ -24,8 +24,12 @@ const userSchema = new mongoose.Schema({
     maxLength: 50,
   },
   phone_number: {
-    validate: [validator.isMobilePhone, "da-DK", "Please provide a valid phone number"],
-    maxLength: 12,
+    type: String,
+    required: true,
+    validate: (v: any) => {
+      return validator.isMobilePhone(v, "da-DK");
+    },
+    message: (props: any) => `${props.value} is not a valid Danish phone number!`,
   },
   address: {
     type: String,
