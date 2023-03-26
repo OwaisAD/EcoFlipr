@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 const validator = require("validator");
@@ -13,36 +15,34 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minLength: 2,
+    maxLength: 50,
   },
   last_name: {
     type: String,
     required: true,
     minLength: 2,
+    maxLength: 50,
   },
   phone_number: {
     validate: [validator.isMobilePhone, "da-DK", "Please provide a valid phone number"],
+    maxLength: 12,
   },
   address: {
     type: String,
     required: true,
     minLength: 5,
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    minLength: 3,
-  },
   passwordHash: {
     type: String,
     required: true,
   },
+  sale_offers: [{ type: mongoose.Schema.Types.ObjectId, ref: "SaleOffer" }],
 });
 
 userSchema.plugin(uniqueValidator);
 
 userSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
+  transform: (document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

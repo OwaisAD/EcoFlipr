@@ -1,28 +1,60 @@
+import { NextFunction } from "express";
+import { Document } from "mongoose";
+import type { SaleOffer } from "../types/saleoffer";
+
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
 const saleOfferSchema = new mongoose.Schema({
-  description: {},
-  category: {},
-  is_shippable: {},
-  phone_number: {},
-  address: {},
-  username: {
+  description: {
     type: String,
     required: true,
-    unique: true,
-    minLength: 3,
+    minLength: 10,
+    maxLength: 300,
   },
-  passwordHash: {
-    type: String,
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+  },
+  is_shippable: {
+    type: Boolean,
     required: true,
+  },
+  city: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "City",
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 99999999,
+  },
+  imgs: [{ type: String }],
+  threads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Thread" }],
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
   },
 });
 
 saleOfferSchema.plugin(uniqueValidator);
 
+saleOfferSchema.pre("save", function (this: SaleOffer, next: NextFunction) {
+  let now = new Date();
+  this.updated_at = now;
+  if (!this.created_at) {
+    this.created_at = now;
+  }
+  next();
+});
+
 saleOfferSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
+  transform: (document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
