@@ -15,12 +15,7 @@ export const unknownEndpoint = (req: Request, res: Response) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
 
-export const errorHandler = (
-  error: Error,
-  request: Request,
-  response: Response,
-  next: NextFunction
-) => {
+export const errorHandler = (error: Error, request: Request, response: Response, next: NextFunction) => {
   errorLog(error.message);
 
   if (error.name === "CastError") {

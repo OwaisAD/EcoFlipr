@@ -6,7 +6,7 @@ namespace Express {
 
 interface Error {
   statusCode: number;
-    status: string;
+  status: string;
   path: string;
   value: string;
   code: number;

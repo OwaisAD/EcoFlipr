@@ -11,6 +11,5 @@ backend built with typescript with following npm dependencies:
 
 - https://blog.logrocket.com/how-to-set-up-node-typescript-express/
 
-
 Image upload with the following package:
 https://www.npmjs.com/package/uploader
