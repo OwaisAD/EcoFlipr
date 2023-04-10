@@ -1,20 +1,19 @@
 import { Error } from "mongoose";
 import express, { Application, Request, Response } from "express";
-const config = require("./utils/config");
-require("express-async-errors"); //The 'magic' of the library allows us to eliminate the try-catch blocks completely. For example the route for deleting a note. Because of the library, we do not need the next(exception) call anymore. The library handles everything under the hood. If an exception occurs in an async route, the execution is automatically passed to the error handling middleware.
+require("express-async-errors"); //The 'magic' of the library allows us to eliminate the try-catch blocks completely. Because of the library, we do not need the next(exception) call anymore. The library handles everything under the hood. If an exception occurs in an async route, the execution is automatically passed to the error handling middleware.
 import cors from "cors";
 import dotenv from "dotenv";
 import { requestLogger, unknownEndpoint, errorHandler } from "./utils/middleware";
 import { infoLog, errorLog } from "./utils/logger";
-const mongoose = require("mongoose");
-const Categories = require("./models/category");
+import mongoose from "mongoose";
+import Categories from "./models/category";
 import { categories } from "./data/index";
 import { categoriesRouter } from "./controllers/categories";
 import { userRouter } from "./controllers/user";
 import { ApolloServer, gql } from "apollo-server-express";
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
-import { PORT } from "./utils/config";
+import { PORT, MONGODB_URI } from "./utils/config";
 
 dotenv.config();
 
@@ -32,12 +31,12 @@ const startServer = async () => {
     res.send("Hello from express apollo server!");
   });
 
-  const url = config.MONGODB_URI;
+  const URL = MONGODB_URI || "";
   mongoose.set("strictQuery", false);
-  infoLog("connecting to db on: ", config.MONGODB_URI);
+  infoLog("connecting to db on: ", URL);
 
   await mongoose
-    .connect(config.MONGODB_URI)
+    .connect(URL)
     .then(() => {
       infoLog("connected to MongoDB");
       // Categories.insertMany(categories);

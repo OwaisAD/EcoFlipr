@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
+import bcrypt from "bcrypt";
+import { User } from "../models/user";
 
-const bcrypt = require("bcrypt");
 export const userRouter = Router();
-const User = require("../models/user");
 
 userRouter.post("/", async (req: Request, res: Response) => {
   console.log("CREATING USER");

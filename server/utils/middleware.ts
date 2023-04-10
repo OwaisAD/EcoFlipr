@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-
 import { infoLog, errorLog } from "./logger";
 import { User } from "../models/user";
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 export const requestLogger = (request: Request, response: Response, next: NextFunction) => {
   infoLog("Method:", request.method);

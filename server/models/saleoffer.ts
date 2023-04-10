@@ -2,8 +2,9 @@ import { NextFunction } from "express";
 import { Document } from "mongoose";
 import type { SaleOffer } from "../types/saleoffer";
 
-const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
+import mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
+import validator from "validator";
 
 const saleOfferSchema = new mongoose.Schema({
   description: {
@@ -65,5 +66,4 @@ saleOfferSchema.set("toJSON", {
 
 const SaleOffer = mongoose.model("SaleOffer", saleOfferSchema);
 
-module.exports = SaleOffer;
-export {};
+export default SaleOffer;

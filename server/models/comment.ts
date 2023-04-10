@@ -1,8 +1,8 @@
 import { Document } from "mongoose";
 
-const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
-const validator = require("validator");
+import mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
+import validator from "validator";
 
 const commentSchema = new mongoose.Schema({
   content: {
@@ -35,5 +35,4 @@ commentSchema.set("toJSON", {
 
 const Comment = mongoose.model("Comment", commentSchema);
 
-module.exports = Comment;
-export {};
+export default Comment;

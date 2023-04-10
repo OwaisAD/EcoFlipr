@@ -1,8 +1,8 @@
 import { Document } from "mongoose";
 
-const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
-const validator = require("validator");
+import mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
+import validator from "validator";
 
 const categorySchema = new mongoose.Schema({
   name: {
@@ -25,5 +25,4 @@ categorySchema.set("toJSON", {
 
 const Category = mongoose.model("Category", categorySchema);
 
-module.exports = Category;
-export {};
+export default Category;

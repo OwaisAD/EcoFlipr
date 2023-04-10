@@ -1,8 +1,8 @@
 import { Document } from "mongoose";
 
-const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
-const validator = require("validator");
+import mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
+import validator from "validator";
 
 const citySchema = new mongoose.Schema({
   zip_code: {
@@ -29,5 +29,4 @@ citySchema.set("toJSON", {
 
 const City = mongoose.model("City", citySchema);
 
-module.exports = City;
-export {};
+export default City;
