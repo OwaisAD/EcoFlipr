@@ -5,4 +5,5 @@
 .github
 .vscode
 build
+dist
 coverage
