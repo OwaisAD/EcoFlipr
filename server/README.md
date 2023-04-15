@@ -1,6 +1,7 @@
 backend built with typescript with following npm dependencies:
 
 - express
+- Apollo Server - GraphQL
 - bcrypt
 - cors
 - dotenv
