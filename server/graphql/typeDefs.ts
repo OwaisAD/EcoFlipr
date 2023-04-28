@@ -7,10 +7,16 @@ const typeDefs = gql`
     description: String
   }
 
+  type Category {
+    id: ID!
+    name: String
+  }
+
   type Query {
     hello: String
     getAllPosts: [Post]
     getPostById(id: ID): Post
+    getAllCategories: [Category]
   }
 
   input PostInput {

@@ -1,7 +1,13 @@
+import Category from "../models/category";
+
 const resolvers = {
   Query: {
     hello: () => {
       return "Hello World!";
+    },
+    getAllCategories: async () => {
+      const categories = await Category.find({});
+      return categories;
     },
   },
   Mutation: {

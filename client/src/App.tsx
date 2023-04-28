@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import CreateSaleOffer from "./pages/CreateSaleOffer";
 import SaleOffer from "./pages/SaleOffer";
 import Profile from "./pages/Profile";
+import EditSaleOffer from "./pages/EditSaleOffer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/createoffer" element={<CreateSaleOffer />} />
+        <Route path="/editoffer/:id" element={<EditSaleOffer />} />
         <Route path="/offer/:id" element={<SaleOffer />} />
         <Route path="/profile" element={<Profile />} />
 
