@@ -7,7 +7,7 @@ Technologies used:
   - GraphQL (Apollo GraphQL) as middleware with Express for API, MongoDB as document DB using Mongoose for Object Document Mapping, written in TypeScript.
   - JWT token auth
 - Frontend:
-  - User interface built with React.
+  - User interface built with React (using Vite) and styled with Tailwind CSS (also used for DARK-mode).
   - [React-hot-toast](https://react-hot-toast.com/) for notifications.
 - Both:
   - Using Prettier for formatting and Husky for auto formatting using pre-commit hook
