@@ -20,7 +20,32 @@ Technologies used:
 
 # How to run the project
 
-...
+Start by running the backend:
+
+1. Right click server folder
+2. Click: _Open in integrated terminal_
+   In the terminal write:
+3. `npm i`
+4. Create a ".env" file in the folder and add the following key and values:
+
+```
+MONGODB_URI=YOUR_MONGO_DB_URI
+SECRET=ThisCouldBeYourSecret
+PORT=5000
+```
+
+5. `npm run dev`
+
+Your backend should now be running on `http://localhost:5000` and that should be it for the backend. Before continuing to the frontend you might want to run the backend once with line 39 uncommented in the app.ts to seed/populate the db with categories. <br> <br>
+Now for the fronend:
+
+1. Right click client folder
+2. Click: _Open in integrated terminal_
+   In the terminal write:
+3. `npm i`
+4. `npm run dev`
+
+That should be it for the frontend. Enjoy.
 
 # Hand-ins
 
