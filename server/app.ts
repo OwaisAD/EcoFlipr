@@ -1,17 +1,14 @@
 import { Error } from "mongoose";
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
 require("express-async-errors"); //The 'magic' of the library allows us to eliminate the try-catch blocks completely. Because of the library, we do not need the next(exception) call anymore. The library handles everything under the hood. If an exception occurs in an async route, the execution is automatically passed to the error handling middleware.
 import cors from "cors";
 import dotenv from "dotenv";
 import { requestLogger, unknownEndpoint, errorHandler } from "./utils/middleware";
 import { infoLog, errorLog } from "./utils/logger";
 import mongoose from "mongoose";
-import Categories from "./models/category";
-import { categories } from "./data/index";
 import { categoriesRouter } from "./controllers/categories";
-import { userRouter } from "./controllers/user";
 import { ApolloServer, gql } from "apollo-server-express";
-import typeDefs from "./graphql/typeDefs";
+import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { PORT, MONGODB_URI } from "./utils/config";
 
@@ -25,7 +22,7 @@ const startServer = async () => {
     resolvers,
   });
   await apolloServer.start(); // recommended to use .start() before listening to port with express
-  apolloServer.applyMiddleware({ app, path: "/graphql_sbx" });
+  apolloServer.applyMiddleware({ app, path: "/graphql" });
 
   app.use((req, res) => {
     res.send("Hello from express apollo server!");
@@ -49,9 +46,6 @@ const startServer = async () => {
   app.use(express.json());
   app.use(requestLogger);
 
-  // app.use("/api/blogs", middleware.userExtractor, blogsRouter);
-  // app.use("/api/users", usersRouter);
-  // app.use("/api/login", loginRouter);
   app.use("/api/categories", categoriesRouter);
 
   app.use(unknownEndpoint);
