@@ -8,6 +8,7 @@ const citySchema = new mongoose.Schema({
   zip_code: {
     type: String,
     required: true,
+    unique: true,
   },
   name: {
     type: String,

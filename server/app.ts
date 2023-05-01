@@ -12,7 +12,9 @@ import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { PORT, MONGODB_URI } from "./utils/config";
 import { categories } from "./data/categories";
+import { cities } from "./data/zipsAndCities";
 import Categories from "./models/category";
+import City from "./models/city";
 
 dotenv.config();
 
@@ -39,6 +41,7 @@ const startServer = async () => {
     .then(() => {
       infoLog("connected to MongoDB");
       //Categories.insertMany(categories);
+      //City.insertMany(cities);
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);

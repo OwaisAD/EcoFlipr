@@ -3,7 +3,6 @@ import { gql } from "apollo-server-express";
 export default gql`
   type Query {
     getAllCategories: [Category]
-    getCategoryById(id: ID!): Category
 
     getSaleOfferById(id: ID!): SaleOffer
     getSaleOfferBySearchQuery(searchQuery: String): [SaleOffer]
@@ -13,6 +12,8 @@ export default gql`
     getUserNotifications(userId: ID!): Int
 
     getUserById(id: ID!): User
+
+    getCityByZipCode(zip_code: String): City
   }
   type Mutation {
     login(input: UserLoginInput): User
