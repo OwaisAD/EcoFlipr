@@ -34,9 +34,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minLength: 5,
+    maxLength: 100,
   },
   passwordHash: {
     type: String,
+    minLength:8,
     required: true,
   },
   sale_offers: [{ type: mongoose.Schema.Types.ObjectId, ref: "SaleOffer" }],

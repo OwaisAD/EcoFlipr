@@ -13,8 +13,9 @@ import resolvers from "./graphql/resolvers";
 import { PORT, MONGODB_URI } from "./utils/config";
 import { categories } from "./data/categories";
 import { cities } from "./data/zipsAndCities";
-import Categories from "./models/category";
+import Category from "./models/category";
 import City from "./models/city";
+import User from "./models/user";
 
 dotenv.config();
 
@@ -40,8 +41,26 @@ const startServer = async () => {
     .connect(URL)
     .then(() => {
       infoLog("connected to MongoDB");
-      //Categories.insertMany(categories);
+      //Category.insertMany(categories);
       //City.insertMany(cities);
+      // User.insertMany([
+      //   {
+      //     email: "andreas@gmail.com",
+      //     first_name: "Andreas",
+      //     last_name: "Fritzbøger",
+      //     phone_number: "4510101010",
+      //     address: "Apple Blv 2",
+      //     passwordHash: "hashedPassword",
+      //   },
+      //   {
+      //     email: "daniel@gmail.com",
+      //     first_name: "Daniel",
+      //     last_name: "Fritzbøger",
+      //     phone_number: "4510101010",
+      //     address: "Apple Blv 2",
+      //     passwordHash: "hashedPassword",
+      //   },
+      // ]);
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);

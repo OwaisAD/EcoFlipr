@@ -18,7 +18,7 @@ export default gql`
   type Mutation {
     login(input: UserLoginInput): User
     createUser(input: UserInput): User
-    updateUser(input: UserInput): User
+    updateUserById(input: UpdateUserInput): User
     deleteUserById(id: ID!): DeletedUser
 
     createSaleOffer(input: SaleOfferInput): SaleOffer

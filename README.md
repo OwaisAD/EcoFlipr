@@ -19,7 +19,7 @@ Technologies used:
 
 - Backend:
   - GraphQL (Apollo GraphQL) as middleware with Express for API, MongoDB as document DB using Mongoose for Object Document Mapping, written in TypeScript.
-  - JWT token auth
+  - JWT token auth, with bcrypt
 - Frontend:
   - User interface made with React (built using Vite) and styled with Tailwind CSS (also used for DARK-mode).
   - Implements react-routing with protected routes.
