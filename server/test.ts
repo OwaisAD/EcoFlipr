@@ -33,5 +33,3 @@ import City from "./models/city";
 //   }
 //   console.log("File has been written.");
 // });
-
-

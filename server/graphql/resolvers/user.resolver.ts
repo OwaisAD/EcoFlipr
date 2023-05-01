@@ -93,6 +93,9 @@ export const userResolver = {
         //
       }
     },
+    updateUserPasswordById: async (_parent: any, { id }: User, _context: any, _info: any) => {
+      // make sure that user id is the one that is logged in!
+    },
   },
 };
 

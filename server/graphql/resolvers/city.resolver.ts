@@ -11,7 +11,6 @@ export const cityResolver = {
         if (city == null) {
           throw new Error("City was not found");
         }
-        
 
         return city;
       } catch (error: any) {

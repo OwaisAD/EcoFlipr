@@ -29,6 +29,11 @@ export default gql`
     address: String
   }
 
+  input UpdateUserPasswordInput {
+    id: ID!
+    password: String
+  }
+
   input UserLoginInput {
     email: String
     password: String
