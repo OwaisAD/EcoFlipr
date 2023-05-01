@@ -125,6 +125,8 @@ const validateUserInput = (userInput: UserInputWithPass | UserInputWithoutPass) 
     throw new Error("Please enter a valid address");
   }
 
+  console.log("test");
+
   if ("password" in userInput && (!userInput.password || userInput.password.length < 8)) {
     throw new Error("Please enter a valid password");
   }
