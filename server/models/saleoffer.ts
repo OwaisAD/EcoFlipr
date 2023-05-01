@@ -1,5 +1,5 @@
 import { NextFunction } from "express";
-import { Document } from "mongoose";
+import { CallbackError, Document } from "mongoose";
 import type { SaleOffer } from "../types/saleoffer";
 
 import mongoose from "mongoose";
@@ -45,7 +45,7 @@ const saleOfferSchema = new mongoose.Schema({
 
 saleOfferSchema.plugin(uniqueValidator);
 
-saleOfferSchema.pre("save", function (this: SaleOffer, next: NextFunction) {
+saleOfferSchema.pre('save', function (this: SaleOffer, next: (err?: CallbackError | undefined) => void) {
   let now = new Date();
   this.updated_at = now;
   if (!this.created_at) {

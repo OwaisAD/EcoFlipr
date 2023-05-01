@@ -1,6 +1,14 @@
 import types from "./types";
-import Query from "./query";
+import QueriesAndMutations from "./QueriesAndMutations";
 
-const typeDefs = [Query, types.categoryType];
+const typeDefs = [
+  QueriesAndMutations,
+  types.categoryType,
+  types.cityType,
+  types.commentType,
+  types.saleofferType,
+  types.threadType,
+  types.userType,
+];
 
 export default typeDefs;

@@ -5,4 +5,8 @@ export default gql`
     id: ID!
     name: String
   }
+
+  input CategoryInput {
+    name: String
+  }
 `;

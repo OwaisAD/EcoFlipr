@@ -11,6 +11,8 @@ import { ApolloServer, gql } from "apollo-server-express";
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { PORT, MONGODB_URI } from "./utils/config";
+import { categories } from "./data";
+import Categories from "./models/category";
 
 dotenv.config();
 
@@ -36,7 +38,7 @@ const startServer = async () => {
     .connect(URL)
     .then(() => {
       infoLog("connected to MongoDB");
-      // Categories.insertMany(categories);
+      //Categories.insertMany(categories);
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);
