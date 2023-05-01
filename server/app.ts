@@ -11,7 +11,7 @@ import { ApolloServer, gql } from "apollo-server-express";
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { PORT, MONGODB_URI } from "./utils/config";
-import { categories } from "./data";
+import { categories } from "./data/categories";
 import Categories from "./models/category";
 
 dotenv.config();
