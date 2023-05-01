@@ -45,7 +45,7 @@ const saleOfferSchema = new mongoose.Schema({
 
 saleOfferSchema.plugin(uniqueValidator);
 
-saleOfferSchema.pre('save', function (this: SaleOffer, next: (err?: CallbackError | undefined) => void) {
+saleOfferSchema.pre("save", function (this: SaleOffer, next: (err?: CallbackError | undefined) => void) {
   let now = new Date();
   this.updated_at = now;
   if (!this.created_at) {
