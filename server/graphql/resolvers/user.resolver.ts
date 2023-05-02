@@ -39,10 +39,6 @@ export const userResolver = {
       }
     },
     updateUserById: async (_parent: any, args: any, _context: any, _info: any) => {
-      // console.log(_context)
-      // if (!_context.request.user) {
-      //   throw new AuthenticationError("Not authenticated");
-      // }
       const { id, email, first_name, last_name, phone_number, address } = args.input;
 
       const isValidUserId = validateId(id);

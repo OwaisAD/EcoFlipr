@@ -7,7 +7,7 @@ import {requestLogger, unknownEndpoint, errorHandler, authMiddleware} from "./ut
 import { infoLog, errorLog } from "./utils/logger";
 import mongoose from "mongoose";
 import { categoriesRouter } from "./controllers/categories";
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { PORT, MONGODB_URI } from "./utils/config";
@@ -17,6 +17,9 @@ import Category from "./models/category";
 import City from "./models/city";
 import User from "./models/user";
 
+import context from "./context/context";
+
+
 dotenv.config();
 
 const startServer = async () => {
@@ -25,6 +28,7 @@ const startServer = async () => {
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
+    context:context,
   });
   await apolloServer.start(); // recommended to use .start() before listening to port with express
   apolloServer.applyMiddleware({ app, path: "/graphql" });
@@ -32,6 +36,7 @@ const startServer = async () => {
   app.use((req, res) => {
     res.send("Hello from express apollo server!");
   });
+
 
   const URL = MONGODB_URI || "";
   mongoose.set("strictQuery", false);
@@ -68,13 +73,21 @@ const startServer = async () => {
   app.use(cors());
   app.use(express.static("dist"));
   app.use(express.json());
-  // app.use(authMiddleware)
+  
   app.use(requestLogger);
 
   app.use("/api/categories", categoriesRouter);
 
   app.use(unknownEndpoint);
   app.use(errorHandler);
+
+  // app.use(
+  //   jwt({
+  //     secret: process.env.SECRET as string,
+  //     algorithms:["HS256"],
+  //     credentialsRequired: false
+  //   })
+  // )
 
   app.listen(PORT, (): void => {
     infoLog(`⚡️[server]: Server is running at http://localhost:${PORT}`);

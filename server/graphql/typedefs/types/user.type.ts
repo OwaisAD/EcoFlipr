@@ -13,8 +13,6 @@ export default gql`
   
   type ValidatedUser {
     jwtToken: String
-    email: String
-    first_name: String
   }
 
   input UserInput {
