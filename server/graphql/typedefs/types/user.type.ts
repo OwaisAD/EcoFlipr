@@ -10,6 +10,12 @@ export default gql`
     address: String
     sale_offers: [SaleOffer]
   }
+  
+  type ValidatedUser {
+    jwtToken: String
+    email: String
+    first_name: String
+  }
 
   input UserInput {
     email: String

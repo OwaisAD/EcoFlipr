@@ -14,5 +14,4 @@ type UserInputWithoutPass = {
   phone_number: string;
   address: string;
 };
-
-export { UserInputWithPass, UserInputWithoutPass };
+export { UserInputWithPass, UserInputWithoutPass};

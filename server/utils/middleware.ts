@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { infoLog, errorLog } from "./logger";
 import { User } from "../models/user";
 import jwt from "jsonwebtoken";
+import {verifyToken} from "./AuthorizeRequest";
 
 export const requestLogger = (request: Request, response: Response, next: NextFunction) => {
   infoLog("Method:", request.method);
@@ -33,36 +34,16 @@ export const errorHandler = (error: Error, request: Request, response: Response,
   next(error);
 };
 
-// const tokenExtractor = (req: Request, res: Response, next: NextFunction) => {
-//   const authorization = req.get("authorization");
-//   if (authorization && authorization.startsWith("Bearer ")) {
-//     req.token = authorization.replace("Bearer ", "");
-//   }
-//   next();
-// };
-
-// const userExtractor = async (req: Request, res: Response, next: NextFunction) => {
-//   const decodedToken = jwt.verify(req.token, process.env.SECRET);
-
-//   if (!decodedToken.id) {
-//     return res.status(401).json({ error: "token invalid" });
-//   }
-
-//   const user = await User.findById(decodedToken.id);
-
-//   if (!user) {
-//     return res.status(401).json({ error: "invalid token" });
-//   }
-
-//   req.user = user;
-
-//   next();
-// };
-
-// module.exports = {
-//   requestLogger,
-//   unknownEndpoint,
-//   errorHandler,
-//   // tokenExtractor,
-//   // userExtractor,
-// };
+export const authMiddleware = async (request: Request, response: Response, next: NextFunction) => {
+  const authHeader = request.headers.authorization || "";
+  const token = authHeader.replace("Bearer ","");
+  if (token) {
+    try {
+      const decoded = verifyToken(token);
+      // @ts-ignore
+      request.user = decoded;
+    } catch (error: unknown) {
+      errorLog(error);
+    }
+  }
+}
