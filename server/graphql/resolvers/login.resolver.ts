@@ -25,16 +25,17 @@ export const loginResolver = {
 
       const userToken = {
         email: user.email,
-        id: user._id
+        id: user._id,
+        first_name:user.first_name
       };
-      console.log(user)
+
       // @ts-ignore
-      const token = jwt.sign(userToken, process.env.SECRET, {expiresIn: 60 * 60});
-      console.log(token)
+      const token = jwt.sign(userToken, process.env.SECRET, {algorithm:"HS256", expiresIn:"60m"});
+
       return {
         jwtToken:token,
-        email:user.email,
-        first_name:user.first_name
+        
+        
       }
     },
   },
