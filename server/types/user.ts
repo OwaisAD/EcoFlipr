@@ -1,3 +1,7 @@
+type User = {
+  id: string;
+};
+
 type UserInputWithPass = {
   email: string;
   first_name: string;
@@ -14,4 +18,4 @@ type UserInputWithoutPass = {
   phone_number: string;
   address: string;
 };
-export { UserInputWithPass, UserInputWithoutPass};
+export { User, UserInputWithPass, UserInputWithoutPass };

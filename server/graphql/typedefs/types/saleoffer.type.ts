@@ -31,23 +31,23 @@ export default gql`
 
   type SaleOffer {
     id: ID!
-    description: String
-    category: Category
-    is_shippable: Boolean
-    city: City
-    price: Int
+    description: String!
+    category: Category!
+    is_shippable: Boolean!
+    city: City!
+    price: Int!
     imgs: [String]
     threads: [Thread]
-    created_at: Date!
-    updated_at: Date!
+    created_at: Date
+    updated_at: Date
   }
 
   input SaleOfferInput {
-    description: String
-    category: CategoryInput
-    is_shippable: Boolean
-    city: CityInput
-    price: Int
+    description: String!
+    category: CategoryInput!
+    is_shippable: Boolean!
+    city: CityInput!
+    price: Int!
     imgs: [String]
   }
 

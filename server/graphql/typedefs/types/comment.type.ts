@@ -31,9 +31,9 @@ export default gql`
 
   type Comment {
     id: ID!
-    content: String
+    content: String!
     is_read: Boolean
-    created_at: Date!
+    created_at: Date
   }
 
   input CommentInput {

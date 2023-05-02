@@ -4,36 +4,39 @@ import jwt from "jsonwebtoken";
 
 type UserInput = {
   input: {
-    email:string,
-    password:string
-  }
+    email: string;
+    password: string;
+  };
 };
 
 export const loginResolver = {
   Mutation: {
-    login: async (_parent: never, args:UserInput, _context: never, _info: never) => {
-      let {email, password} = args.input
+    login: async (_parent: never, args: UserInput, _context: never, _info: never) => {
+      let { email, password } = args.input;
 
       email = email.toLowerCase();
 
-      const user = await User.findOne({email});
+      const user = await User.findOne({ email });
       const passwordCorrect = user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
       if (!(user && passwordCorrect)) {
         throw new Error("Invalid email or password");
-      };
+      }
 
       const userToken = {
         id: user._id,
-        first_name:user.first_name
+        first_name: user.first_name,
       };
 
       // @ts-ignore
-      const token = jwt.sign(userToken, process.env.SECRET, {algorithm:"HS256", expiresIn:"60m"});
+      const token = jwt.sign(userToken, process.env.JWT_SECRET, {
+        algorithm: "HS256",
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
 
       return {
-        jwtToken:token,
-      }
+        jwtToken: token,
+      };
     },
   },
 };

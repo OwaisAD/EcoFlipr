@@ -3,12 +3,12 @@ import { gql } from "apollo-server-express";
 export default gql`
   type User {
     id: ID!
-    email: String
-    first_name: String
-    last_name: String
-    phone_number: String
-    address: String
-    sale_offers: [SaleOffer]
+    email: String!
+    first_name: String!
+    last_name: String!
+    phone_number: String!
+    address: String!
+    sale_offers: [SaleOffer]!
   }
   
   type ValidatedUser {
@@ -16,12 +16,12 @@ export default gql`
   }
 
   input UserInput {
-    email: String
-    first_name: String
-    last_name: String
-    phone_number: String
-    address: String
-    password: String
+    email: String!
+    first_name: String!
+    last_name: String!
+    phone_number: String!
+    address: String!
+    password: String!
   }
 
   input UpdateUserInput {

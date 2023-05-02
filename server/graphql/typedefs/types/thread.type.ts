@@ -4,6 +4,6 @@ export default gql`
   type Thread {
     id: ID!
     creator_id: ID!
-    comments: [Comment]
+    comments: [Comment!]!
   }
 `;

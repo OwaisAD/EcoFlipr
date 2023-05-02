@@ -45,7 +45,7 @@ Start by running the backend:
 
 ```
 MONGODB_URI=YOUR_MONGO_DB_URI
-SECRET=ThisCouldBeYourSecret
+JWT_SECRET=ThisCouldBeYourJWT_SECRET
 PORT=5000
 ```
 

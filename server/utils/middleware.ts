@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { infoLog, errorLog } from "./logger";
 import { User } from "../models/user";
 import jwt from "jsonwebtoken";
-import {verifyToken} from "./AuthorizeRequest";
+import { verifyToken } from "./AuthorizeRequest";
+import { AuthenticationError } from "apollo-server-express";
 
 export const requestLogger = (request: Request, response: Response, next: NextFunction) => {
   infoLog("Method:", request.method);
@@ -33,17 +34,3 @@ export const errorHandler = (error: Error, request: Request, response: Response,
 
   next(error);
 };
-
-export const authMiddleware = async (request: Request, response: Response, next: NextFunction) => {
-  const authHeader = request.headers.authorization || "";
-  const token = authHeader.replace("Bearer ","");
-  if (token) {
-    try {
-      const decoded = verifyToken(token);
-      // @ts-ignore
-      request.user = decoded;
-    } catch (error: unknown) {
-      errorLog(error);
-    }
-  }
-}
