@@ -24,7 +24,6 @@ export const loginResolver = {
       };
 
       const userToken = {
-        email: user.email,
         id: user._id,
         first_name:user.first_name
       };
@@ -34,8 +33,6 @@ export const loginResolver = {
 
       return {
         jwtToken:token,
-        
-        
       }
     },
   },
