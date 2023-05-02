@@ -1,8 +1,8 @@
 import User from "../../models/user";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import {validateUserInput, validateId} from "../../utils/validator";
-import {AuthenticationError} from "apollo-server-express";
+import { validateUserInput, validateId } from "../../utils/validator";
+import { AuthenticationError } from "apollo-server-express";
 
 type User = {
   id: mongoose.Types.ObjectId;
@@ -20,15 +20,14 @@ export const userResolver = {
 
       email = email.toLowerCase();
       try {
-        const userFromDB = await User.findOne({email})
+        const userFromDB = await User.findOne({ email });
         if (userFromDB) {
           throw new Error("Unique error");
         }
         const saltRounds = 10;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        const createdUser =
-            await User.create({ email, first_name, last_name, phone_number, address, passwordHash });
+        const createdUser = await User.create({ email, first_name, last_name, phone_number, address, passwordHash });
 
         if (!createdUser) {
           throw new Error("Something went wrong");

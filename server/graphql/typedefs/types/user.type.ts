@@ -10,7 +10,7 @@ export default gql`
     address: String!
     sale_offers: [SaleOffer]!
   }
-  
+
   type ValidatedUser {
     jwtToken: String
   }
