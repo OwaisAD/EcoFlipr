@@ -6,7 +6,6 @@ import { Context } from "../../types/context";
 export const categoryResolver = {
   Query: {
     getAllCategories: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
-      console.log(currentUser);
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {

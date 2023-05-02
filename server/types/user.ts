@@ -1,5 +1,14 @@
+import mongoose from "mongoose";
+import { SaleOffer } from "./saleoffer";
+
 type User = {
-  id: string;
+  _id: mongoose.Types.ObjectId;
+  email: string;
+  first_name: string;
+  last_name: string;
+  address: string;
+  passwordHash: string;
+  sale_offers: SaleOffer[];
 };
 
 type UserInputWithPass = {

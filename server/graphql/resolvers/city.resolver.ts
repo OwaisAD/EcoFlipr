@@ -1,8 +1,18 @@
+import { GraphQLError } from "graphql";
 import City from "../../models/city";
+import { Context } from "../../types/context";
 
 export const cityResolver = {
   Query: {
-    getCityByZipCode: async (_parent: any, args: any, _context: any, _info: any) => {
+    getCityByZipCode: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       const zip_code = args.zip_code;
 
       try {

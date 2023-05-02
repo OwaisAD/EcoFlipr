@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { validateUserInput, validateId } from "../../utils/validator";
 import { AuthenticationError } from "apollo-server-express";
+import { Context } from "../../types/context";
+import { GraphQLError } from "graphql";
+import { errorLog } from "../../utils/logger";
 
 type User = {
   id: mongoose.Types.ObjectId;
@@ -37,13 +40,26 @@ export const userResolver = {
         throw new Error(error.message);
       }
     },
-    updateUserById: async (_parent: any, args: any, _context: any, _info: any) => {
+    updateUserById: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       const { id, email, first_name, last_name, phone_number, address } = args.input;
 
       const isValidUserId = validateId(id);
 
-      if (!isValidUserId) {
-        return;
+      if (!isValidUserId || id !== currentUser._id.toString()) {
+        errorLog("Invalid user id or unauthorized");
+        throw new GraphQLError("not authorized", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
 
       validateUserInput({ email, first_name, last_name, phone_number, address });
@@ -76,11 +92,24 @@ export const userResolver = {
         throw new Error(error.message);
       }
     },
-    deleteUserById: async (_parent: any, { id }: User, _context: any, _info: any) => {
+    deleteUserById: async (_parent: any, { id }: User, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       const isValidUserId = validateId(id);
 
-      if (!isValidUserId) {
-        return;
+      if (!isValidUserId || !(currentUser._id.toString() === id.toString())) {
+        errorLog("Invalid user id or unauthorized");
+        throw new GraphQLError("not authorized", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        }); 
       }
 
       try {
