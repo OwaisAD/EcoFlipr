@@ -5,6 +5,10 @@ import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
 
 const threadSchema = new mongoose.Schema({
+  sale_offer_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SaleOffer",
+  },
   creator_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -24,4 +28,4 @@ threadSchema.set("toJSON", {
 
 const Thread = mongoose.model("Thread", threadSchema);
 
-export default Thread
+export default Thread;

@@ -7,6 +7,7 @@ import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
 
 export interface SaleOfferDocument extends Document {
+  creator_id: mongoose.Types.ObjectId;
   description: string;
   category: mongoose.Types.ObjectId;
   is_shippable: boolean;
@@ -19,6 +20,10 @@ export interface SaleOfferDocument extends Document {
 }
 
 const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
+  creator_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   description: {
     type: String,
     required: true,

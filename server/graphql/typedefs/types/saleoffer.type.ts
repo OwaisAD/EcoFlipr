@@ -31,6 +31,7 @@ export default gql`
 
   type SaleOffer {
     id: ID!
+    creator_id: ID
     description: String!
     category: Category!
     is_shippable: Boolean!

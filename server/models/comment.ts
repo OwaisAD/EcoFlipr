@@ -5,6 +5,10 @@ import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
 
 const commentSchema = new mongoose.Schema({
+  thread_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Thread",
+  },
   content: {
     type: String,
     required: true,

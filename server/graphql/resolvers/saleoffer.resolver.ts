@@ -8,6 +8,8 @@ import User from "../../models/user";
 import mongoose from "mongoose";
 import Thread from "../../models/thread";
 import Comment from "../../models/comment";
+import Category from "../../models/category";
+import City from "../../models/city";
 
 export const saleOfferResolver = {
   Query: {
@@ -30,6 +32,8 @@ export const saleOfferResolver = {
         });
       }
 
+      console.log("REACHED");
+
       // remember to populate threads and comments
       const saleOffer = await SaleOffer.findById(id)
         .populate("category")
@@ -41,7 +45,7 @@ export const saleOfferResolver = {
       }
       return saleOffer;
     },
-    getSaleOffersByUserId: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+    getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -49,10 +53,17 @@ export const saleOfferResolver = {
           },
         });
       }
-      const user = await User.findById(currentUser._id).populate("sale_offers");
+
+      const user = await User.findById(currentUser._id).populate({
+        path: "sale_offers",
+        model: SaleOffer,
+      });
+
+      console.log(user);
 
       return user?.sale_offers;
     },
+    getSaleOffersByUserInteraction: async () => {},
     getSaleOfferBySearchQuery: async () => {},
     getRecentSaleOffersByAmount: async () => {},
     getRandomSaleOffersByAmount: async () => {},
@@ -67,7 +78,11 @@ export const saleOfferResolver = {
         });
       }
       let { description, category, is_shippable, city, price, imgs } = args.input;
+
+      console.log({ description, category, is_shippable, city, price, imgs });
+
       const newSaleOffer = await SaleOffer.create({
+        creator_id: currentUser._id,
         description,
         category: category.id,
         is_shippable,
@@ -77,7 +92,12 @@ export const saleOfferResolver = {
       });
       currentUser.sale_offers.push(newSaleOffer);
       await currentUser.save();
-      return newSaleOffer;
+      const getSaleOffer = await SaleOffer.findById(newSaleOffer._id).populate([
+        { path: "city", model: City },
+        { path: "category", model: Category },
+        { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
+      ]);
+      return getSaleOffer;
     },
     updateSaleOffer: async (
       _parent: never,

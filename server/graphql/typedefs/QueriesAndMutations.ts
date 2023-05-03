@@ -3,8 +3,10 @@ import { gql } from "apollo-server-express";
 export default gql`
   type Query {
     getAllCategories: [Category]
+
     getSaleOfferById(id: ID!): SaleOffer
-    getSaleOffersByUserId: [SaleOffer]
+    getSaleOffersByUser(id: ID!): [SaleOffer]
+    getSaleOffersByUserInteraction: [SaleOffer]
     getSaleOfferBySearchQuery(searchQuery: String): [SaleOffer]
     getRecentSaleOffersByAmount(amount: Int): [SaleOffer]
     getRandomSaleOffersByAmount(amount: Int): [SaleOffer]

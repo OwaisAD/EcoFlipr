@@ -31,6 +31,7 @@ export default gql`
 
   type Comment {
     id: ID!
+    thread_id: ID
     content: String!
     is_read: Boolean
     created_at: Date
