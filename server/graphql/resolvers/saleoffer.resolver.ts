@@ -32,8 +32,6 @@ export const saleOfferResolver = {
         });
       }
 
-      console.log("REACHED");
-
       // remember to populate threads and comments
       const saleOffer = await SaleOffer.findById(id)
         .populate("category")
@@ -54,14 +52,21 @@ export const saleOfferResolver = {
         });
       }
 
-      const user = await User.findById(currentUser._id).populate({
-        path: "sale_offers",
-        model: SaleOffer,
-      });
+      // const user = await User.findById(currentUser._id).populate({
+      //   path: "sale_offers",
+      //   model: SaleOffer,
+      // });
 
-      console.log(user);
+      // console.log(user);
 
-      return user?.sale_offers;
+      // return user?.sale_offers;
+
+      console.log("HERE");
+
+      return await SaleOffer.find({ creator_id: currentUser._id })
+        .populate("city")
+        .populate("category")
+        .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
     },
     getSaleOffersByUserInteraction: async () => {},
     getSaleOfferBySearchQuery: async () => {},

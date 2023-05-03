@@ -59,7 +59,10 @@ export const commentResolver = {
             }`
           );
           await Thread.create({ creator_id: currentUser!._id });
-          const getTheNewThread: IThread | null = await Thread.findOne({ creator_id: currentUser!._id });
+          const getTheNewThread: IThread | null = await Thread.findOne({
+            sale_offer_id: saleOffer!._id,
+            creator_id: currentUser!._id,
+          });
           if (getTheNewThread) {
             const newComment = await Comment.create({ content, thread_id: getTheNewThread._id });
             getTheNewThread.comments.push(newComment._id);
@@ -72,7 +75,10 @@ export const commentResolver = {
           }
         } else {
           infoLog("there's a thread. Checking if currentUser owns it");
-          const currentUserOwnsThread: IThread | null = await Thread.findOne({ creator_id: currentUser!._id });
+          const currentUserOwnsThread: IThread | null = await Thread.findOne({
+            sale_offer_id: saleOffer!._id,
+            creator_id: currentUser!._id,
+          });
           if (currentUserOwnsThread) {
             infoLog("User already started a thread");
             const newComment = await Comment.create({ content, thread_id: currentUserOwnsThread._id });
@@ -81,8 +87,11 @@ export const commentResolver = {
             return newComment;
           } else {
             infoLog(`no threads for ${currentUser!.first_name}, creating a new thread`);
-            await Thread.create({ creator_id: currentUser!._id });
-            const getTheNewThread: IThread | null = await Thread.findOne({ creator_id: currentUser!._id });
+            await Thread.create({ sale_offer_id: saleOffer!._id, creator_id: currentUser!._id });
+            const getTheNewThread: IThread | null = await Thread.findOne({
+              sale_offer_id: saleOffer!._id,
+              creator_id: currentUser!._id,
+            });
             if (getTheNewThread) {
               const newComment = await Comment.create({ content, thread_id: getTheNewThread._id });
               getTheNewThread.comments.push(newComment._id);
