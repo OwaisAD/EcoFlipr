@@ -8,6 +8,6 @@ export default gql`
   }
 
   input CityInput {
-    zip_code: String
+    id: ID!
   }
 `;
