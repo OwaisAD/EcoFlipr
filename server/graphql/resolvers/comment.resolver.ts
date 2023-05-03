@@ -45,7 +45,7 @@ export const commentResolver = {
         if (!currentOwnerThread) {
           throwError("something went wrong. Please try again tomorrow.");
         }
-        const newComment = await Comment.create({ content });
+        const newComment = await Comment.create({ content, thread_id: currentOwnerThread!._id });
         currentOwnerThread!.comments.push(newComment._id);
         currentOwnerThread!.save();
         return newComment;
@@ -59,9 +59,9 @@ export const commentResolver = {
             }`
           );
           await Thread.create({ creator_id: currentUser!._id });
-          const newComment = await Comment.create({ content });
           const getTheNewThread: IThread | null = await Thread.findOne({ creator_id: currentUser!._id });
           if (getTheNewThread) {
+            const newComment = await Comment.create({ content, thread_id: getTheNewThread._id });
             getTheNewThread.comments.push(newComment._id);
             const savedThread = await getTheNewThread.save();
             saleOffer!.threads.push(savedThread._id);
@@ -75,16 +75,16 @@ export const commentResolver = {
           const currentUserOwnsThread: IThread | null = await Thread.findOne({ creator_id: currentUser!._id });
           if (currentUserOwnsThread) {
             infoLog("User already started a thread");
-            const newComment = await Comment.create({ content });
+            const newComment = await Comment.create({ content, thread_id: currentUserOwnsThread._id });
             currentUserOwnsThread.comments.push(newComment._id);
             await currentUserOwnsThread.save();
             return newComment;
           } else {
             infoLog(`no threads for ${currentUser!.first_name}, creating a new thread`);
             await Thread.create({ creator_id: currentUser!._id });
-            const newComment = await Comment.create({ content });
             const getTheNewThread: IThread | null = await Thread.findOne({ creator_id: currentUser!._id });
             if (getTheNewThread) {
+              const newComment = await Comment.create({ content, thread_id: getTheNewThread._id });
               getTheNewThread.comments.push(newComment._id);
               const savedThread = await getTheNewThread.save();
               saleOffer!.threads.push(savedThread._id);
