@@ -22,4 +22,7 @@ type SaleOfferInput = {
   };
 };
 
-export type { SaleOffer, SaleOfferInput };
+type SaleOfferById = {
+    id: string
+}
+export type { SaleOffer, SaleOfferInput, SaleOfferById };

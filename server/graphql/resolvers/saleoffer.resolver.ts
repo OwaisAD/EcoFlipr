@@ -1,19 +1,38 @@
 import { GraphQLError } from "graphql";
 import SaleOffer from "../../models/saleoffer";
 import { Context } from "../../types/context";
-import { SaleOfferInput } from "../../types/saleoffer";
+import { SaleOfferById, SaleOfferInput } from "../../types/saleoffer";
 import { SaleOfferDocument } from "../../models/saleoffer";
+import { validateId } from "../../utils/validator";
 
 export const saleOfferResolver = {
   Query: {
-    getSaleOfferById: async (_parent: any, args: any, _context: any, _info: any) => {
-      const id = args.id;
-      try {
-        const saleoffer = await SaleOffer.findById(id);
-        return saleoffer;
-      } catch (error: any) {
-        return `Something went wrong, ${error.message}`;
+    getSaleOfferById: async (_parent: never, {id}: SaleOfferById, {currentUser}: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
+
+      const isValidSaleOfferId = validateId(id)
+
+      if(!isValidSaleOfferId) {
+        throw new GraphQLError("Invalid sale offer id", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+      
+        // remember to populate threads and comments
+        const saleOffer = await SaleOffer.findById(id).populate("category").populate("city");
+        
+        if(saleOffer === null){
+          throw new Error("Sale offer does not exist")
+        }
+        return saleOffer;
     },
     getSaleOfferBySearchQuery: async () => {},
     getRecentSaleOffersByAmount: async () => {},
