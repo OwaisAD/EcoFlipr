@@ -24,4 +24,4 @@ threadSchema.set("toJSON", {
 
 const Thread = mongoose.model("Thread", threadSchema);
 
-export default Thread;
+export default Thread
