@@ -32,3 +32,10 @@ export const validateUserInput = (userInput: UserInputWithPass | UserInputWithou
   }
   return true;
 };
+
+export const validatePassword = (password: string) => {
+  if (!password || password.length < 8) {
+    throw new Error("Please enter a valid password");
+  }
+  return true;
+};

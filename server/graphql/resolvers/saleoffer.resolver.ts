@@ -4,6 +4,7 @@ import { Context } from "../../types/context";
 import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput } from "../../types/saleoffer";
 import { SaleOfferDocument } from "../../models/saleoffer";
 import { validateId } from "../../utils/validator";
+import User from "../../models/user";
 
 export const saleOfferResolver = {
   Query: {
@@ -34,12 +35,26 @@ export const saleOfferResolver = {
         }
         return saleOffer;
     },
+    getSaleOffersByUserId: async(_parent: never, _args: never, {currentUser}: Context, _info: any) =>{
+      if(!currentUser){
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }      
+      const user = await User.findById(currentUser._id).populate("sale_offers");  
+    
+      return user?.sale_offers
+
+
+    },
     getSaleOfferBySearchQuery: async () => {},
     getRecentSaleOffersByAmount: async () => {},
     getRandomSaleOffersByAmount: async () => {},
   },
   Mutation: {
-    createSaleOffer: async (_parent: never, args: SaleOfferInput, {currentUser}: Context, _info: any) => {
+    createSaleOffer: async (_parent: never, args: SaleOfferInput, { currentUser }: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -47,22 +62,31 @@ export const saleOfferResolver = {
           },
         });
       }
-      let {description, category, is_shippable,city, price, imgs}=args.input
+      let { description, category, is_shippable, city, price, imgs } = args.input;
       const newSaleOffer = await SaleOffer.create({
         description,
         category: category.id,
         is_shippable,
-        city:city.id,
+        city: city.id,
         price,
         imgs,
-      }) 
-      currentUser.sale_offers.push(newSaleOffer)
-      await currentUser.save()
-      return newSaleOffer
+      });
+      currentUser.sale_offers.push(newSaleOffer);
+      await currentUser.save();
+      return newSaleOffer;
     },
     updateSaleOffer: async (_parent: never, {id, input}: SaleOfferUpdateInput, {currentUser}: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+      const isValidSaleOfferId = validateId(id)
+
+      if(!isValidSaleOfferId) {
+        throw new GraphQLError("Invalid sale offer id", {
           extensions: {
             code: "BAD_USER_INPUT",
           },

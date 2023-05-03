@@ -3,8 +3,8 @@ import { gql } from "apollo-server-express";
 export default gql`
   type Query {
     getAllCategories: [Category]
-
     getSaleOfferById(id: ID!): SaleOffer
+    getSaleOffersByUserId: [SaleOffer]
     getSaleOfferBySearchQuery(searchQuery: String): [SaleOffer]
     getRecentSaleOffersByAmount(amount: Int): [SaleOffer]
     getRandomSaleOffersByAmount(amount: Int): [SaleOffer]
@@ -20,7 +20,7 @@ export default gql`
     createUser(input: UserInput): User
     updateUserById(input: UpdateUserInput): User
     deleteUserById(id: ID!): DeletedUser
-    updateUserPasswordById(input: UpdateUserPasswordInput): User
+    updateUserPasswordById(input: UpdateUserPasswordInput): String
 
     createSaleOffer(input: SaleOfferInput): SaleOffer
     updateSaleOffer(input: SaleOfferUpdateInput, id: ID!): SaleOffer
