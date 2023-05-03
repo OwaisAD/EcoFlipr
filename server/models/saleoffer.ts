@@ -44,7 +44,7 @@ const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
     max: 99999999,
   },
   imgs: [{ type: String }],
-  threads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Thread", default: null }],
+  threads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Thread" }],
   created_at: {
     type: Date,
     default: Date.now,

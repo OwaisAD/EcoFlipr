@@ -37,6 +37,8 @@ export default gql`
   }
 
   input CommentInput {
+    threadId: ID
+    saleOfferId: ID!
     content: String
   }
 `;
