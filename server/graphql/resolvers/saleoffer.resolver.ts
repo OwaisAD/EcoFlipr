@@ -4,6 +4,7 @@ import { Context } from "../../types/context";
 import { SaleOfferById, SaleOfferInput } from "../../types/saleoffer";
 import { SaleOfferDocument } from "../../models/saleoffer";
 import { validateId } from "../../utils/validator";
+import User from "../../models/user";
 
 export const saleOfferResolver = {
   Query: {
@@ -33,6 +34,19 @@ export const saleOfferResolver = {
           throw new Error("Sale offer does not exist")
         }
         return saleOffer;
+    },
+    getSaleOffersByUserId: async(_parent: never, _args: never, {currentUser}: Context, _info: any) =>{
+      if(!currentUser){
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }      
+      const user = await User.findById(currentUser._id).populate("sale_offers");     
+      return user?.sale_offers
+
+
     },
     getSaleOfferBySearchQuery: async () => {},
     getRecentSaleOffersByAmount: async () => {},
