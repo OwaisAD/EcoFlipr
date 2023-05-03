@@ -39,7 +39,7 @@ export const saleOfferResolver = {
     getRandomSaleOffersByAmount: async () => {},
   },
   Mutation: {
-    createSaleOffer: async (_parent: never, args: SaleOfferInput, {currentUser}: Context, _info: any) => {
+    createSaleOffer: async (_parent: never, args: SaleOfferInput, { currentUser }: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -47,18 +47,18 @@ export const saleOfferResolver = {
           },
         });
       }
-      let {description, category, is_shippable,city, price, imgs}=args.input
+      let { description, category, is_shippable, city, price, imgs } = args.input;
       const newSaleOffer = await SaleOffer.create({
         description,
         category: category.id,
         is_shippable,
-        city:city.id,
+        city: city.id,
         price,
         imgs,
-      }) 
-      currentUser.sale_offers.push(newSaleOffer)
-      await currentUser.save()
-      return newSaleOffer
+      });
+      currentUser.sale_offers.push(newSaleOffer);
+      await currentUser.save();
+      return newSaleOffer;
     },
     updateSaleOffer: async () => {},
     deleteSaleOfferById: async () => {},

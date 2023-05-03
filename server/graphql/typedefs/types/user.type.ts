@@ -8,7 +8,7 @@ export default gql`
     last_name: String!
     phone_number: String!
     address: String!
-    sale_offers: [SaleOffer]!
+    sale_offers: [SaleOffer]
   }
 
   type ValidatedUser {
@@ -35,7 +35,7 @@ export default gql`
 
   input UpdateUserPasswordInput {
     id: ID!
-    password: String
+    newPassword: String
   }
 
   input UserLoginInput {

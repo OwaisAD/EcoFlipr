@@ -1,11 +1,12 @@
 import User from "../../models/user";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import { validateUserInput, validateId } from "../../utils/validator";
+import { validateUserInput, validateId, validatePassword } from "../../utils/validator";
 import { AuthenticationError } from "apollo-server-express";
 import { Context } from "../../types/context";
 import { GraphQLError } from "graphql";
 import { errorLog } from "../../utils/logger";
+import { UserUpdatePassInput } from "../../types/user";
 
 type User = {
   id: mongoose.Types.ObjectId;
@@ -129,8 +130,36 @@ export const userResolver = {
         //
       }
     },
-    updateUserPasswordById: async (_parent: any, { id }: User, _context: any, _info: any) => {
-      // make sure that user id is the one that is logged in!
+    updateUserPasswordById: async (_parent: never, args: UserUpdatePassInput, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      const { id, newPassword } = args.input;
+
+      const isValidUserId = validateId(id);
+      const isValidPassword = validatePassword(newPassword);
+
+      if (!isValidUserId || !isValidPassword || id !== currentUser._id.toString()) {
+        errorLog("Invalid user id or unauthorized");
+        throw new GraphQLError("not authorized", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+
+      currentUser.passwordHash = passwordHash;
+      await currentUser.save();
+
+      return "Updated successfully";
     },
   },
 };

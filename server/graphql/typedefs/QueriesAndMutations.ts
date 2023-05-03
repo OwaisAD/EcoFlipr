@@ -20,7 +20,7 @@ export default gql`
     createUser(input: UserInput): User
     updateUserById(input: UpdateUserInput): User
     deleteUserById(id: ID!): DeletedUser
-    updateUserPasswordById(input: UpdateUserPasswordInput): User
+    updateUserPasswordById(input: UpdateUserPasswordInput): String
 
     createSaleOffer(input: SaleOfferInput): SaleOffer
     updateSaleOffer(input: SaleOfferInput): SaleOffer
