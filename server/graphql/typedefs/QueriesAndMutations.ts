@@ -23,7 +23,7 @@ export default gql`
     updateUserPasswordById(input: UpdateUserPasswordInput): User
 
     createSaleOffer(input: SaleOfferInput): SaleOffer
-    updateSaleOffer(input: SaleOfferInput): SaleOffer
+    updateSaleOffer(input: SaleOfferUpdateInput, id: ID!): SaleOffer
     deleteSaleOfferById(id: ID!): DeletedSaleOffer
 
     createComment(input: CommentInput): Comment

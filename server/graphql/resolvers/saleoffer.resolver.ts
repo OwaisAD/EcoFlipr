@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import SaleOffer from "../../models/saleoffer";
 import { Context } from "../../types/context";
-import { SaleOfferById, SaleOfferInput } from "../../types/saleoffer";
+import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput } from "../../types/saleoffer";
 import { SaleOfferDocument } from "../../models/saleoffer";
 import { validateId } from "../../utils/validator";
 
@@ -60,7 +60,17 @@ export const saleOfferResolver = {
       await currentUser.save()
       return newSaleOffer
     },
-    updateSaleOffer: async () => {},
+    updateSaleOffer: async (_parent: never, {id, input}: SaleOfferUpdateInput, {currentUser}: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+      const updateSaleOffer = await SaleOffer.findByIdAndUpdate(id, input,{new : true})
+      return updateSaleOffer;
+    },
     deleteSaleOfferById: async () => {},
   },
 };

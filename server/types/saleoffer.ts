@@ -26,5 +26,15 @@ type SaleOfferById = {
 
 }
 
-export type { SaleOffer, SaleOfferInput, SaleOfferById };
+type SaleOfferUpdateInput = {
+  id: string;
+  input:{description: string;
+   // category: {id:string};
+    is_shippable: boolean;
+   // city: {id:string};
+    price: number;
+    imgs: string[];}
+  };
+
+export type { SaleOffer, SaleOfferInput, SaleOfferById,SaleOfferUpdateInput };
 
