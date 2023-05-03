@@ -27,4 +27,12 @@ type UserInputWithoutPass = {
   phone_number: string;
   address: string;
 };
-export { User, UserInputWithPass, UserInputWithoutPass };
+
+type UserUpdatePassInput = {
+  input: {
+    id: mongoose.Types.ObjectId;
+    newPassword: string;
+  };
+};
+
+export { User, UserInputWithPass, UserInputWithoutPass, UserUpdatePassInput };
