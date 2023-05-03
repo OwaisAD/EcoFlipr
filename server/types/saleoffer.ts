@@ -23,17 +23,19 @@ type SaleOfferInput = {
 };
 
 type SaleOfferById = {
-    id: string
-}
+  id: string;
+};
 
 type SaleOfferUpdateInput = {
   id: string;
-  input:{description: string;
-    //category: {id:string};
+  input: {
+    description: string;
+    category: { id: string };
     is_shippable: boolean;
-   // city: {id:string};
+    city: { id: string };
     price: number;
-    imgs: string[];}
+    imgs: string[];
   };
+};
 
-export type { SaleOffer, SaleOfferInput, SaleOfferById,SaleOfferUpdateInput };
+export type { SaleOffer, SaleOfferInput, SaleOfferById, SaleOfferUpdateInput };
