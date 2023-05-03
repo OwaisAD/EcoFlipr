@@ -54,7 +54,7 @@ export const commentResolver = {
         infoLog("CHECKING IF ANY THREADS EXIST");
         if(!saleOffer!.threads.length){
 
-          infoLog(`no threads exist, creating first thread for the sale_offer with id: ${saleOffer!.id} started by ${currentUser.first_name}`);
+          infoLog(`no threads exist, creating first thread for the sale_offer with id: ${saleOffer!.id} started by ${currentUser!.first_name}`);
             await Thread.create({creator_id: currentUser!._id})
             const newComment = await Comment.create({content})
             const getTheNewThread: IThread | null = await Thread.findOne({creator_id: currentUser!._id})
