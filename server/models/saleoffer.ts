@@ -1,12 +1,24 @@
 import { NextFunction } from "express";
-import { CallbackError, Document } from "mongoose";
+import { CallbackError, Date, Document } from "mongoose";
 import type { SaleOffer } from "../types/saleoffer";
 
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
 
-const saleOfferSchema = new mongoose.Schema({
+export interface SaleOfferDocument extends Document {
+  description: string;
+  category: mongoose.Types.ObjectId;
+  is_shippable: boolean;
+  city: mongoose.Types.ObjectId;
+  price: number;
+  imgs: string[];
+  threads: [mongoose.Types.ObjectId]
+  created_at: Date
+  updated_at: Date
+}
+
+const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
   description: {
     type: String,
     required: true,
@@ -64,6 +76,6 @@ saleOfferSchema.set("toJSON", {
   },
 });
 
-const SaleOffer = mongoose.model("SaleOffer", saleOfferSchema);
+const SaleOffer = mongoose.model<SaleOfferDocument>("SaleOffer", saleOfferSchema);
 
 export default SaleOffer;

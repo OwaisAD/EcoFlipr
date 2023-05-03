@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import SaleOffer from "../../models/saleoffer";
 import { Context } from "../../types/context";
 import { SaleOfferInput } from "../../types/saleoffer";
-
+import { SaleOfferDocument } from "../../models/saleoffer";
 
 export const saleOfferResolver = {
   Query: {
@@ -20,7 +20,7 @@ export const saleOfferResolver = {
     getRandomSaleOffersByAmount: async () => {},
   },
   Mutation: {
-    createSaleOffer: async (_parent: never, args: SaleOfferInput, {currentUser}: any, _info: any) => {
+    createSaleOffer: async (_parent: never, args: SaleOfferInput, {currentUser}: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -29,7 +29,6 @@ export const saleOfferResolver = {
         });
       }
       let {description, category, is_shippable,city, price, imgs}=args.input
-      console.log(description, category, is_shippable,city, price, imgs);
       const newSaleOffer = await SaleOffer.create({
         description,
         category: category.id,
@@ -39,7 +38,7 @@ export const saleOfferResolver = {
         imgs,
       }) 
       currentUser.sale_offers.push(newSaleOffer)
-      currentUser.save()
+      await currentUser.save()
       return newSaleOffer
     },
     updateSaleOffer: async () => {},
