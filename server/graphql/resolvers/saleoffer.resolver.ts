@@ -31,7 +31,10 @@ export const saleOfferResolver = {
       }
 
       // remember to populate threads and comments
-      const saleOffer = await SaleOffer.findById(id).populate("category").populate("city");
+      const saleOffer = await SaleOffer.findById(id)
+        .populate("category")
+        .populate("city")
+        .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
 
       if (saleOffer === null) {
         throw new Error("Sale offer does not exist");
