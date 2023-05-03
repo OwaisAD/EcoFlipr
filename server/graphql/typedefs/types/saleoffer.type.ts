@@ -51,6 +51,15 @@ export default gql`
     imgs: [String]
   }
 
+  input SaleOfferUpdateInput {
+    description: String!
+    category: CategoryInput!
+    is_shippable: Boolean!
+    city: CityInput!
+    price: Int!
+    imgs: [String]
+  }
+
   type DeletedSaleOffer {
     id: ID!
   }

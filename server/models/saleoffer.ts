@@ -13,9 +13,9 @@ export interface SaleOfferDocument extends Document {
   city: mongoose.Types.ObjectId;
   price: number;
   imgs: string[];
-  threads: [mongoose.Types.ObjectId | null]
-  created_at: Date
-  updated_at: Date
+  threads: [mongoose.Types.ObjectId | null];
+  created_at: Date;
+  updated_at: Date;
 }
 
 const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
@@ -71,8 +71,6 @@ saleOfferSchema.set("toJSON", {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    // the passwordHash should not be revealed
-    delete returnedObject.passwordHash;
   },
 });
 

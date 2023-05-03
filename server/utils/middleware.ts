@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { infoLog, errorLog } from "./logger";
 import { User } from "../models/user";
 import jwt from "jsonwebtoken";
-import { verifyToken } from "./AuthorizeRequest";
 import { AuthenticationError } from "apollo-server-express";
 
 export const requestLogger = (request: Request, response: Response, next: NextFunction) => {
