@@ -13,7 +13,7 @@ export interface SaleOfferDocument extends Document {
   city: mongoose.Types.ObjectId;
   price: number;
   imgs: string[];
-  threads: [mongoose.Types.ObjectId]
+  threads: [mongoose.Types.ObjectId | null]
   created_at: Date
   updated_at: Date
 }
@@ -44,7 +44,7 @@ const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
     max: 99999999,
   },
   imgs: [{ type: String }],
-  threads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Thread" }],
+  threads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Thread", default: null }],
   created_at: {
     type: Date,
     default: Date.now,
