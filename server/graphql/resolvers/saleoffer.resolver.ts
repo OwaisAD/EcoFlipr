@@ -52,17 +52,6 @@ export const saleOfferResolver = {
         });
       }
 
-      // const user = await User.findById(currentUser._id).populate({
-      //   path: "sale_offers",
-      //   model: SaleOffer,
-      // });
-
-      // console.log(user);
-
-      // return user?.sale_offers;
-
-      console.log("HERE");
-
       return await SaleOffer.find({ creator_id: currentUser._id })
         .populate("city")
         .populate("category")
