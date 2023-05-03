@@ -1,9 +1,19 @@
-import { Document } from "mongoose";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
+import { SaleOfferDocument } from "./saleoffer";
 
-const userSchema = new mongoose.Schema({
+export interface UserDocument extends Document {
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  address: string;
+  passwordHash: string;
+  sale_offers: SaleOfferDocument[]
+}
+
+const userSchema = new mongoose.Schema<UserDocument>({
   email: {
     type: String,
     required: true,
@@ -56,6 +66,6 @@ userSchema.set("toJSON", {
   },
 });
 
-export const User = mongoose.model("User", userSchema);
+export const User = mongoose.model<UserDocument>("User", userSchema);
 
 export default User;
