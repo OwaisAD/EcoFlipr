@@ -20,5 +20,11 @@ input:{description: string;
   imgs: string[];}
 };
 
-export type { SaleOffer, SaleOfferInput };
+type SaleOfferById = {
+
+    id: string
+
+}
+
+export type { SaleOffer, SaleOfferInput, SaleOfferById };
 
