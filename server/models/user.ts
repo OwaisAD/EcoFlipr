@@ -10,7 +10,7 @@ export interface UserDocument extends Document {
   phone_number: string;
   address: string;
   passwordHash: string;
-  sale_offers: SaleOfferDocument[]
+  sale_offers: SaleOfferDocument[];
 }
 
 const userSchema = new mongoose.Schema<UserDocument>({

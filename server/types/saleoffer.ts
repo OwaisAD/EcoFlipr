@@ -12,13 +12,14 @@ type SaleOffer = {
   updated_at: Date;
 };
 type SaleOfferInput = {
-input:{description: string;
-  category: {id:string};
-  is_shippable: boolean;
-  city: {id:string};
-  price: number;
-  imgs: string[];}
+  input: {
+    description: string;
+    category: { id: string };
+    is_shippable: boolean;
+    city: { id: string };
+    price: number;
+    imgs: string[];
+  };
 };
 
 export type { SaleOffer, SaleOfferInput };
-
