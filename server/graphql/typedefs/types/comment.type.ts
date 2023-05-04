@@ -31,7 +31,8 @@ export default gql`
 
   type Comment {
     id: ID!
-    thread_id: ID
+    thread_id: ID!
+    author_id: ID!
     content: String!
     is_read: Boolean
     created_at: Date
@@ -40,6 +41,6 @@ export default gql`
   input CommentInput {
     threadId: ID
     saleOfferId: ID!
-    content: String
+    content: String!
   }
 `;

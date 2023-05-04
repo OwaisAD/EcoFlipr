@@ -1,6 +1,8 @@
 import User from "../../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { throwError } from "../../utils/errorHandler";
+import { validateLogin } from "../../utils/validator";
 
 type UserInput = {
   input: {
@@ -13,6 +15,8 @@ export const loginResolver = {
   Mutation: {
     login: async (_parent: never, args: UserInput, _context: never, _info: never) => {
       let { email, password } = args.input;
+
+      validateLogin(email, password);
 
       email = email.toLowerCase();
 
