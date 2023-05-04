@@ -42,19 +42,6 @@ export const saleOfferResolver = {
         throw new Error("Sale offer does not exist");
       }
 
-      // check who is making the call and calculate notifications
-
-      // if saleoffer.creator_id === currentUser.id
-          // check if there's any comments where author_id !== currentUser._id && is_read === false
-            // if true:
-              // add to count variable
-
-      // else not the author of the saleoffer
-        // check if there's any comments where author._id === saleoffer.creator._id && is_read === false
-          // if true
-            // add to count variable
-
-
       return saleOffer;
     },
     getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
@@ -66,12 +53,36 @@ export const saleOfferResolver = {
         });
       }
 
+      // find a way to add notification count for each of the saleoffers
+
       return await SaleOffer.find({ creator_id: currentUser._id })
         .populate("city")
         .populate("category")
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
     },
-    getSaleOffersByUserInteraction: async () => {},
+    getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+      // get the sale offers that the user has interacted with, meaning the ones they don't own but they have commented on
+      // find a way to add notification count for each of the saleoffers
+
+
+
+      
+      // // check who is making the call and calculate notifications
+      // // if saleoffer.creator_id === currentUser.id
+      // //@ts-ignore
+      // console.log(saleOffer.threads[0].comments.forEach((comment) => console.log(comment)));
+      // if (saleOffer.creator_id === currentUser._id) {
+      //   const unreadCommentsCount =
+      //   // check if there's any comments where author_id !== currentUser._id && is_read === false
+      //   // console.log(saleOffer.threads.comments)
+      // }
+      // // if true:
+      // // add to count variable
+      // // else not the author of the saleoffer
+      // // check if there's any comments where author._id === saleoffer.creator._id && is_read === false
+      // // if true
+      // // add to count variable
+    },
     getSaleOfferBySearchQuery: async () => {},
     getRecentSaleOffersByAmount: async () => {},
     getRandomSaleOffersByAmount: async () => {},
