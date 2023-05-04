@@ -22,6 +22,12 @@ export const saleOfferResolver = {
         });
       }
 
+      // if it is the owner of the sale offer - return everything about the sale offer
+
+      // if it is someone who is asking about the sale offer - return only the one thread regarding the person
+
+      // else return only info about the sale offer - no threads included
+
       const isValidSaleOfferId = validateId(id);
 
       if (!isValidSaleOfferId) {
@@ -45,6 +51,7 @@ export const saleOfferResolver = {
       return saleOffer;
     },
     getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+      // get all the sale offers for the user making the call
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -53,7 +60,6 @@ export const saleOfferResolver = {
         });
       }
 
-      // get the saleoffers that the user is creator of
       // find a way to add notification count for each of the saleoffers - remember to add to the return type graphql
 
       return await SaleOffer.find({ creator_id: currentUser._id })
