@@ -54,7 +54,7 @@ export const saleOfferResolver = {
       }
 
       // get the saleoffers that the user is creator of
-      // find a way to add notification count for each of the saleoffers
+      // find a way to add notification count for each of the saleoffers - remember to add to the return type graphql
 
       return await SaleOffer.find({ creator_id: currentUser._id })
         .populate("city")
@@ -63,7 +63,7 @@ export const saleOfferResolver = {
     },
     getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
       // get the sale offers that the user has interacted with, meaning the ones they don't own but they have commented on
-      // find a way to add notification count for each of the saleoffers
+      // find a way to add notification count for each of the saleoffers -  remember to add to the return type graphql
       // // check who is making the call and calculate notifications
       // // if saleoffer.creator_id === currentUser.id
       // //@ts-ignore
