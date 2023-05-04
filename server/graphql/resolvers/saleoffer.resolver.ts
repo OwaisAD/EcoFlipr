@@ -55,7 +55,7 @@ export const saleOfferResolver = {
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
     },
     getSaleOffersByUserInteraction: async () => {},
-    getSaleOfferBySearchQuery: async (_parent:never, args:SaleOfferSearch, {currentUser}:Context) => {
+    getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -67,7 +67,7 @@ export const saleOfferResolver = {
       let saleOffers = [];
 
       for (let index = 0; index < 10; index++) {
-        const saleOffer = await SaleOffer.findOne({'description':args}).populate([
+        const saleOffer = await SaleOffer.findOne({ description: args }).populate([
           { path: "city", model: City },
           { path: "category", model: Category },
           { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
@@ -75,7 +75,7 @@ export const saleOfferResolver = {
         if (saleOffer === null) {
           index = 10;
         }
-        saleOffers.push(saleOffer); 
+        saleOffers.push(saleOffer);
       }
 
       return saleOffers;

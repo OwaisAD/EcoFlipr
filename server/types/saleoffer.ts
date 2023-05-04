@@ -28,7 +28,7 @@ type SaleOfferById = {
 
 type SaleOfferSearch = {
   input: string;
-}
+};
 
 type SaleOfferUpdateInput = {
   id: string;
