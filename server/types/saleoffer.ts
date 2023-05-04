@@ -27,7 +27,7 @@ type SaleOfferById = {
 };
 
 type SaleOfferSearch = {
-    searchQuery: string;
+  searchQuery: string;
 };
 
 type SaleOfferUpdateInput = {

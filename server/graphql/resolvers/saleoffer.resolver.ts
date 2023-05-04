@@ -64,8 +64,8 @@ export const saleOfferResolver = {
         });
       }
 
-      const searchWord = args.searchQuery
-      const saleOffers = await SaleOffer.find({description:searchWord}).populate([
+      const searchWord = args.searchQuery;
+      const saleOffers = await SaleOffer.find({ description: searchWord }).populate([
         { path: "city", model: City },
         { path: "category", model: Category },
         { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
