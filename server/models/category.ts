@@ -2,7 +2,6 @@ import { Document } from "mongoose";
 
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import validator from "validator";
 
 const categorySchema = new mongoose.Schema({
   name: {

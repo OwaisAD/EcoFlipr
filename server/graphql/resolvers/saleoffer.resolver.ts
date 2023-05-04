@@ -64,19 +64,12 @@ export const saleOfferResolver = {
         });
       }
 
-      let saleOffers = [];
-
-      for (let index = 0; index < 10; index++) {
-        const saleOffer = await SaleOffer.findOne({ description: args }).populate([
-          { path: "city", model: City },
-          { path: "category", model: Category },
-          { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
-        ]);
-        if (saleOffer === null) {
-          index = 10;
-        }
-        saleOffers.push(saleOffer);
-      }
+      const searchWord = args.searchQuery
+      const saleOffers = await SaleOffer.find({description:searchWord}).populate([
+        { path: "city", model: City },
+        { path: "category", model: Category },
+        { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
+      ]);
 
       return saleOffers;
     },

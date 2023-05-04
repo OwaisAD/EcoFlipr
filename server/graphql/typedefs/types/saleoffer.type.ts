@@ -61,10 +61,6 @@ export default gql`
     imgs: [String]
   }
 
-  input SaleOfferSearch {
-    description: String!
-  }
-
   type DeletedSaleOffer {
     id: ID!
   }
