@@ -1,10 +1,12 @@
 import { NextFunction } from "express";
-import { CallbackError, Date, Document } from "mongoose";
+import { Types, CallbackError, Date, Document } from "mongoose";
 import type { SaleOffer } from "../types/saleoffer";
 
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
+import { CommentDocument } from "./comment";
+import Thread from "./thread";
 
 export interface SaleOfferDocument extends Document {
   creator_id: mongoose.Types.ObjectId;

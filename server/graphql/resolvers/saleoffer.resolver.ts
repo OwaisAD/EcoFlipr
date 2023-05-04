@@ -41,6 +41,20 @@ export const saleOfferResolver = {
       if (saleOffer === null) {
         throw new Error("Sale offer does not exist");
       }
+
+      // check who is making the call and calculate notifications
+
+      // if saleoffer.creator_id === currentUser.id
+          // check if there's any comments where author_id !== currentUser._id && is_read === false
+            // if true:
+              // add to count variable
+
+      // else not the author of the saleoffer
+        // check if there's any comments where author._id === saleoffer.creator._id && is_read === false
+          // if true
+            // add to count variable
+
+
       return saleOffer;
     },
     getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {

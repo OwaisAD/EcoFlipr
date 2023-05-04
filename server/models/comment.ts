@@ -4,7 +4,15 @@ import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
 
-const commentSchema = new mongoose.Schema({
+export interface CommentDocument extends Document {
+  thread_id: mongoose.Schema.Types.ObjectId;
+  author_id: mongoose.Schema.Types.ObjectId;
+  content: string;
+  is_read: boolean;
+  created_at: Date;
+}
+
+const commentSchema = new mongoose.Schema<CommentDocument>({
   thread_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Thread",
@@ -39,6 +47,6 @@ commentSchema.set("toJSON", {
   },
 });
 
-const Comment = mongoose.model("Comment", commentSchema);
+const Comment = mongoose.model<CommentDocument>("Comment", commentSchema);
 
 export default Comment;
