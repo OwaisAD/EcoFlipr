@@ -1,11 +1,8 @@
 import { GraphQLError } from "graphql";
 import SaleOffer from "../../models/saleoffer";
 import { Context } from "../../types/context";
-import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput } from "../../types/saleoffer";
-import { SaleOfferDocument } from "../../models/saleoffer";
+import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput, SaleOfferSearch } from "../../types/saleoffer";
 import { validateId } from "../../utils/validator";
-import User from "../../models/user";
-import mongoose from "mongoose";
 import Thread from "../../models/thread";
 import Comment from "../../models/comment";
 import Category from "../../models/category";
@@ -58,7 +55,31 @@ export const saleOfferResolver = {
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
     },
     getSaleOffersByUserInteraction: async () => {},
-    getSaleOfferBySearchQuery: async () => {},
+    getSaleOfferBySearchQuery: async (_parent:never, args:SaleOfferSearch, {currentUser}:Context) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      let saleOffers = [];
+
+      for (let index = 0; index < 10; index++) {
+        const saleOffer = await SaleOffer.findOne({'description':args}).populate([
+          { path: "city", model: City },
+          { path: "category", model: Category },
+          { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
+        ]);
+        if (saleOffer === null) {
+          index = 10;
+        }
+        saleOffers.push(saleOffer); 
+      }
+
+      return saleOffers;
+    },
     getRecentSaleOffersByAmount: async () => {},
     getRandomSaleOffersByAmount: async () => {},
   },

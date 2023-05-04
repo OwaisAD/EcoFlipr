@@ -26,6 +26,10 @@ type SaleOfferById = {
   id: string;
 };
 
+type SaleOfferSearch = {
+  input: string;
+}
+
 type SaleOfferUpdateInput = {
   id: string;
   input: {
@@ -38,4 +42,4 @@ type SaleOfferUpdateInput = {
   };
 };
 
-export type { SaleOffer, SaleOfferInput, SaleOfferById, SaleOfferUpdateInput };
+export type { SaleOffer, SaleOfferInput, SaleOfferById, SaleOfferUpdateInput, SaleOfferSearch };
