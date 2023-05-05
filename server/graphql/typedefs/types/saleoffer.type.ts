@@ -55,8 +55,8 @@ export default gql`
     created_at: Date
     updated_at: Date
   }
-  
-   type SaleOfferWithNotificationCount {
+
+  type SaleOfferWithNotificationCount {
     id: ID!
     notification_count: Int
     creator_id: ID

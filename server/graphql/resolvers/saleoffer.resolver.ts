@@ -66,7 +66,7 @@ export const saleOfferResolver = {
       }
 
       // if it is the owner of the sale offer - return everything about the sale offer
-      if (saleOffer.creator_id === currentUser._id) {
+      if (saleOffer.creator_id.toString() === currentUser._id.toString()) {
         infoLog("Owner of SaleOffer");
         return saleOffer;
       }
