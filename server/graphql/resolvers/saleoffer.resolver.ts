@@ -7,6 +7,7 @@ import Thread from "../../models/thread";
 import Comment from "../../models/comment";
 import Category from "../../models/category";
 import City from "../../models/city";
+import { throwError } from "../../utils/errorHandler";
 
 export const saleOfferResolver = {
   Query: {
@@ -64,8 +65,21 @@ export const saleOfferResolver = {
         });
       }
 
-      const searchWord = args.searchQuery;
-      const saleOffers = await SaleOffer.find({ description: searchWord }).populate([
+      let searchWords = args.searchQuery;
+
+      if (!searchWords || searchWords.length > 100) {
+        let errorMsg = !searchWords
+          ? `Please enter a valid search query`
+          : `Could not find any results for: ${searchWords.substring(0, 20)}...`;
+        throwError(errorMsg);
+      }
+
+      searchWords = searchWords.trim();
+
+      const searchTerms = searchWords.split(" ");
+      const regex = new RegExp(searchTerms.join("|"), "i");
+
+      const saleOffers = await SaleOffer.find({ description: regex }, { threads: false }).populate([
         { path: "city", model: City },
         { path: "category", model: Category },
         { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },

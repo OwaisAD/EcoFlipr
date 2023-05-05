@@ -43,6 +43,19 @@ export default gql`
     updated_at: Date
   }
 
+  type SaleOfferSearchResult {
+    id: ID!
+    creator_id: ID
+    description: String!
+    category: Category!
+    is_shippable: Boolean!
+    city: City!
+    price: Int!
+    imgs: [String]
+    created_at: Date
+    updated_at: Date
+  }
+
   input SaleOfferInput {
     description: String!
     category: CategoryInput!
