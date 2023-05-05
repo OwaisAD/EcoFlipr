@@ -3,7 +3,8 @@ import { Document } from "mongoose";
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
-import { CommentDocument } from "./comment";
+import Comment, { CommentDocument } from "./comment";
+import { NextFunction } from "express";
 
 export interface ThreadDocument extends Document {
   sale_offer_id: mongoose.Types.ObjectId;
