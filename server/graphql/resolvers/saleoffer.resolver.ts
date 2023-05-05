@@ -77,8 +77,6 @@ export const saleOfferResolver = {
         return thread.creator_id.toString() === currentUser._id.toString();
       });
 
-      console.log("FILTERED", filterUserThread);
-
       if (filterUserThread.length > 0) {
         console.log("THERE IS A THREAD");
         const id = filterUserThread[0]!._id;
@@ -95,10 +93,8 @@ export const saleOfferResolver = {
           throwError("Something went wrong. Please try again.");
         }
 
-        console.log(threadFromDb);
-
         return {
-          id: threadFromDb!._id,
+          id: saleOfferFromDb!._id,
           creator_id: saleOfferFromDb!.creator_id,
           description: saleOfferFromDb!.description,
           category: saleOfferFromDb?.category,
