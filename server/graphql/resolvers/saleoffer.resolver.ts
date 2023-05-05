@@ -11,6 +11,7 @@ import Comment from "../../models/comment";
 import Category from "../../models/category";
 import City from "../../models/city";
 import { infoLog } from "../../utils/logger";
+import { throwError } from "../../utils/errorHandler";
 
 interface ThreadComment {
   _id: mongoose.Types.ObjectId;
@@ -124,27 +125,34 @@ export const saleOfferResolver = {
         //@ts-ignore
         saleOffer.notification_count = notificationCount;
       });
-      
+
       return saleOffers;
     },
     getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
       // get the sale offers that the user has interacted with, meaning the ones they don't own but they have commented on
-      // find a way to add notification count for each of the saleoffers -  remember to add to the return type graphql
-      // // check who is making the call and calculate notifications
-      // // if saleoffer.creator_id === currentUser.id
-      // //@ts-ignore
-      // console.log(saleOffer.threads[0].comments.forEach((comment) => console.log(comment)));
-      // if (saleOffer.creator_id === currentUser._id) {
-      //   const unreadCommentsCount =
-      //   // check if there's any comments where author_id !== currentUser._id && is_read === false
-      //   // console.log(saleOffer.threads.comments)
-      // }
-      // // if true:
-      // // add to count variable
-      // // else not the author of the saleoffer
-      // // check if there's any comments where author._id === saleoffer.creator._id && is_read === false
-      // // if true
-      // // add to count variable
+      // find the sale offers that the current user has created threads on and return the sale offer with only the specific thread
+
+      const threads = await Thread.find({ creator_id: currentUser._id });
+
+      if (!threads) {
+        throwError("You haven't interacted on any sale offers");
+      }
+      let threadIds = threads.map((thread) => new mongoose.Types.ObjectId(thread.sale_offer_id));
+
+      console.log(threadIds);
+
+      const saleOffers = await SaleOffer.find({ _id: { $in: threadIds } }, { threads: false })
+        .populate("category")
+        .populate("city")
+        .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+      return saleOffers;
     },
     getSaleOfferBySearchQuery: async () => {},
     getRecentSaleOffersByAmount: async () => {},
