@@ -55,6 +55,21 @@ export default gql`
     created_at: Date
     updated_at: Date
   }
+  
+   type SaleOfferWithNotificationCount {
+    id: ID!
+    notification_count: Int
+    creator_id: ID
+    description: String!
+    category: Category!
+    is_shippable: Boolean!
+    city: City!
+    price: Int!
+    imgs: [String]
+    threads: [Thread]
+    created_at: Date
+    updated_at: Date
+  }
 
   input SaleOfferInput {
     description: String!

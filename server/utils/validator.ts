@@ -1,6 +1,7 @@
 import { UserInputWithoutPass, UserInputWithPass } from "../types/user";
 import validator from "validator";
 import mongoose from "mongoose";
+import { throwError } from "./errorHandler";
 
 export const validateId = (id: any) => {
   return mongoose.Types.ObjectId.isValid(id);
@@ -37,5 +38,15 @@ export const validatePassword = (password: string) => {
   if (!password || password.length < 8) {
     throw new Error("Please enter a valid password");
   }
+  return true;
+};
+
+export const validateLogin = (email: any, password: string) => {
+  if (!email || !validator.isEmail(email)) {
+    throwError("Invalid email");
+  }
+
+  validatePassword(password);
+
   return true;
 };

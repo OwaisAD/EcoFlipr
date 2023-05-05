@@ -1,10 +1,12 @@
 import { NextFunction } from "express";
-import { CallbackError, Date, Document } from "mongoose";
+import { Types, CallbackError, Date, Document } from "mongoose";
 import type { SaleOffer } from "../types/saleoffer";
 
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
+import { CommentDocument } from "./comment";
+import Thread from "./thread";
 
 export interface SaleOfferDocument extends Document {
   creator_id: mongoose.Types.ObjectId;
@@ -14,7 +16,7 @@ export interface SaleOfferDocument extends Document {
   city: mongoose.Types.ObjectId;
   price: number;
   imgs: string[];
-  threads: [mongoose.Types.ObjectId | null];
+  threads: mongoose.Types.ObjectId[];
   created_at: Date;
   updated_at: Date;
 }

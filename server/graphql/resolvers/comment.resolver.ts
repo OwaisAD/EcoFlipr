@@ -23,7 +23,7 @@ export const commentResolver = {
       // Checking if saleoffer id and the saleoffer itself is valid
       const isValidSaleOfferId = validateId(saleOfferId);
       if (!isValidSaleOfferId) {
-        throwError("invalid id");
+        throwError("invalid sale offer id");
       }
 
       const saleOffer = await SaleOffer.findById(saleOfferId);
@@ -43,9 +43,13 @@ export const commentResolver = {
 
         const currentOwnerThread: IThread | null = await Thread.findById(threadId);
         if (!currentOwnerThread) {
-          throwError("something went wrong. Please try again tomorrow.");
+          throwError(`You don't have any threads with id ${threadId} on your saleoffer.`);
         }
-        const newComment = await Comment.create({ content, thread_id: currentOwnerThread!._id });
+        const newComment = await Comment.create({
+          content,
+          thread_id: currentOwnerThread!._id,
+          author_id: currentUser!._id,
+        });
         currentOwnerThread!.comments.push(newComment._id);
         currentOwnerThread!.save();
         return newComment;
@@ -58,20 +62,23 @@ export const commentResolver = {
               currentUser!.first_name
             }`
           );
-          await Thread.create({ creator_id: currentUser!._id });
-          const getTheNewThread: IThread | null = await Thread.findOne({
-            sale_offer_id: saleOffer!._id,
-            creator_id: currentUser!._id,
-          });
-          if (getTheNewThread) {
-            const newComment = await Comment.create({ content, thread_id: getTheNewThread._id });
-            getTheNewThread.comments.push(newComment._id);
-            const savedThread = await getTheNewThread.save();
+          const newThread = await Thread.create({ sale_offer_id: saleOffer!._id, creator_id: currentUser!._id });
+          console.log("created thread");
+          console.log(newThread);
+          if (newThread) {
+            console.log("creating comment");
+            const newComment = await Comment.create({
+              content,
+              thread_id: newThread._id,
+              author_id: currentUser!._id,
+            });
+            newThread.comments.push(newComment._id);
+            const savedThread = await newThread.save();
             saleOffer!.threads.push(savedThread._id);
             await saleOffer!.save();
             return newComment;
           } else {
-            throwError("Something went wrong. Try again tomorrow.");
+            throwError(`Not your saleoffer.`);
           }
         } else {
           infoLog("there's a thread. Checking if currentUser owns it");
@@ -81,7 +88,11 @@ export const commentResolver = {
           });
           if (currentUserOwnsThread) {
             infoLog("User already started a thread");
-            const newComment = await Comment.create({ content, thread_id: currentUserOwnsThread._id });
+            const newComment = await Comment.create({
+              content,
+              thread_id: currentUserOwnsThread._id,
+              author_id: currentUser!._id,
+            });
             currentUserOwnsThread.comments.push(newComment._id);
             await currentUserOwnsThread.save();
             return newComment;
@@ -93,7 +104,11 @@ export const commentResolver = {
               creator_id: currentUser!._id,
             });
             if (getTheNewThread) {
-              const newComment = await Comment.create({ content, thread_id: getTheNewThread._id });
+              const newComment = await Comment.create({
+                content,
+                thread_id: getTheNewThread._id,
+                author_id: currentUser!._id,
+              });
               getTheNewThread.comments.push(newComment._id);
               const savedThread = await getTheNewThread.save();
               saleOffer!.threads.push(savedThread._id);

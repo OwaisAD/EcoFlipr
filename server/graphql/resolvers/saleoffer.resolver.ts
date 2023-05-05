@@ -3,11 +3,31 @@ import SaleOffer from "../../models/saleoffer";
 import { Context } from "../../types/context";
 import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput, SaleOfferSearch } from "../../types/saleoffer";
 import { validateId } from "../../utils/validator";
+import User from "../../models/user";
+import mongoose, { Types } from "mongoose";
 import Thread from "../../models/thread";
 import Comment from "../../models/comment";
 import Category from "../../models/category";
 import City from "../../models/city";
 import { throwError } from "../../utils/errorHandler";
+import { infoLog } from "../../utils/logger";
+
+interface ThreadComment {
+  _id: mongoose.Types.ObjectId;
+  creator_id: mongoose.Types.ObjectId;
+  content: string;
+  created_at: Date;
+  updated_at: Date;
+  __v: number;
+}
+
+interface Thread {
+  _id: mongoose.Types.ObjectId;
+  sale_offer_id: mongoose.Types.ObjectId;
+  creator_id: mongoose.Types.ObjectId;
+  comments: ThreadComment[];
+  __v: number;
+}
 
 export const saleOfferResolver = {
   Query: {
@@ -39,7 +59,40 @@ export const saleOfferResolver = {
       if (saleOffer === null) {
         throw new Error("Sale offer does not exist");
       }
-      return saleOffer;
+
+      // else return only info about the sale offer - no threads included
+      if (!saleOffer.threads) {
+        return saleOffer;
+      }
+
+      // if it is the owner of the sale offer - return everything about the sale offer
+      if (saleOffer.creator_id === currentUser._id) {
+        infoLog("Owner of SaleOffer");
+        return saleOffer;
+      }
+
+      // if it is someone who is asking about the sale offer - return only the one thread regarding the person
+      const filterUserThread = saleOffer.threads.filter(
+        (thread) =>
+          //@ts-ignore
+          thread.creator_id.toString() === currentUser._id.toString()
+      );
+
+      if (filterUserThread.length > 0) {
+        console.log("THERE IS A THREAD");
+        const id = filterUserThread[0]!._id;
+        const objectId = new Types.ObjectId(id.toString());
+        return await SaleOffer.findOne({ _id: saleOffer._id, threads: objectId })
+          .populate("category")
+          .populate("city")
+          .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+      } else {
+        console.log("NO THREAD FOUND");
+        return await SaleOffer.findOne({ _id: saleOffer._id }, { threads: false })
+          .populate("category")
+          .populate("city")
+          .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+      }
     },
     getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
       if (!currentUser) {
@@ -50,10 +103,54 @@ export const saleOfferResolver = {
         });
       }
 
-      return await SaleOffer.find({ creator_id: currentUser._id })
+      // get all the sale offers for the user making the call
+      const saleOffers = await SaleOffer.find({ creator_id: currentUser._id })
         .populate("city")
         .populate("category")
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+
+      // calculate notifications
+      saleOffers.forEach((saleOffer) => {
+        let notificationCount = 0;
+        saleOffer.threads.forEach((thread) => {
+          if (thread) {
+            //@ts-ignore
+            thread.comments.forEach((comment) => {
+              if (!comment.is_read) {
+                notificationCount++;
+              }
+            });
+          }
+        });
+        //@ts-ignore
+        saleOffer.notification_count = notificationCount;
+      });
+
+      return saleOffers;
+    },
+    getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+      // get the sale offers that the user has interacted with, meaning the ones they don't own but they have commented on
+      const threads = await Thread.find({ creator_id: currentUser._id });
+
+      if (!threads) {
+        throwError("You haven't interacted on any sale offers");
+      }
+      let threadIds = threads.map((thread) => new mongoose.Types.ObjectId(thread.sale_offer_id));
+
+      console.log(threadIds);
+
+      const saleOffers = await SaleOffer.find({ _id: { $in: threadIds } }, { threads: false })
+        .populate("category")
+        .populate("city")
+        .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+      return saleOffers;
     },
     getSaleOffersByUserInteraction: async () => {},
     getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch, { currentUser }: Context) => {
