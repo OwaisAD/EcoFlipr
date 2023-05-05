@@ -96,7 +96,6 @@ export const saleOfferResolver = {
       }
     },
     getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
-      // get all the sale offers for the user making the call
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -105,11 +104,13 @@ export const saleOfferResolver = {
         });
       }
 
+      // get all the sale offers for the user making the call
       const saleOffers = await SaleOffer.find({ creator_id: currentUser._id })
         .populate("city")
         .populate("category")
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
 
+      // calculate notifications
       saleOffers.forEach((saleOffer) => {
         let notificationCount = 0;
         saleOffer.threads.forEach((thread) => {
@@ -137,8 +138,6 @@ export const saleOfferResolver = {
         });
       }
       // get the sale offers that the user has interacted with, meaning the ones they don't own but they have commented on
-      // find the sale offers that the current user has created threads on and return the sale offer with only the specific thread
-
       const threads = await Thread.find({ creator_id: currentUser._id });
 
       if (!threads) {
