@@ -16,7 +16,7 @@ export interface SaleOfferDocument extends Document {
   city: mongoose.Types.ObjectId;
   price: number;
   imgs: string[];
-  threads: [mongoose.Types.ObjectId | null];
+  threads: mongoose.Types.ObjectId[];
   created_at: Date;
   updated_at: Date;
 }

@@ -104,26 +104,28 @@ export const saleOfferResolver = {
         });
       }
 
-      const saleOffer = await SaleOffer.find({ creator_id: currentUser._id })
+      const saleOffers = await SaleOffer.find({ creator_id: currentUser._id })
         .populate("city")
         .populate("category")
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
 
-      if (saleOffer.length === 0) {
-        return saleOffer;
-      }
-
-      // find a way to add notification count for each of the saleoffers - remember to add to the return type graphql
-
-      // for every saleoffer look through the comments and check if there are any comments where author_id !== currentUser._id && is_read === false
-      // if !threads.length
-      // set notificationCount === 0 and continue
-
-      // else count++ and then add to the saleoffer
-
-      console.log({ ...saleOffer, notificationCount: 1 });
-
-      return saleOffer;
+      saleOffers.forEach((saleOffer) => {
+        let notificationCount = 0;
+        saleOffer.threads.forEach((thread) => {
+          if (thread) {
+            //@ts-ignore
+            thread.comments.forEach((comment) => {
+              if (!comment.is_read) {
+                notificationCount++;
+              }
+            });
+          }
+        });
+        //@ts-ignore
+        saleOffer.notification_count = notificationCount;
+      });
+      
+      return saleOffers;
     },
     getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
       // get the sale offers that the user has interacted with, meaning the ones they don't own but they have commented on
