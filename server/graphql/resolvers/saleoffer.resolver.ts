@@ -72,20 +72,44 @@ export const saleOfferResolver = {
       }
 
       // if it is someone who is asking about the sale offer - return only the one thread regarding the person
-      const filterUserThread = saleOffer.threads.filter(
-        (thread) =>
-          //@ts-ignore
-          thread.creator_id.toString() === currentUser._id.toString()
-      );
+      const filterUserThread = saleOffer.threads.filter((thread) => {
+        //@ts-ignore
+        return thread.creator_id.toString() === currentUser._id.toString();
+      });
+
+      console.log("FILTERED", filterUserThread);
 
       if (filterUserThread.length > 0) {
         console.log("THERE IS A THREAD");
         const id = filterUserThread[0]!._id;
-        const objectId = new Types.ObjectId(id.toString());
-        return await SaleOffer.findOne({ _id: saleOffer._id, threads: objectId })
+
+        console.log("THREAD ID", id);
+        const saleOfferFromDb = await SaleOffer.findOne({ _id: saleOffer._id }, { threads: false })
           .populate("category")
           .populate("city")
           .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+
+        const threadFromDb = await Thread.findById(id).populate("comments");
+
+        if (!saleOfferFromDb || !threadFromDb) {
+          throwError("Something went wrong. Please try again.");
+        }
+
+        console.log(threadFromDb);
+
+        return {
+          id: threadFromDb!._id,
+          creator_id: saleOfferFromDb!.creator_id,
+          description: saleOfferFromDb!.description,
+          category: saleOfferFromDb?.category,
+          is_shippable: saleOfferFromDb!.is_shippable,
+          city: saleOfferFromDb!.city,
+          price: saleOfferFromDb!.price,
+          imgs: saleOfferFromDb!.imgs,
+          threads: Array.isArray(threadFromDb) ? [...threadFromDb] : [threadFromDb],
+          created_at: saleOfferFromDb?.created_at,
+          updated_at: saleOfferFromDb?.updated_at,
+        };
       } else {
         console.log("NO THREAD FOUND");
         return await SaleOffer.findOne({ _id: saleOffer._id }, { threads: false })
