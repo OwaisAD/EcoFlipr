@@ -6,7 +6,6 @@ import { userResolver } from "./user.resolver";
 import { cityResolver } from "./city.resolver";
 import { threadResolver } from "./thread.resolver";
 
-// const resolvers = [categoryResolver, saleOfferResolver];
 const resolvers = [
   categoryResolver,
   saleOfferResolver,
