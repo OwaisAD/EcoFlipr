@@ -1,8 +1,7 @@
 import { GraphQLError } from "graphql";
 import SaleOffer from "../../models/saleoffer";
 import { Context } from "../../types/context";
-import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput } from "../../types/saleoffer";
-import { SaleOfferDocument } from "../../models/saleoffer";
+import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput, SaleOfferSearch } from "../../types/saleoffer";
 import { validateId } from "../../utils/validator";
 import User from "../../models/user";
 import mongoose, { Types } from "mongoose";
@@ -10,8 +9,8 @@ import Thread from "../../models/thread";
 import Comment from "../../models/comment";
 import Category from "../../models/category";
 import City from "../../models/city";
-import { infoLog } from "../../utils/logger";
 import { throwError } from "../../utils/errorHandler";
+import { infoLog } from "../../utils/logger";
 
 interface ThreadComment {
   _id: mongoose.Types.ObjectId;
@@ -153,7 +152,38 @@ export const saleOfferResolver = {
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
       return saleOffers;
     },
-    getSaleOfferBySearchQuery: async () => {},
+    getSaleOffersByUserInteraction: async () => {},
+    getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch, { currentUser }: Context) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      let searchWords = args.searchQuery;
+
+      if (!searchWords || searchWords.length > 100) {
+        let errorMsg = !searchWords
+          ? `Please enter a valid search query`
+          : `Could not find any results for: ${searchWords.substring(0, 20)}...`;
+        throwError(errorMsg);
+      }
+
+      searchWords = searchWords.trim();
+
+      const searchTerms = searchWords.split(" ");
+      const regex = new RegExp(searchTerms.join("|"), "i");
+
+      const saleOffers = await SaleOffer.find({ description: regex }, { threads: false }).populate([
+        { path: "city", model: City },
+        { path: "category", model: Category },
+        { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
+      ]);
+
+      return saleOffers;
+    },
     getRecentSaleOffersByAmount: async () => {},
     getRandomSaleOffersByAmount: async () => {},
   },

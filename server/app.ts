@@ -10,10 +10,6 @@ import { ApolloServer } from "apollo-server-express";
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { PORT, MONGODB_URI } from "./utils/config";
-import { categories } from "./data/categories";
-import { cities } from "./data/zipsAndCities";
-import Category from "./models/category";
-import City from "./models/city";
 import User from "./models/user";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
