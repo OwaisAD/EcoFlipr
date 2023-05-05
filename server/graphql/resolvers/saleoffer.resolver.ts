@@ -277,6 +277,50 @@ export const saleOfferResolver = {
 
       return updated;
     },
-    deleteSaleOfferById: async () => {},
+    deleteSaleOfferById: async (_parent: never, { id }: SaleOfferById, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      const isValidSaleOfferId = validateId(id);
+
+      if (!isValidSaleOfferId) {
+        throwError("Invalid id");
+      }
+
+      const saleOffer = await SaleOffer.findById(id)
+        .populate("city")
+        .populate("category")
+        .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+
+      if (!saleOffer) {
+        throwError(`No such sale offer with id: ${id}`);
+      }
+
+      if (saleOffer!.creator_id.toString() !== currentUser._id.toString()) {
+        throwError(`Not authorized`);
+      }
+
+      // delete comments
+      const commentIds = saleOffer?.threads
+        .map((threads) => {
+          //@ts-ignore
+          return threads.comments.map((comment) => comment._id);
+        })
+        .flat();
+
+      await Comment.deleteMany({ _id: { $in: commentIds } });
+
+      // then threads
+      const threadIds = saleOffer?.threads.map((thread) => thread._id);
+      await Thread.deleteMany({ _id: { $in: threadIds } });
+
+      await saleOffer?.delete();
+      return { id };
+    },
   },
 };
