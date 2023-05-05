@@ -5,3 +5,7 @@ export interface IThread extends Document {
   creator_id: Types.ObjectId;
   comments: Types.ObjectId[];
 }
+
+export type ThreadInput = {
+  threadId: string;
+};

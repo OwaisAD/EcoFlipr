@@ -3,8 +3,15 @@ import { Document } from "mongoose";
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
+import { CommentDocument } from "./comment";
 
-const threadSchema = new mongoose.Schema({
+export interface ThreadDocument extends Document {
+  sale_offer_id: mongoose.Types.ObjectId;
+  creator_id: mongoose.Types.ObjectId;
+  comments: CommentDocument[];
+}
+
+const threadSchema = new mongoose.Schema<ThreadDocument>({
   sale_offer_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "SaleOffer",
@@ -26,6 +33,6 @@ threadSchema.set("toJSON", {
   },
 });
 
-const Thread = mongoose.model("Thread", threadSchema);
+const Thread = mongoose.model<ThreadDocument>("Thread", threadSchema);
 
 export default Thread;
