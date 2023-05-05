@@ -7,6 +7,10 @@ import { Context } from "../../types/context";
 import { GraphQLError } from "graphql";
 import { errorLog } from "../../utils/logger";
 import { UserUpdatePassInput } from "../../types/user";
+import { throwError } from "../../utils/errorHandler";
+import Thread from "../../models/thread";
+import SaleOffer from "../../models/saleoffer";
+import Comment from "../../models/comment";
 
 type User = {
   id: mongoose.Types.ObjectId;
@@ -93,7 +97,7 @@ export const userResolver = {
         throw new Error(error.message);
       }
     },
-    deleteUserById: async (_parent: any, { id }: User, { currentUser }: Context, _info: any) => {
+    deleteUser: async (_parent: any, _args: never, { currentUser }: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -102,30 +106,70 @@ export const userResolver = {
         });
       }
 
-      const isValidUserId = validateId(id);
-
-      if (!isValidUserId || !(currentUser._id.toString() === id.toString())) {
-        errorLog("Invalid user id or unauthorized");
-        throw new GraphQLError("not authorized", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
-      }
-
       try {
-        //TODO: Når en bruger bliver slettet skal alle brugerens SaleOffers og Threads,
-        // der er tilknyttet samme bruger også slettes,
-        // samt andre brugere's Threads tilknyttet til brugerens SaleOffers.
-        const userFromDb = await User.findById(id);
+        const userFromDb = await User.findById(currentUser._id).populate({
+          path: "sale_offers",
+          populate: { path: "threads", populate: { path: "comments" } },
+        });
 
         if (!userFromDb) {
-          return { id };
+          return { id: currentUser._id };
         }
-        //TODO: Valider at request har et id i sig, hvis det ikke matcher bruger id'et skal der ikke ske noget.
-        await User.findByIdAndDelete(id);
 
-        return { id };
+        const saleOfferIds = userFromDb.sale_offers.map((sale_offer) => sale_offer._id);
+        console.log("saleOfferIds", saleOfferIds);
+        await SaleOffer.deleteMany({ _id: { $in: saleOfferIds } });
+
+        const threadIds = userFromDb.sale_offers
+          .map((sale_offer) => {
+            return sale_offer.threads.map((thread) => thread._id);
+          })
+          .flat();
+        console.log("threadIds", threadIds);
+        await Thread.deleteMany({ _id: { $in: threadIds } });
+
+        const commentIds = userFromDb.sale_offers
+          .map((sale_offer) => {
+            //@ts-ignore
+            return sale_offer.threads.map((thread) => thread.comments.map((comment) => comment._id));
+          })
+          .flat(2);
+        console.log("commentIds", commentIds);
+        await Comment.deleteMany({ _id: { $in: commentIds } });
+
+        // find tråde
+        const userCreatedThreads = await Thread.find({ creator_id: currentUser._id }).populate("comments");
+        const userCreatedThreadsIds = userCreatedThreads.map((thread) => thread._id);
+
+        // find sale offers where the thread was made by the user
+        const saleOffersIdsFromUserThreads = userCreatedThreads.map((thread) => thread.sale_offer_id);
+        const foundSaleOffers = await SaleOffer.find({ _id: { $in: saleOffersIdsFromUserThreads } }).populate(
+          "threads"
+        );
+        foundSaleOffers.forEach((saleOffer) => {
+          saleOffer.threads = saleOffer.threads.filter(
+            //@ts-ignore
+            (thread) => thread.creator_id.toString() !== currentUser._id.toString()
+          );
+          saleOffer.save();
+        });
+
+        console.log("userCreatedThreadIds", userCreatedThreadsIds);
+        await Thread.deleteMany({ _id: { $in: userCreatedThreadsIds } });
+
+        // find kommentarer
+        const otherCommentsToDelete = userCreatedThreads
+          .map((thread) => {
+            //@ts-ignore
+            return thread.comments.map((comment) => comment._id);
+          })
+          .flat();
+        console.log("otherComments..", otherCommentsToDelete);
+        await Comment.deleteMany({ _id: { $in: otherCommentsToDelete } });
+
+        await User.deleteOne(currentUser._id);
+
+        return { id: currentUser._id };
       } catch (error) {
         //
       }
