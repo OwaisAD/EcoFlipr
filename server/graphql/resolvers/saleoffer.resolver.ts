@@ -152,7 +152,6 @@ export const saleOfferResolver = {
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
       return saleOffers;
     },
-    getSaleOffersByUserInteraction: async () => {},
     getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
