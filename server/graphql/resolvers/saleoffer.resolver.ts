@@ -181,7 +181,7 @@ export const saleOfferResolver = {
         });
       }
 
-      let searchWords = args.searchQuery;
+      let searchWords = args.searchQuery.trim();
 
       if (!searchWords || searchWords.length > 100) {
         let errorMsg = !searchWords
@@ -189,8 +189,6 @@ export const saleOfferResolver = {
           : `Could not find any results for: ${searchWords.substring(0, 20)}...`;
         throwError(errorMsg);
       }
-
-      searchWords = searchWords.trim();
 
       const searchTerms = searchWords.split(" ");
       const regex = new RegExp(searchTerms.join("|"), "i");
@@ -200,6 +198,10 @@ export const saleOfferResolver = {
         { path: "category", model: Category },
         { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
       ]);
+
+      if (saleOffers.length < 1) {
+        throwError(`Found no results for: ${searchWords}`);
+      }
 
       return saleOffers;
     },
