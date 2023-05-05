@@ -29,5 +29,7 @@ export default gql`
     deleteSaleOfferById(id: ID!): DeletedSaleOffer
 
     createComment(input: CommentInput): Comment
+
+    markThreadAsRead(threadId: String): String
   }
 `;

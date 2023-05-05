@@ -5,11 +5,29 @@ import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput } from "../../types
 import { SaleOfferDocument } from "../../models/saleoffer";
 import { validateId } from "../../utils/validator";
 import User from "../../models/user";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import Thread from "../../models/thread";
 import Comment from "../../models/comment";
 import Category from "../../models/category";
 import City from "../../models/city";
+import { infoLog } from "../../utils/logger";
+
+interface ThreadComment {
+  _id: mongoose.Types.ObjectId;
+  creator_id: mongoose.Types.ObjectId;
+  content: string;
+  created_at: Date;
+  updated_at: Date;
+  __v: number;
+}
+
+interface Thread {
+  _id: mongoose.Types.ObjectId;
+  sale_offer_id: mongoose.Types.ObjectId;
+  creator_id: mongoose.Types.ObjectId;
+  comments: ThreadComment[];
+  __v: number;
+}
 
 export const saleOfferResolver = {
   Query: {
@@ -21,12 +39,6 @@ export const saleOfferResolver = {
           },
         });
       }
-
-      // if it is the owner of the sale offer - return everything about the sale offer
-
-      // if it is someone who is asking about the sale offer - return only the one thread regarding the person
-
-      // else return only info about the sale offer - no threads included
 
       const isValidSaleOfferId = validateId(id);
 
@@ -48,7 +60,39 @@ export const saleOfferResolver = {
         throw new Error("Sale offer does not exist");
       }
 
-      return saleOffer;
+      // else return only info about the sale offer - no threads included
+      if (!saleOffer.threads) {
+        return saleOffer;
+      }
+
+      // if it is the owner of the sale offer - return everything about the sale offer
+      if (saleOffer.creator_id === currentUser._id) {
+        infoLog("Owner of SaleOffer");
+        return saleOffer;
+      }
+
+      // if it is someone who is asking about the sale offer - return only the one thread regarding the person
+      const filterUserThread = saleOffer.threads.filter(
+        (thread) =>
+          //@ts-ignore
+          thread.creator_id.toString() === currentUser._id.toString()
+      );
+
+      if (filterUserThread.length > 0) {
+        console.log("THERE IS A THREAD");
+        const id = filterUserThread[0]!._id;
+        const objectId = new Types.ObjectId(id.toString());
+        return await SaleOffer.findOne({ _id: saleOffer._id, threads: objectId })
+          .populate("category")
+          .populate("city")
+          .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+      } else {
+        console.log("NO THREAD FOUND");
+        return await SaleOffer.findOne({ _id: saleOffer._id }, { threads: false })
+          .populate("category")
+          .populate("city")
+          .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+      }
     },
     getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
       // get all the sale offers for the user making the call
@@ -60,12 +104,26 @@ export const saleOfferResolver = {
         });
       }
 
-      // find a way to add notification count for each of the saleoffers - remember to add to the return type graphql
-
-      return await SaleOffer.find({ creator_id: currentUser._id })
+      const saleOffer = await SaleOffer.find({ creator_id: currentUser._id })
         .populate("city")
         .populate("category")
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+
+      if (saleOffer.length === 0) {
+        return saleOffer;
+      }
+
+      // find a way to add notification count for each of the saleoffers - remember to add to the return type graphql
+
+      // for every saleoffer look through the comments and check if there are any comments where author_id !== currentUser._id && is_read === false
+      // if !threads.length
+      // set notificationCount === 0 and continue
+
+      // else count++ and then add to the saleoffer
+
+      console.log({ ...saleOffer, notificationCount: 1 });
+
+      return saleOffer;
     },
     getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
       // get the sale offers that the user has interacted with, meaning the ones they don't own but they have commented on
