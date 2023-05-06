@@ -42,9 +42,8 @@ type SaleOfferUpdateInput = {
   };
 };
 
-type RecentSaleOffersInput = {
-  amount: number
-}
+type SaleOffersAmountInput = {
+  amount: number;
+};
 
-
-export type { SaleOffer, SaleOfferInput, SaleOfferById, SaleOfferUpdateInput, SaleOfferSearch, RecentSaleOffersInput };
+export type { SaleOffer, SaleOfferInput, SaleOfferById, SaleOfferUpdateInput, SaleOfferSearch, SaleOffersAmountInput };
