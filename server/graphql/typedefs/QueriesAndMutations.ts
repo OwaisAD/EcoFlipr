@@ -8,8 +8,8 @@ export default gql`
     getSaleOffersByUser: [SaleOfferWithNotificationCount]
     getSaleOffersByUserInteraction: [SaleOffer]
     getSaleOfferBySearchQuery(searchQuery: String): [SaleOfferSearchResult]
-    getRecentSaleOffersByAmount(amount: Int): [SaleOffer]
-    getRandomSaleOffersByAmount(amount: Int): [SaleOffer]
+    getRecentSaleOffersByAmount(amount: Int): [SaleOfferBasic]
+    getRandomSaleOffersByAmount(amount: Int): [SaleOfferBasic]
 
     getUserNotifications(userId: ID!): Int
 
