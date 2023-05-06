@@ -7,12 +7,31 @@ import CreateSaleOffer from "./pages/CreateSaleOffer";
 import SaleOffer from "./pages/SaleOffer";
 import Profile from "./pages/Profile";
 import EditSaleOffer from "./pages/EditSaleOffer";
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+import { Toaster } from "react-hot-toast";
+
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message }) => {
+      alert(`GraphQL error ${message}`);
+    });
+  }
+});
+
+const link = from([errorLink, new HttpLink({ uri: "http://localhost:3001/graphql" })]);
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link,
+});
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <>
+    <ApolloProvider client={client}>
+      <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/createoffer" element={<CreateSaleOffer />} />
@@ -25,7 +44,7 @@ function App() {
 
         <Route path="*" element={<Home />} />
       </Routes>
-    </>
+    </ApolloProvider>
   );
 }
 
