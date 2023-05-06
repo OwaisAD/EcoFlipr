@@ -56,6 +56,16 @@ export default gql`
     updated_at: Date
   }
 
+  type paginationData {
+    count: Int
+    pageCount: Float
+  }
+
+  type SearchResult {
+    pagination: paginationData
+    saleOffers: [SaleOfferSearchResult]
+  }
+
   type SaleOfferWithNotificationCount {
     id: ID!
     notification_count: Int
