@@ -1,7 +1,13 @@
 import { GraphQLError } from "graphql";
 import SaleOffer from "../../models/saleoffer";
 import { Context } from "../../types/context";
-import { SaleOfferById, SaleOfferInput, SaleOfferUpdateInput, SaleOfferSearch } from "../../types/saleoffer";
+import {
+  SaleOfferById,
+  SaleOfferInput,
+  SaleOfferUpdateInput,
+  SaleOfferSearch,
+  RecentSaleOffersInput,
+} from "../../types/saleoffer";
 import { validateId } from "../../utils/validator";
 import User from "../../models/user";
 import mongoose, { Types } from "mongoose";
@@ -205,7 +211,34 @@ export const saleOfferResolver = {
 
       return saleOffers;
     },
-    getRecentSaleOffersByAmount: async () => {},
+    getRecentSaleOffersByAmount: async (
+      _parent: never,
+      { amount }: RecentSaleOffersInput,
+      { currentUser }: Context,
+      _info: any
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      if (amount < 1) {
+        amount = 1;
+      } else if (amount > 10) {
+        amount = 10;
+      }
+
+      return await SaleOffer.find()
+        .sort({ _id: -1 })
+        .limit(amount)
+        .populate([
+          { path: "city", model: City },
+          { path: "category", model: Category },
+        ]);
+    },
     getRandomSaleOffersByAmount: async () => {},
   },
   Mutation: {
