@@ -15,7 +15,7 @@ const slideRight = () => {
 
 const Carousel = ({ saleOffers }: SaleOffersBasic) => {
   return (
-    <div className="w-[750px]">
+    <>
       <div className="relative flex bg-white mt-8 border-gray-200 border rounded-lg group items-center lg:mx-0 md:mx-0 sm:mx-4 mx-6">
         <MdChevronLeft
           size={26}
@@ -39,7 +39,7 @@ const Carousel = ({ saleOffers }: SaleOffersBasic) => {
           onClick={slideRight}
         />
       </div>
-    </div>
+    </>
   );
 };
 

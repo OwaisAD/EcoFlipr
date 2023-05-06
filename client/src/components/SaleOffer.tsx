@@ -1,20 +1,16 @@
 import React from "react";
 import { SaleOfferBasicForRecentAndRandom } from "../types/saleOffer";
+import { isValidHttpUrl } from "../utils/urlValidator";
 
-const SaleOffer = ({saleOffer}: SaleOfferBasicForRecentAndRandom) => {
+const SaleOffer = ({ saleOffer }: SaleOfferBasicForRecentAndRandom) => {
   return (
-    <div className="w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] inline-block cursor-pointer relative p-2">
+    <div className="transition ease-out hover:scale-105 duration-200 p-3 pb-4">
       <img
-        className="h-40 w-40 rounded-xl object-cover  transition duration-300 ease-in-out hover:scale-110 block"
-        src={saleOffer.imgs[0]}
-        alt={saleOffer.description}
+        className="h-40 w-40 p-[1.5px] border-2 object-cover cursor-pointer"
+        src={isValidHttpUrl(saleOffer.imgs[0]) ? saleOffer.imgs[0] : `../../images/No-Image-Placeholder.svg.png`}
+        alt="profile image"
       />
-      <div className="absolute top-0 left-0 w-full h-full hover:bg-black/50 opacity-0 hover:opacity-100 text-white">
-        <p className="white-space-normal text-xs md:text-sm font-bold flex justify-center items-center h-full text-center">
-          {saleOffer.description}
-        </p>
-    
-      </div>
+      <p className="text-xs w-16 truncate text-center">{saleOffer.description}</p>
     </div>
   );
 };

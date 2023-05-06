@@ -1,6 +1,7 @@
 import React from "react";
 import { SaleOfferData } from "../types/saleOffer";
 import Moment from "react-moment";
+import { isValidHttpUrl } from "../utils/urlValidator";
 
 const SaleOfferBox = ({ data }: SaleOfferData) => {
   return (
@@ -11,7 +12,7 @@ const SaleOfferBox = ({ data }: SaleOfferData) => {
       {/* left area */}
       <div className="relative overflow-hidden bg-cover bg-no-repeat">
         <img
-          src={data.imgs[0]}
+          src={isValidHttpUrl(data.imgs[0]) ? data.imgs[0] : `../../images/No-Image-Placeholder.svg.png`}
           alt={`Img description ${data.description}`}
           className="h-40 w-40 rounded-xl object-cover transition duration-300 ease-in-out hover:scale-110"
         />

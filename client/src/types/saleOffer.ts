@@ -62,7 +62,7 @@ export type SaleOfferBasic = {
 };
 
 export type SaleOfferBasicForRecentAndRandom = {
-  saleOffer: SaleOfferBasic
+  saleOffer: SaleOfferBasic;
 };
 
 export type SaleOffersBasic = {

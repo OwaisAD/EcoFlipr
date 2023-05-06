@@ -87,11 +87,25 @@ export const Home = () => {
 
       {/* Display Recent Sale offers */}
       {/* Carousel component that gets data and displays it */}
-      {recentSaleOffers ? <Carousel saleOffers={recentSaleOffers} /> : <></>}
+      {recentSaleOffers ? (
+        <div className="w-[850px]">
+          <p className="text-3xl font-light">Recent sale offers</p>
+          <Carousel saleOffers={recentSaleOffers} />
+        </div>
+      ) : (
+        <></>
+      )}
 
       {/* Display Random Sale offers */}
       {/* Carousel component that gets data and displays it */}
-      {randomSaleOffers ? <Carousel saleOffers={randomSaleOffers} /> : <></>}
+      {randomSaleOffers ? (
+        <div className="w-[850px]">
+          <p className="text-3xl font-light"></p>
+          <Carousel saleOffers={randomSaleOffers} />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
