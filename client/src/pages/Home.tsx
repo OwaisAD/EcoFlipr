@@ -90,7 +90,7 @@ export const Home = () => {
       {recentSaleOffers ? (
         <div className="w-[900px] mx-auto">
           <p className="text-3xl font-light mb-4 mt-4">Recent sale offers</p>
-          <Carousel saleOffers={recentSaleOffers} />
+          <Carousel rowID="1" saleOffers={recentSaleOffers} />
         </div>
       ) : (
         <></>
@@ -101,7 +101,7 @@ export const Home = () => {
       {randomSaleOffers ? (
         <div className="w-[900px] mx-auto">
           <p className="text-3xl font-light mb-4 mt-4">Random sale offers</p>
-          <Carousel saleOffers={randomSaleOffers} />
+          <Carousel rowID="2" saleOffers={randomSaleOffers} />
         </div>
       ) : (
         <></>
