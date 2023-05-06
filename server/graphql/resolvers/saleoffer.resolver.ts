@@ -6,7 +6,7 @@ import {
   SaleOfferInput,
   SaleOfferUpdateInput,
   SaleOfferSearch,
-  RecentSaleOffersInput,
+  SaleOffersAmountInput,
 } from "../../types/saleoffer";
 import { validateId } from "../../utils/validator";
 import User from "../../models/user";
@@ -213,7 +213,7 @@ export const saleOfferResolver = {
     },
     getRecentSaleOffersByAmount: async (
       _parent: never,
-      { amount }: RecentSaleOffersInput,
+      { amount }: SaleOffersAmountInput,
       { currentUser }: Context,
       _info: any
     ) => {
@@ -239,7 +239,35 @@ export const saleOfferResolver = {
           { path: "category", model: Category },
         ]);
     },
-    getRandomSaleOffersByAmount: async () => {},
+    getRandomSaleOffersByAmount: async (
+      _parent: never,
+      { amount }: SaleOffersAmountInput,
+      { currentUser }: Context,
+      _info: any
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      if (amount < 1) {
+        amount = 1;
+      } else if (amount > 10) {
+        amount = 10;
+      }
+
+      const randomSaleOffers = await SaleOffer.aggregate([{ $sample: { size: amount } }]);
+
+      const randomSaleOffersIds = randomSaleOffers.map((so) => so._id);
+
+      return await SaleOffer.find({ _id: { $in: randomSaleOffersIds } }).populate([
+        { path: "city", model: City },
+        { path: "category", model: Category },
+      ]);
+    },
   },
   Mutation: {
     createSaleOffer: async (_parent: never, args: SaleOfferInput, { currentUser }: Context, _info: any) => {
