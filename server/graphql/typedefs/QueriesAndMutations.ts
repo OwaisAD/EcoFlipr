@@ -7,7 +7,7 @@ export default gql`
     getSaleOfferById(id: ID!): SaleOffer
     getSaleOffersByUser: [SaleOfferWithNotificationCount]
     getSaleOffersByUserInteraction: [SaleOffer]
-    getSaleOfferBySearchQuery(searchQuery: String): [SaleOfferSearchResult]
+    getSaleOfferBySearchQuery(searchQuery: String, page: Int): SearchResult
     getRecentSaleOffersByAmount(amount: Int): [SaleOfferBasic]
     getRandomSaleOffersByAmount(amount: Int): [SaleOfferBasic]
 

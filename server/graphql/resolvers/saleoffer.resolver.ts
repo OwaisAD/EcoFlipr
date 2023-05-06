@@ -186,8 +186,13 @@ export const saleOfferResolver = {
           },
         });
       }
+      const ITEMS_PER_PAGE = 20;
 
-      let searchWords = args.searchQuery.trim();
+      let searchWords = args.searchQuery;
+      if (!searchWords) {
+        throwError("Please enter a valid search query");
+      }
+      searchWords = searchWords.trim();
 
       if (!searchWords || searchWords.length > 100) {
         let errorMsg = !searchWords
@@ -196,20 +201,36 @@ export const saleOfferResolver = {
         throwError(errorMsg);
       }
 
+      let page = args.page || 1;
+      if (page < 1) {
+        page = 1;
+      }
+
       const searchTerms = searchWords.split(" ");
       const regex = new RegExp(searchTerms.join("|"), "i");
 
-      const saleOffers = await SaleOffer.find({ description: regex }, { threads: false }).populate([
-        { path: "city", model: City },
-        { path: "category", model: Category },
-        { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
-      ]);
+      const skip = (page - 1) * ITEMS_PER_PAGE;
+      const countPromise = SaleOffer.estimatedDocumentCount({});
+
+      const saleOffersPromise = SaleOffer.find({ description: regex }, { threads: false })
+        .populate([
+          { path: "city", model: City },
+          { path: "category", model: Category },
+          { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
+        ])
+        .skip(skip)
+        .limit(ITEMS_PER_PAGE);
+
+      const [count, saleOffers] = await Promise.all([countPromise, saleOffersPromise]);
 
       if (saleOffers.length < 1) {
-        throwError(`Found no results for: ${searchWords}`);
+        throwError(`Found no results for: ${searchWords} on page ${page}`);
       }
 
-      return saleOffers;
+      // for instance, if we have 400 items and 20 items per page, then we can calculate the amount of pages
+      const pageCount = count / ITEMS_PER_PAGE;
+
+      return { pagination: { count, pageCount: page }, saleOffers };
     },
     getRecentSaleOffersByAmount: async (
       _parent: never,
