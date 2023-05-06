@@ -178,14 +178,7 @@ export const saleOfferResolver = {
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
       return saleOffers;
     },
-    getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch, { currentUser }: Context) => {
-      if (!currentUser) {
-        throw new GraphQLError("not authenticated", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
-      }
+    getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch) => {
       const ITEMS_PER_PAGE = 20;
 
       let searchWords = args.searchQuery;
@@ -232,20 +225,7 @@ export const saleOfferResolver = {
 
       return { pagination: { count, pageCount: page }, saleOffers };
     },
-    getRecentSaleOffersByAmount: async (
-      _parent: never,
-      { amount }: SaleOffersAmountInput,
-      { currentUser }: Context,
-      _info: any
-    ) => {
-      if (!currentUser) {
-        throw new GraphQLError("not authenticated", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
-      }
-
+    getRecentSaleOffersByAmount: async (_parent: never, { amount }: SaleOffersAmountInput) => {
       if (amount < 1) {
         amount = 1;
       } else if (amount > 10) {
@@ -260,20 +240,7 @@ export const saleOfferResolver = {
           { path: "category", model: Category },
         ]);
     },
-    getRandomSaleOffersByAmount: async (
-      _parent: never,
-      { amount }: SaleOffersAmountInput,
-      { currentUser }: Context,
-      _info: any
-    ) => {
-      if (!currentUser) {
-        throw new GraphQLError("not authenticated", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
-      }
-
+    getRandomSaleOffersByAmount: async (_parent: never, { amount }: SaleOffersAmountInput) => {
       if (amount < 1) {
         amount = 1;
       } else if (amount > 10) {
