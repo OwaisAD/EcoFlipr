@@ -88,8 +88,8 @@ export const Home = () => {
       {/* Display Recent Sale offers */}
       {/* Carousel component that gets data and displays it */}
       {recentSaleOffers ? (
-        <div className="w-[850px]">
-          <p className="text-3xl font-light">Recent sale offers</p>
+        <div className="w-[900px] mx-auto">
+          <p className="text-3xl font-light mb-4 mt-4">Recent sale offers</p>
           <Carousel saleOffers={recentSaleOffers} />
         </div>
       ) : (
@@ -99,8 +99,8 @@ export const Home = () => {
       {/* Display Random Sale offers */}
       {/* Carousel component that gets data and displays it */}
       {randomSaleOffers ? (
-        <div className="w-[850px]">
-          <p className="text-3xl font-light"></p>
+        <div className="w-[900px] mx-auto">
+          <p className="text-3xl font-light mb-4 mt-4">Random sale offers</p>
           <Carousel saleOffers={randomSaleOffers} />
         </div>
       ) : (

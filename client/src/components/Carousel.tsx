@@ -16,7 +16,7 @@ const slideRight = () => {
 const Carousel = ({ saleOffers }: SaleOffersBasic) => {
   return (
     <>
-      <div className="relative flex bg-white mt-8 border-gray-200 border rounded-lg group items-center lg:mx-0 md:mx-0 sm:mx-4 mx-6">
+      <div className="relative flex bg-white  border-gray-200 border rounded-lg group items-center lg:mx-0 md:mx-0 sm:mx-4 mx-6">
         <MdChevronLeft
           size={26}
           className="bg-white left-0 rounded-full absolute opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block ml-3"
