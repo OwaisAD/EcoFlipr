@@ -43,8 +43,7 @@ type SaleOfferUpdateInput = {
 };
 
 type SaleOffersAmountInput = {
-  amount: number
-}
-
+  amount: number;
+};
 
 export type { SaleOffer, SaleOfferInput, SaleOfferById, SaleOfferUpdateInput, SaleOfferSearch, SaleOffersAmountInput };
