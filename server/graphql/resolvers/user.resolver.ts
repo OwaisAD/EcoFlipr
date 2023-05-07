@@ -18,8 +18,17 @@ type User = {
 
 export const userResolver = {
   Query: {
-    getUserById: async () => {},
-    getUserNotifications: async () => {},
+    getUser: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+    
+      return await User.findById(currentUser._id,{sale_offers:false});
+    },
   },
   Mutation: {
     createUser: async (_parent: any, args: any, _context: any, _info: any) => {
@@ -45,7 +54,7 @@ export const userResolver = {
         throw new Error(error.message);
       }
     },
-    updateUserById: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    updateUser: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -54,30 +63,20 @@ export const userResolver = {
         });
       }
 
-      const { id, email, first_name, last_name, phone_number, address } = args.input;
+      const { email, first_name, last_name, phone_number, address } = args.input;
 
-      const isValidUserId = validateId(id);
-
-      if (!isValidUserId || id !== currentUser._id.toString()) {
-        errorLog("Invalid user id or unauthorized");
-        throw new GraphQLError("not authorized", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
-      }
 
       validateUserInput({ email, first_name, last_name, phone_number, address });
 
       try {
-        const userFromDb = await User.findById(id);
+        const userFromDb = await User.findById(currentUser._id);
 
         if (!userFromDb) {
-          throw new Error(`User with id ${id} was not found.`);
+          throw new Error(`User was not found.`);
         }
 
         const updatedUser = await User.findByIdAndUpdate(
-          id,
+          currentUser._id,
           {
             email,
             first_name,
@@ -92,7 +91,7 @@ export const userResolver = {
           throw new Error("Something went wrong");
         }
 
-        return updatedUser;
+        return await User.findById(currentUser._id, {sale_offers:false});
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -174,7 +173,7 @@ export const userResolver = {
         //
       }
     },
-    updateUserPasswordById: async (_parent: never, args: UserUpdatePassInput, { currentUser }: Context, _info: any) => {
+    updateUserPassword: async (_parent: never, args: UserUpdatePassInput, { currentUser }: Context, _info: any) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -183,19 +182,9 @@ export const userResolver = {
         });
       }
 
-      const { id, newPassword } = args.input;
+      const { newPassword } = args.input;
 
-      const isValidUserId = validateId(id);
       const isValidPassword = validatePassword(newPassword);
-
-      if (!isValidUserId || !isValidPassword || id !== currentUser._id.toString()) {
-        errorLog("Invalid user id or unauthorized");
-        throw new GraphQLError("not authorized", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
-      }
 
       const saltRounds = 10;
       const passwordHash = await bcrypt.hash(newPassword, saltRounds);
