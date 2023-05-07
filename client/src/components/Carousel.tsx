@@ -21,10 +21,10 @@ const Carousel = ({ rowID, saleOffers }: CarouselProps) => {
 
   return (
     <>
-      <div className="relative flex bg-white border-gray-200 border rounded-xl group items-center lg:mx-0 md:mx-0 sm:mx-4 mx-6 p-1">
+      <div className="relative flex bg-white/80 border-gray-200 border rounded-xl group items-center lg:mx-0 md:mx-0 sm:mx-4 mx-6 py-2 px-11">
         <MdChevronLeft
           size={26}
-          className="bg-white left-0 rounded-full absolute opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block ml-3"
+          className="bg-black text-white left-0 rounded-full absolute opacity-40 hover:opacity-90 cursor-pointer z-10 hidden group-hover:block ml-3"
           onClick={slideLeft}
         />
 
@@ -40,7 +40,7 @@ const Carousel = ({ rowID, saleOffers }: CarouselProps) => {
 
         <MdChevronRight
           size={26}
-          className="bg-white right-0 rounded-full absolute opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block mr-3"
+          className="bg-black text-white right-0 rounded-full absolute opacity-40 hover:opacity-90 cursor-pointer z-10 hidden group-hover:block mr-3"
           onClick={slideRight}
         />
       </div>

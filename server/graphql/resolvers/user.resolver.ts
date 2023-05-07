@@ -26,8 +26,8 @@ export const userResolver = {
           },
         });
       }
-    
-      return await User.findById(currentUser._id,{sale_offers:false});
+
+      return await User.findById(currentUser._id, { sale_offers: false });
     },
   },
   Mutation: {
@@ -65,7 +65,6 @@ export const userResolver = {
 
       const { email, first_name, last_name, phone_number, address } = args.input;
 
-
       validateUserInput({ email, first_name, last_name, phone_number, address });
 
       try {
@@ -91,7 +90,7 @@ export const userResolver = {
           throw new Error("Something went wrong");
         }
 
-        return await User.findById(currentUser._id, {sale_offers:false});
+        return await User.findById(currentUser._id, { sale_offers: false });
       } catch (error: any) {
         throw new Error(error.message);
       }

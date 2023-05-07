@@ -13,7 +13,7 @@ const SaleOffer = ({ saleOffer }: SaleOfferProps) => {
 
   return (
     <Link to={`/offer/${saleOffer.id}`}>
-      <div className=" sm:w-[190px] md:w-[200px] lg:w-[210px] inline-block cursor-pointer relative p-2 transition ease-out hover:scale-105 duration-200">
+      <div className=" sm:w-[190px] md:w-[200px] lg:w-[210px] inline-block cursor-pointer relative p-2 transition ease-out hover:scale-105 duration-200 ">
         <img
           className="h-40 w-40 block rounded-xl p-[1px] border object-cover cursor-pointer"
           src={isValidHttpUrl(saleOffer.imgs[0]) ? saleOffer.imgs[0] : `../../images/No-Image-Placeholder.svg.png`}
