@@ -75,11 +75,18 @@ export const Home = () => {
       <h1>Home</h1>
       <br />
       <form onSubmit={executeSearch} className="flex flex-col items-center mt-2">
-        <input type="text" onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search for items..." className="rounded-lg border-none h-16 w-72 text-xl"/>
+        <input
+          type="text"
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search for items..."
+          className="rounded-lg border-none h-16 w-72 text-xl"
+        />
       </form>
 
       {/* Display search results in SearchResults component*/}
-      <div className="flex flex-col items-center mb-20">{saleOffers ? <SearchResults saleOffers={saleOffers} /> : <></>}</div>
+      <div className="flex flex-col items-center mb-20">
+        {saleOffers ? <SearchResults saleOffers={saleOffers} /> : <></>}
+      </div>
 
       {/* Display Recent Sale offers */}
       {/* Carousel component that gets data and displays it */}
