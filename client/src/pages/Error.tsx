@@ -17,7 +17,10 @@ const Error = () => {
         <p>had its name changed or is temporarily unavailable.</p>
       </div>
       <div>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => navigate("/")}>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          onClick={() => navigate("/")}
+        >
           GO TO HOMEPAGE
         </button>
       </div>
