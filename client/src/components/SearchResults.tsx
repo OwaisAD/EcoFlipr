@@ -5,7 +5,7 @@ import SaleOfferBox from "./SaleOfferBox";
 const SearchResults = ({ saleOffers }: SaleOffers) => {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xl font-light text-center">Found {saleOffers.length} results</p>
+      {saleOffers.length ? <p className="text-xl font-light text-center m-4">Found {saleOffers.length} {saleOffers.length === 1 ? "result" : "results"}</p> : <></>}
       {saleOffers.map((saleOffer, idx) => (
         <SaleOfferBox key={idx} data={saleOffer} />
       ))}

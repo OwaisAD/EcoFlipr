@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { isValidHttpUrl } from "../utils/urlValidator";
 import { SaleOfferBasic } from "../types/saleOffer";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type SaleOfferProps = {
   saleOffer: SaleOfferBasic;
@@ -9,7 +9,6 @@ type SaleOfferProps = {
 
 const SaleOffer = ({ saleOffer }: SaleOfferProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <Link to={`/offer/${saleOffer.id}`}>

@@ -74,13 +74,12 @@ export const Home = () => {
       <Header />
       <h1>Home</h1>
       <br />
-      <form onSubmit={executeSearch}>
-        <h3>Search...</h3>
-        <input type="text" onChange={(e) => setSearchQuery(e.target.value)} />
+      <form onSubmit={executeSearch} className="flex flex-col items-center mt-2">
+        <input type="text" onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search for items..." className="rounded-lg border-none h-16 w-72 text-xl"/>
       </form>
 
       {/* Display search results in SearchResults component*/}
-      {saleOffers ? <SearchResults saleOffers={saleOffers} /> : <></>}
+      <div className="flex flex-col items-center mb-20">{saleOffers ? <SearchResults saleOffers={saleOffers} /> : <></>}</div>
 
       {/* Display Recent Sale offers */}
       {/* Carousel component that gets data and displays it */}
@@ -96,7 +95,7 @@ export const Home = () => {
       {/* Display Random Sale offers */}
       {/* Carousel component that gets data and displays it */}
       {randomSaleOffers ? (
-        <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto">
+        <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto mb-20">
           <p className="text-3xl font-light mb-4 mt-4">Random sale offers</p>
           <Carousel rowID="2" saleOffers={randomSaleOffers} />
         </div>
