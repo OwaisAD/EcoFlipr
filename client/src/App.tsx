@@ -10,6 +10,7 @@ import EditSaleOffer from "./pages/EditSaleOffer";
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { Toaster } from "react-hot-toast";
+import Error from "./pages/Error";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -42,7 +43,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </ApolloProvider>
   );
