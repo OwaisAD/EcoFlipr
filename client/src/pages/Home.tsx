@@ -54,21 +54,18 @@ export const Home = () => {
   useEffect(() => {
     if (data) {
       setSaleOffers(data.getSaleOfferBySearchQuery.saleOffers);
-      console.log(data);
     }
   }, [data]);
 
   useEffect(() => {
     if (data1) {
       setRecentSaleOffers(data1.getRecentSaleOffersByAmount);
-      console.log(data1);
     }
   }, [data1]);
 
   useEffect(() => {
     if (data2) {
       setRandomSaleOffers(data2.getRandomSaleOffersByAmount);
-      console.log(data2);
     }
   }, [data2]);
 
@@ -88,7 +85,7 @@ export const Home = () => {
       {/* Display Recent Sale offers */}
       {/* Carousel component that gets data and displays it */}
       {recentSaleOffers ? (
-        <div className="w-[900px] mx-auto">
+        <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto">
           <p className="text-3xl font-light mb-4 mt-4">Recent sale offers</p>
           <Carousel rowID="1" saleOffers={recentSaleOffers} />
         </div>
@@ -99,7 +96,7 @@ export const Home = () => {
       {/* Display Random Sale offers */}
       {/* Carousel component that gets data and displays it */}
       {randomSaleOffers ? (
-        <div className="w-[900px] mx-auto">
+        <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto">
           <p className="text-3xl font-light mb-4 mt-4">Random sale offers</p>
           <Carousel rowID="2" saleOffers={randomSaleOffers} />
         </div>

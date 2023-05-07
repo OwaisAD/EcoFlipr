@@ -61,10 +61,6 @@ export type SaleOfferBasic = {
   imgs: string[];
 };
 
-export type SaleOfferBasicForRecentAndRandom = {
-  saleOffer: SaleOfferBasic;
-};
-
 export type SaleOffersBasic = {
   saleOffers: SaleOfferBasic[];
 };
