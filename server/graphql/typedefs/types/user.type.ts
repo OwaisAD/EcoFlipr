@@ -11,6 +11,15 @@ export default gql`
     sale_offers: [SaleOffer]
   }
 
+  type UserWithoutSaleoffers {
+    id: ID!
+    email: String!
+    first_name: String!
+    last_name: String!
+    phone_number: String!
+    address: String!
+  }
+
   type ValidatedUser {
     jwtToken: String
   }
@@ -25,7 +34,6 @@ export default gql`
   }
 
   input UpdateUserInput {
-    id: ID!
     email: String
     first_name: String
     last_name: String
@@ -34,7 +42,6 @@ export default gql`
   }
 
   input UpdateUserPasswordInput {
-    id: ID!
     newPassword: String
   }
 
