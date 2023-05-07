@@ -9,7 +9,7 @@ const SearchResults = ({ saleOffers }: SaleOffers) => {
       {saleOffers.map((saleOffer, idx) => (
         <SaleOfferBox key={idx} data={saleOffer} />
       ))}
-      s {/* PAGINATION HERE */}
+      {/* PAGINATION HERE */}
     </div>
   );
 };
