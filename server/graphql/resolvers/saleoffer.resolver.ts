@@ -248,9 +248,9 @@ export const saleOfferResolver = {
       }
 
       // for instance, if we have 400 items and 20 items per page, then we can calculate the amount of pages
-      const pageCount = count / ITEMS_PER_PAGE;
+      const pageCount = Math.ceil(count / ITEMS_PER_PAGE);
 
-      return { pagination: { count, pageCount: page }, saleOffers };
+      return { pagination: { count, pageCount: pageCount }, saleOffers };
     },
     getRecentSaleOffersByAmount: async (_parent: never, { amount }: SaleOffersAmountInput) => {
       if (amount < 1) {

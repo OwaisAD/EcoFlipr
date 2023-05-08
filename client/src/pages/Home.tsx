@@ -1,6 +1,6 @@
 import React, { FormEventHandler, useEffect, useState } from "react";
 import Header from "../components/Header";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_SALE_OFFERS_BY_SEARCH_QUERY } from "../GraphQL/queries/getSaleOfferBySearchQuery";
 import { toast } from "react-hot-toast";
 import SearchResults from "../components/SearchResults";
@@ -11,16 +11,20 @@ import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSa
 export const Home = () => {
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
+  const [saleOfferCount, setSaleOfferCount] = useState(0);
 
-  const [runQuery, setRunQuery] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [saleOffers, setSaleOffers] = useState([]);
   const [recentSaleOffers, setRecentSaleOffers] = useState([]);
   const [randomSaleOffers, setRandomSaleOffers] = useState([]);
-  const { loading, error, data, refetch } = useQuery(GET_SALE_OFFERS_BY_SEARCH_QUERY, {
-    variables: { searchQuery, page },
-    skip: !runQuery,
-    errorPolicy: "all",
+  const [getSaleOffers, { loading, error, data, refetch }] = useLazyQuery(GET_SALE_OFFERS_BY_SEARCH_QUERY, {
+    fetchPolicy: "no-cache",
+    onCompleted(data) {
+      setSaleOffers(data.getSaleOfferBySearchQuery.saleOffers);
+      setPageCount(data.getSaleOfferBySearchQuery.pagination.pageCount);
+      setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count);
+      toast.success(`Found results for ${searchQuery}`)
+    },
   });
 
   const {
@@ -41,26 +45,19 @@ export const Home = () => {
     variables: { amount: 10 },
   });
 
-  const executeSearch: FormEventHandler<HTMLFormElement> = (e) => {
+  const executeSearch: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-
     if (!searchQuery) {
       return;
     }
-
-    setRunQuery(true);
+    getSaleOffers({ variables: { searchQuery: searchQuery, page: page } })
   };
-
-  useEffect(() => {
-    if (runQuery) {
-      refetch();
-      setRunQuery(false);
-    }
-  }, [runQuery]);
 
   useEffect(() => {
     if (data) {
       setSaleOffers(data.getSaleOfferBySearchQuery.saleOffers);
+      setPageCount(data.getSaleOfferBySearchQuery.pagination.pageCount);
+      setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count);
     }
   }, [data]);
 
@@ -76,19 +73,6 @@ export const Home = () => {
     }
   }, [data2]);
 
-  const handlePreviousPage = () => {
-    setPage((page) => {
-      if (page === 1) return page;
-      return page - 1;
-    });
-  };
-  const handleNextPage = () => {
-    setPage((page) => {
-      if (page === pageCount) return page;
-      return page + 1;
-    });
-  };
-
   return (
     <div>
       <Header />
@@ -101,6 +85,7 @@ export const Home = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search for items..."
           className="rounded-lg border-none h-16 w-72 text-xl"
+          value={searchQuery}
         />
       </form>
 
@@ -110,9 +95,11 @@ export const Home = () => {
           <SearchResults
             page={page}
             pageCount={pageCount}
+            searchQuery={searchQuery}
+            saleOfferCount={saleOfferCount}
             saleOffers={saleOffers}
-            handlePreviousPage={handlePreviousPage}
-            handleNextPage={handleNextPage}
+            setPage={setPage}
+            getSaleOffers={getSaleOffers}
           />
         ) : (
           <></>

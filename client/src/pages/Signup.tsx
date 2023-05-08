@@ -138,9 +138,9 @@ const Signup = () => {
             <input type="password" placeholder="Confirm password" id="confirm_password" className="rounded-[0.2rem]" />
 
             <div className="flex items-center justify-center gap-2 my-3">
-              <input type="checkbox" onChange={(e) => setToc_confirmed(e.target.checked)} />
+              <input type="checkbox" onChange={(e) => setToc_confirmed(e.target.checked)} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"/>
               <p>
-                I agree to these <span className="text-blue-700 cursor-pointer">Terms and Conditions</span>
+                I agree to these <span className="text-blue-700 dark:text-blue-500 hover:underline cursor-pointer">Terms and Conditions</span>
               </p>
             </div>
 

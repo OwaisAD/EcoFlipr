@@ -50,7 +50,7 @@ const Login = () => {
   return (
     <div className="min-h-screen w-full flex">
       {/* left side */}
-      <div className="relative hidden lg:block">
+      <div className="relative hidden lg:block w-full">
         <img
           src={"../../images/signin_background.jpg"}
           alt="sign in background image"
@@ -60,9 +60,9 @@ const Login = () => {
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black opacity-40"></div>
       </div>
       {/* right side with inputs */}
-      <div className="bg-white flex flex-col justify-center py-[35px] px-[70px] w-full md:max-w-full lg:max-w-[640px] items-center">
-        <div className="min-w-[450px]">
-          <form onSubmit={handleLogin} className="flex flex-col gap-2">
+      <div className="bg-white flex flex-col justify-center py-[35px] px-[70px] items-center w-full lg:max-w-[600px]">
+        <div className="md:min-w-[450px] lg:max-w-[500px] ">
+          <form onSubmit={handleLogin} className="flex flex-col gap-2 w-[400px] lg:w-full">
             <p className="text-3xl font-light">Login</p>
             <p>Please login to continue</p>
             <label htmlFor="email">Email</label>
@@ -81,9 +81,16 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="rounded-[0.2rem]"
             />
-            <div>
-              <p className="float-right text-xs text-blue-700 font-medium cursor-pointer">Forgot your password?</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <input type="checkbox" className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"/>
+                <p className="font-medium text-sm">Remember for 30 days</p>
+              </div>
+              <div>
+                <p className="float-right text-xs text-blue-700 font-medium cursor-pointer">Forgot your password?</p>
+              </div>
             </div>
+
             <div className="flex flex-col items-center justify-center gap-2 mt-2">
               <div>
                 <button type="submit" className="bg-blue-700 text-white px-6 py-2 rounded-full">
