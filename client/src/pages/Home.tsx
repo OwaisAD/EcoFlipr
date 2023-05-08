@@ -15,7 +15,7 @@ export const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [lastSearchQuery, setLastSearchQuery] = useState("");
   const [saleOffers, setSaleOffers] = useState([]);
-  const [saleOfferCount, setSaleOfferCount] = useState(0)
+  const [saleOfferCount, setSaleOfferCount] = useState(0);
   const [recentSaleOffers, setRecentSaleOffers] = useState([]);
   const [randomSaleOffers, setRandomSaleOffers] = useState([]);
   const [getSaleOffers, { loading, error, data, refetch }] = useLazyQuery(GET_SALE_OFFERS_BY_SEARCH_QUERY, {
@@ -23,8 +23,8 @@ export const Home = () => {
     onCompleted(data) {
       setSaleOffers(data.getSaleOfferBySearchQuery.saleOffers);
       setPageCount(data.getSaleOfferBySearchQuery.pagination.pageCount);
-      setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count)
-      console.log("NEW DATA", data)
+      setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count);
+      console.log("NEW DATA", data);
       toast.success(`Found results for ${searchQuery}`);
     },
   });

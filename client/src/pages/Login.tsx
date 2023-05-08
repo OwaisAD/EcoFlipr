@@ -64,7 +64,9 @@ const Login = () => {
         <form onSubmit={handleLogin} className="w-full flex flex-col gap-2 lg:w-full">
           <p className="text-3xl font-normal">Login</p>
           <p className="mb-3">Please login to continue</p>
-          <label htmlFor="email" className="text-[16px] font-light ml-[1px] text-gray-500">Email</label>
+          <label htmlFor="email" className="text-[16px] font-light ml-[1px] text-gray-500">
+            Email
+          </label>
           <input
             type="text"
             placeholder="Enter email"
@@ -72,7 +74,9 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm font-light"
           />
-          <label htmlFor="password" className="text-[16px] font-light ml-[1px] text-gray-500">Password</label>
+          <label htmlFor="password" className="text-[16px] font-light ml-[1px] text-gray-500">
+            Password
+          </label>
           <input
             type="password"
             placeholder="Enter password"
