@@ -9,13 +9,13 @@ import Profile from "./pages/Profile";
 import EditSaleOffer from "./pages/EditSaleOffer";
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import Error from "./pages/Error";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message }) => {
-      alert(`GraphQL error ${message}`);
+      toast.error(`${message}`);
     });
   }
 });

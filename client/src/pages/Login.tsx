@@ -1,10 +1,54 @@
-import React from "react";
+import { useMutation } from "@apollo/client";
+import React, { useEffect, useState } from "react";
+import { LOGIN } from "../GraphQL/mutations/login";
+import { toast } from "react-hot-toast";
+import validator from "validator"
 
 const Login = () => {
+
+const [login, {data: jwtToken,error, loading}] = useMutation(LOGIN)
+const [email, setEmail]=useState("");
+const [password, setPassword] =useState("");
+
+
+
  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
 
   event.preventDefault();
+  if (!email) {
+    toast.error("Please enter an email", {position: "top-right"})
+    return;
+  }
+  if(!validator.isEmail(email)) {
+    toast.error("Please enter a valid email", {position: "top-right"})
+    return;
+  }
+
+  if (!password) {
+    toast.error("Please enter a password", {position: "top-right"})
+    return;
+  }
+  if (password.length < 8) {
+    toast.error("Password should be at least 8 characters", {position: "top-right"}, )
+    return;
+  }
+
+  login({variables:{
+    input: {
+      email, password
+    }
+   
+  }})
  }
+
+
+
+ useEffect(() => {
+  if(jwtToken) {
+    console.log(jwtToken)
+  }
+ }, [jwtToken])
+
 
   return (
     <div className="min-h-screen w-full flex">
@@ -26,9 +70,9 @@ const Login = () => {
         <label  
         htmlFor="email"
         >Email</label>
-          <input type="email" placeholder="Enter email" required id="email" className="rounded-[0.2rem]"/>
+          <input type="text" placeholder="Enter email" id="email" onChange={(e)=>setEmail(e.target.value)} className="rounded-[0.2rem]"/>
           <label htmlFor="password">Password</label>
-          <input type="password" minLength={8} placeholder="Enter password" required id="password" className="rounded-[0.2rem]"/>
+          <input type="password" placeholder="Enter password" id="password" onChange={(e)=>setPassword(e.target.value)} className="rounded-[0.2rem]"/>
           <div>
           <p className="float-right text-xs text-blue-700 font-medium">Forgot your password?</p>
             </div>
