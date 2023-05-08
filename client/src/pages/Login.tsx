@@ -74,7 +74,7 @@ const [password, setPassword] =useState("");
           <label htmlFor="password">Password</label>
           <input type="password" placeholder="Enter password" id="password" onChange={(e)=>setPassword(e.target.value)} className="rounded-[0.2rem]"/>
           <div>
-          <p className="float-right text-xs text-blue-700 font-medium">Forgot your password?</p>
+          <p className="float-right text-xs text-blue-700 font-medium cursor-pointer">Forgot your password?</p>
             </div>
 <div className="flex flex-col items-center justify-center gap-2 mt-2">
   <div>

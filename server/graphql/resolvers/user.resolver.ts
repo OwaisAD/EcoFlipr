@@ -49,7 +49,7 @@ export const userResolver = {
         if (!createdUser) {
           throw new Error("Something went wrong");
         }
-        return createdUser;
+        return "Success";
       } catch (error: any) {
         throw new Error(error.message);
       }
