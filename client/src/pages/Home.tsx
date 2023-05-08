@@ -11,10 +11,11 @@ import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSa
 export const Home = () => {
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const [saleOfferCount, setSaleOfferCount] = useState(0);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [lastSearchQuery, setLastSearchQuery] = useState("");
   const [saleOffers, setSaleOffers] = useState([]);
+  const [saleOfferCount, setSaleOfferCount] = useState(0)
   const [recentSaleOffers, setRecentSaleOffers] = useState([]);
   const [randomSaleOffers, setRandomSaleOffers] = useState([]);
   const [getSaleOffers, { loading, error, data, refetch }] = useLazyQuery(GET_SALE_OFFERS_BY_SEARCH_QUERY, {
@@ -22,8 +23,9 @@ export const Home = () => {
     onCompleted(data) {
       setSaleOffers(data.getSaleOfferBySearchQuery.saleOffers);
       setPageCount(data.getSaleOfferBySearchQuery.pagination.pageCount);
-      setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count);
-      toast.success(`Found results for ${searchQuery}`)
+      setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count)
+      console.log("NEW DATA", data)
+      toast.success(`Found results for ${searchQuery}`);
     },
   });
 
@@ -50,16 +52,18 @@ export const Home = () => {
     if (!searchQuery) {
       return;
     }
-    getSaleOffers({ variables: { searchQuery: searchQuery, page: page } })
-  };
 
-  useEffect(() => {
-    if (data) {
-      setSaleOffers(data.getSaleOfferBySearchQuery.saleOffers);
-      setPageCount(data.getSaleOfferBySearchQuery.pagination.pageCount);
-      setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count);
+    console.log(lastSearchQuery, searchQuery);
+
+    if (lastSearchQuery !== searchQuery) {
+      setPage(1);
+      setLastSearchQuery(searchQuery);
+      getSaleOffers({ variables: { searchQuery: searchQuery, page: 1 } });
+    } else {
+      setLastSearchQuery(searchQuery);
+      getSaleOffers({ variables: { searchQuery: searchQuery, page: page } });
     }
-  }, [data]);
+  };
 
   useEffect(() => {
     if (data1) {
@@ -95,8 +99,8 @@ export const Home = () => {
           <SearchResults
             page={page}
             pageCount={pageCount}
-            searchQuery={searchQuery}
             saleOfferCount={saleOfferCount}
+            searchQuery={searchQuery}
             saleOffers={saleOffers}
             setPage={setPage}
             getSaleOffers={getSaleOffers}
