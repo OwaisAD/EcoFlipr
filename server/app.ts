@@ -9,7 +9,7 @@ import { categoriesRouter } from "./controllers/categories";
 import { ApolloServer } from "apollo-server-express";
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
-import { PORT, MONGODB_URI } from "./utils/config";
+import { PORT, MONGO_URI } from "./utils/config";
 import User from "./models/user";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
@@ -42,7 +42,7 @@ const startServer = async () => {
     res.send("Hello from express apollo server!");
   });
 
-  const URL = MONGODB_URI || "";
+  const URL = MONGO_URI || "";
   mongoose.set("strictQuery", false);
   infoLog("connecting to db on: ", URL);
 
@@ -50,26 +50,6 @@ const startServer = async () => {
     .connect(URL)
     .then(() => {
       infoLog("connected to MongoDB");
-      //Category.insertMany(categories);
-      //City.insertMany(cities);
-      // User.insertMany([
-      //   {
-      //     email: "andreas@gmail.com",
-      //     first_name: "Andreas",
-      //     last_name: "Fritzbøger",
-      //     phone_number: "4510101010",
-      //     address: "Apple Blv 2",
-      //     passwordHash: "hashedPassword",
-      //   },
-      //   {
-      //     email: "daniel@gmail.com",
-      //     first_name: "Daniel",
-      //     last_name: "Fritzbøger",
-      //     phone_number: "4510101010",
-      //     address: "Apple Blv 2",
-      //     passwordHash: "hashedPassword",
-      //   },
-      // ]);
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);
