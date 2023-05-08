@@ -11,6 +11,7 @@ import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSa
 export const Home = () => {
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
+
   const [runQuery, setRunQuery] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [saleOffers, setSaleOffers] = useState([]);
@@ -19,6 +20,7 @@ export const Home = () => {
   const { loading, error, data, refetch } = useQuery(GET_SALE_OFFERS_BY_SEARCH_QUERY, {
     variables: { searchQuery, page },
     skip: !runQuery,
+    errorPolicy: "all",
   });
 
   const {
@@ -41,6 +43,11 @@ export const Home = () => {
 
   const executeSearch: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+
+    if (!searchQuery) {
+      return;
+    }
+
     setRunQuery(true);
   };
 
@@ -69,11 +76,25 @@ export const Home = () => {
     }
   }, [data2]);
 
+  const handlePreviousPage = () => {
+    setPage((page) => {
+      if (page === 1) return page;
+      return page - 1;
+    });
+  };
+  const handleNextPage = () => {
+    setPage((page) => {
+      if (page === pageCount) return page;
+      return page + 1;
+    });
+  };
+
   return (
     <div>
       <Header />
       <h1>Home</h1>
       <br />
+
       <form onSubmit={executeSearch} className="flex flex-col items-center mt-2">
         <input
           type="text"
@@ -85,7 +106,17 @@ export const Home = () => {
 
       {/* Display search results in SearchResults component*/}
       <div className="flex flex-col items-center mb-20">
-        {saleOffers ? <SearchResults saleOffers={saleOffers} /> : <></>}
+        {saleOffers && saleOffers.length > 0 ? (
+          <SearchResults
+            page={page}
+            pageCount={pageCount}
+            saleOffers={saleOffers}
+            handlePreviousPage={handlePreviousPage}
+            handleNextPage={handleNextPage}
+          />
+        ) : (
+          <></>
+        )}
       </div>
 
       {/* Display Recent Sale offers */}

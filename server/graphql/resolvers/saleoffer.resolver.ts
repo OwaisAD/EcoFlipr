@@ -172,10 +172,37 @@ export const saleOfferResolver = {
 
       console.log(threadIds);
 
-      const saleOffers = await SaleOffer.find({ _id: { $in: threadIds } }, { threads: false })
+      const saleOffers = await SaleOffer.find({ _id: { $in: threadIds } })
         .populate("category")
         .populate("city")
         .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+
+      // calculate notifications
+      saleOffers.forEach((saleOffer) => {
+        let notificationCount = 0;
+        saleOffer.threads.forEach((thread) => {
+          //@ts-ignore
+          if (thread && thread.creator_id.toString() === currentUser._id.toString()) {
+            //@ts-ignore
+            thread.comments.forEach((comment) => {
+              if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
+                notificationCount++;
+              }
+            });
+          }
+        });
+        //@ts-ignore
+        saleOffer.notification_count = notificationCount;
+      });
+
+      // filter threads that are mine
+      saleOffers.forEach((saleOffer) => {
+        saleOffer.threads = saleOffer.threads.filter((thread) => {
+          //@ts-ignore
+          thread.creator_id.toString() === currentUser._id;
+        });
+      });
+
       return saleOffers;
     },
     getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch) => {

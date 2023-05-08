@@ -40,9 +40,7 @@ export type SaleOfferData = {
   };
 };
 
-export type SaleOffers = {
-  saleOffers: SaleOffer[];
-};
+export type SaleOffers = SaleOffer[];
 
 export type SaleOfferBasic = {
   id: string;

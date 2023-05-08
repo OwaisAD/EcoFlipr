@@ -2,7 +2,16 @@ import React from "react";
 import { SaleOffers } from "../types/saleOffer";
 import SaleOfferBox from "./SaleOfferBox";
 
-const SearchResults = ({ saleOffers }: SaleOffers) => {
+type SearchResultsProps = {
+  page: number;
+  pageCount: number;
+  saleOffers: SaleOffers;
+  handlePreviousPage: () => void;
+  handleNextPage: () => void;
+};
+
+const SearchResults = ({ page, pageCount, saleOffers, handlePreviousPage, handleNextPage }: SearchResultsProps) => {
+  console.log("SEARCHRESULTS", saleOffers);
   return (
     <div className="flex flex-col gap-4">
       {saleOffers.length ? (
@@ -16,6 +25,14 @@ const SearchResults = ({ saleOffers }: SaleOffers) => {
         <SaleOfferBox key={idx} data={saleOffer} />
       ))}
       {/* PAGINATION HERE */}
+      <div>
+        <button disabled={page === 1} onClick={handlePreviousPage}>
+          {"< Prev"}
+        </button>
+        <button disabled={page === pageCount} onClick={handleNextPage}>
+          {"Next >"}
+        </button>
+      </div>
     </div>
   );
 };
