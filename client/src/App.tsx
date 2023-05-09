@@ -36,6 +36,23 @@ function App() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [theme, setTheme] = useState("light");
+  const [isDarkMode, setDarkMode] = useState(true);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      setDarkMode(true)
+    } else {
+      document.documentElement.classList.remove("dark");
+      setDarkMode(false)
+    }
+  }, [theme]);
+
+  const handleThemeSwitch = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
 
   useEffect(() => {
     // Check if there's a stored path in local storage
@@ -52,7 +69,7 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} setIsHeaderSearch={setIsHeaderSearch} />
+      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} setIsHeaderSearch={setIsHeaderSearch} handleThemeSwitch={handleThemeSwitch} isDarkMode={isDarkMode}/>
       <Toaster />
       <Routes>
         <Route
