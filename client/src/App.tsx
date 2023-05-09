@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import Login from "./pages/Login";
@@ -11,6 +11,9 @@ import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@ap
 import { onError } from "@apollo/client/link/error";
 import { Toaster, toast } from "react-hot-toast";
 import Error from "./pages/Error";
+import { useAuth } from "./context/AuthProvider";
+import { useNavigate } from "react-router-dom";
+
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -28,7 +31,19 @@ const client = new ApolloClient({
 });
 
 function App() {
-  const [count, setCount] = useState(0);
+  const auth = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Check if there's a stored path in local storage
+    const lastPath = localStorage.getItem("lastPath");
+    if (auth.isAuthenticated && lastPath) {
+      // Remove the stored path from local storage
+      localStorage.removeItem("lastPath");
+      // Redirect the user to the stored path
+      navigate(lastPath);
+    }
+  }, [auth.isAuthenticated]);
 
   return (
     <ApolloProvider client={client}>

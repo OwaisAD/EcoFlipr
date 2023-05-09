@@ -4,12 +4,14 @@ import { LOGIN } from "../GraphQL/mutations/login";
 import { toast } from "react-hot-toast";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const Login = () => {
-  const [login, { data: jwtToken, error, loading }] = useMutation(LOGIN);
+  const [login, { data, error, loading }] = useMutation(LOGIN);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,10 +44,12 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (jwtToken) {
-      console.log(jwtToken);
+    if (data) {
+      const token = data.login.jwtToken;
+      localStorage.setItem("ecoflipr-user-token", token);
+      auth.login();
     }
-  }, [jwtToken]);
+  }, [data]);
 
   return (
     <div className="min-h-screen w-full flex">

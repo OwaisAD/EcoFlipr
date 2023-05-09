@@ -10,10 +10,12 @@ const SaleOfferBox = ({ data }: SaleOfferData) => {
     <Link to={`/offer/${data.id}`}>
       <div
         key={data.id}
-        className="relative bg-gray-300 w-[500px] h-[180px] rounded-xl p-2 flex  shadow-md font-light hover:scale-105 transform 
+        className="relative bg-gray-300 w-[500px] h-[180px] rounded-xl p-2 flex shadow-md font-light hover:scale-105 transform 
         transition duration-100"
       >
-<div className="absolute top-0 right-0 flex items-center gap-2 text-xs bg-gray-100 rounded-bl rounded-tr p-[1.5px] shadow-md">{data.is_shippable ? "Kan sendes" : "Sendes ikke"}  {data.is_shippable && <FaShuttleVan className=""/>}</div>
+        <div className="absolute top-0 right-0 flex items-center gap-1 text-[10px] bg-gray-100 rounded-bl rounded-tr p-[1.5px] shadow-sm">
+          {data.is_shippable ? "Kan sendes" : "Sendes ikke"} {data.is_shippable && <FaShuttleVan className="" />}
+        </div>
 
         {/* left area */}
         <div className="relative overflow-hidden bg-cover bg-no-repeat">
@@ -38,7 +40,7 @@ const SaleOfferBox = ({ data }: SaleOfferData) => {
           <div className="text-sm">
             <div>
               {data.city.zip_code} {data.city.name}
-            </div>            
+            </div>
           </div>
         </div>
       </div>
