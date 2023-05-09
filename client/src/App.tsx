@@ -33,7 +33,7 @@ const client = new ApolloClient({
 function App() {
   const auth = useAuth();
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
 
   useEffect(() => {
     // Check if there's a stored path in local storage
@@ -43,14 +43,14 @@ function App() {
       localStorage.removeItem("lastPath");
       // Redirect the user to the stored path
       navigate(lastPath);
-    } else if(auth.isAuthenticated && location.pathname === "/login") {
-      navigate("/")
+    } else if (auth.isAuthenticated && location.pathname === "/login") {
+      navigate("/");
     }
   }, [auth.isAuthenticated]);
 
   return (
     <ApolloProvider client={client}>
-      <Header/>
+      <Header />
       <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
