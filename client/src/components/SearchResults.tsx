@@ -12,6 +12,10 @@ type SearchResultsProps = {
   getSaleOffers: any;
 };
 
+function scrollToTop() {
+  window.scrollTo(0, 0);
+}
+
 const SearchResults = ({
   page,
   pageCount,
@@ -76,9 +80,11 @@ const SearchResults = ({
         </button>
       </div>
 
+      {/* DISPLAYING SALE OFFER BOXES */}
       {saleOffers.map((saleOffer, idx) => (
         <SaleOfferBox key={idx} data={saleOffer} />
       ))}
+
       {/* PAGINATION BOTTOM */}
       <div className="flex items-center gap-3 justify-center mt-6">
         <button
@@ -89,6 +95,7 @@ const SearchResults = ({
               return page - 1;
             });
             getSaleOffers({ variables: { searchQuery, page: page - 1 } });
+            scrollToTop();
           }}
           className={`bg-white shadow-md rounded-md p-3 ${page === 1 ? "cursor-not-allowed text-gray-400" : ""}`}
         >
@@ -106,6 +113,7 @@ const SearchResults = ({
               return page + 1;
             });
             getSaleOffers({ variables: { searchQuery, page: page + 1 } });
+            scrollToTop();
           }}
           className={`bg-white shadow-md rounded-md p-3 ${
             page === pageCount ? "cursor-not-allowed text-gray-400" : ""
