@@ -7,6 +7,7 @@ import SearchResults from "../components/SearchResults";
 import Carousel from "../components/Carousel";
 import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
 import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
+import { RxMagnifyingGlass } from "react-icons/rx";
 
 type Props = {
   searchQuery: string;
@@ -90,14 +91,19 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
 
   return (
     <div>
-      <form onSubmit={executeSearch} className="flex flex-col items-center mt-10">
-        <input
-          type="text"
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search for items..."
-          className="rounded-lg border-none h-16 w-72 text-xl"
-          value={searchQuery}
-        />
+      <form onSubmit={executeSearch} className="relative flex justify-center items-center mt-1 p-3 ">
+        <div>
+          <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-none">
+            <RxMagnifyingGlass className="h-5 w-5 text-gray-500" />
+          </div>
+          <input
+            type="text"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search for items..."
+            className="rounded-lg border-none h-16 w-80 text-xl bg-gray-50 block  pl-10 sm:text-md border-gray-300 focus:ring-black focus:border-black"
+            value={searchQuery}
+          />
+        </div>
       </form>
 
       {/* Display search results in SearchResults component*/}
@@ -121,7 +127,7 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
       {/* Carousel component that gets data and displays it */}
       {recentSaleOffers ? (
         <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto">
-          <p className="text-3xl font-light mb-4 mt-4 text-center lg:text-left">Recent sale offers</p>
+          <p className="text-3xl font-light mb-4 mt-4 text-center lg:text-left dark:text-white">Recent sale offers</p>
           <Carousel rowID="1" saleOffers={recentSaleOffers} />
         </div>
       ) : (
@@ -132,7 +138,7 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
       {/* Carousel component that gets data and displays it */}
       {randomSaleOffers ? (
         <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto mb-20">
-          <p className="text-3xl font-light mb-4 mt-4 text-center lg:text-left">Random sale offers</p>
+          <p className="text-3xl font-light mb-4 mt-4 text-center lg:text-left dark:text-white">Random sale offers</p>
           <Carousel rowID="2" saleOffers={randomSaleOffers} />
         </div>
       ) : (
