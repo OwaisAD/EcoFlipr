@@ -121,7 +121,7 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
       {/* Carousel component that gets data and displays it */}
       {recentSaleOffers ? (
         <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto">
-          <p className="text-3xl font-light mb-4 mt-4 ">Recent sale offers</p>
+          <p className="text-3xl font-light mb-4 mt-4 text-center lg:text-left">Recent sale offers</p>
           <Carousel rowID="1" saleOffers={recentSaleOffers} />
         </div>
       ) : (
@@ -132,7 +132,7 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
       {/* Carousel component that gets data and displays it */}
       {randomSaleOffers ? (
         <div className="sm:w-[600px] md:w-[700px] lg:w-[900px] mx-auto mb-20">
-          <p className="text-3xl font-light mb-4 mt-4">Random sale offers</p>
+          <p className="text-3xl font-light mb-4 mt-4 text-center lg:text-left">Random sale offers</p>
           <Carousel rowID="2" saleOffers={randomSaleOffers} />
         </div>
       ) : (
