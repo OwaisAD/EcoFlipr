@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Home } from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -13,6 +13,7 @@ import { Toaster, toast } from "react-hot-toast";
 import Error from "./pages/Error";
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import Header from "./components/Header";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -30,8 +31,11 @@ const client = new ApolloClient({
 });
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isHeaderSearch, setIsHeaderSearch] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check if there's a stored path in local storage
@@ -41,14 +45,27 @@ function App() {
       localStorage.removeItem("lastPath");
       // Redirect the user to the stored path
       navigate(lastPath);
+    } else if (auth.isAuthenticated && location.pathname === "/login") {
+      navigate("/");
     }
   }, [auth.isAuthenticated]);
 
   return (
     <ApolloProvider client={client}>
+      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} setIsHeaderSearch={setIsHeaderSearch} />
       <Toaster />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <Home
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              isHeaderSearch={isHeaderSearch}
+              setIsHeaderSearch={setIsHeaderSearch}
+            />
+          }
+        />
         <Route path="/createoffer" element={<CreateSaleOffer />} />
         <Route path="/editoffer/:id" element={<EditSaleOffer />} />
         <Route path="/offer/:id" element={<SaleOffer />} />
