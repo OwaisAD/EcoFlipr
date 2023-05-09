@@ -43,18 +43,15 @@ function App() {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
       setDarkMode(true);
-      toast("Switched to dark-mode", {
-        icon: "🌙",
-        style: {
-          borderRadius: "10px",
-          background: "#333",
-          color: "#fff",
-        },
-        position: "bottom-right",
-      });
     } else {
       document.documentElement.classList.remove("dark");
       setDarkMode(false);
+    }
+  }, [theme]);
+
+  const handleThemeSwitch = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+    if (theme === "dark") {
       toast("Switched to light-mode", {
         icon: "☀️",
         style: {
@@ -64,11 +61,17 @@ function App() {
         },
         position: "bottom-right",
       });
+    } else {
+      toast("Switched to dark-mode", {
+        icon: "🌙",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+        position: "bottom-right",
+      });
     }
-  }, [theme]);
-
-  const handleThemeSwitch = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   useEffect(() => {
