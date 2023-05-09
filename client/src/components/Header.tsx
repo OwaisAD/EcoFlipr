@@ -136,54 +136,59 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
         {burgerMenuOpen && (
           <div className="absolute z-50 w-[97%] md:block top-12 right-2 ml-2">
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-10 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              {location.pathname !== "/" && (
-                <li>
-                  <input
-                    type="text"
-                    className="rounded-lg border border-gray-200 h-10 w-44 text-sm block py-2 pl-3 pr-4"
-                    placeholder="Search for items..."
-                  />
-                </li>
+              {!auth.isAuthenticated && (
+                <p
+                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer"
+                  onClick={() => {
+                    setBurgerMenuOpen(false);
+                    navigate("/login");
+                  }}
+                >
+                  Login
+                </p>
               )}
-              <li
-                onClick={() => {
-                  setBurgerMenuOpen(false);
-                  navigate("/createoffer");
-                }}
-              >
-                <a
-                  href="#"
-                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  Create offer
-                </a>
-              </li>
-              <li
-                onClick={() => {
-                  setBurgerMenuOpen(false);
-                  navigate("/profile");
-                }}
-              >
-                <a
-                  href="#"
-                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  Profile
-                </a>
-              </li>
-              <li
-                onClick={() => {
-                  setBurgerMenuOpen(false);
-                  handleLogOut();
-                }}
-              >
-                <a
-                  href="#"
-                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  Log out
-                </a>
-              </li>
+
+              {location.pathname !== "/" && (
+                <input
+                  type="text"
+                  className="rounded-lg border border-gray-200 h-10 w-44 text-sm block py-2 pl-3 pr-4"
+                  placeholder="Search for items..."
+                />
+              )}
+
+              {auth.isAuthenticated && (
+                <>
+                  <p
+                    className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer"
+                    onClick={() => {
+                      setBurgerMenuOpen(false);
+                      navigate("/createoffer");
+                    }}
+                  >
+                    Create offer
+                  </p>
+
+                  <p
+                    className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer"
+                    onClick={() => {
+                      setBurgerMenuOpen(false);
+                      navigate("/profile");
+                    }}
+                  >
+                    Profile
+                  </p>
+
+                  <p
+                    className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer"
+                    onClick={() => {
+                      setBurgerMenuOpen(false);
+                      handleLogOut();
+                    }}
+                  >
+                    Log out
+                  </p>
+                </>
+              )}
             </ul>
           </div>
         )}
