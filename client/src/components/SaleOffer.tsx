@@ -30,7 +30,7 @@ const SaleOffer = ({ saleOffer }: SaleOfferProps) => {
           </div>
         </div>
         {!isHovered && (
-          <div className="absolute bottom-3 right-7 text-blue rounded-xl m-2">
+          <div className="absolute bottom-3 right-7 text-blue rounded-xl m-2 xs:right-[-4px] sm:right-4 md:right-6">
             <div className="white-space-normal flex flex-col justify-center items-center h-full text-center font-bold gap-2">
               <p className="bg-white rounded-md shadow-md shadow-gray-400 text-sm p-[1px]">{saleOffer.price},-</p>
             </div>

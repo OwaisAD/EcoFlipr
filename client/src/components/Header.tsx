@@ -6,7 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import { useApolloClient } from "@apollo/client";
 import { toast } from "react-hot-toast";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
-import { Squash as Hamburger, Squash } from 'hamburger-react'
+import { Squash as Hamburger, Squash } from "hamburger-react";
 
 type Props = {
   searchQuery: string;
@@ -21,6 +21,9 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
   const location = useLocation();
   const auth = useAuth();
   const client = useApolloClient();
+  const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
+
+  const handleBurgerMenuClicked = () => setBurgerMenuOpen(!burgerMenuOpen);
 
   const handleLogOut = () => {
     console.log("Logging out");
@@ -98,6 +101,9 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
               </div>
             </div>
 
+            {/* DARK MODE BTN */}
+            <DarkModeSwitch checked={isDarkMode} onChange={toggleDarkMode} size={30} />
+
             {/* Sign in btn / Sign up btn */}
             <button
               className="bg-black rounded-full text-white font-medium px-4 py-2 hover:scale-105 duration-100"
@@ -123,12 +129,65 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
         )}
       </div>
 
-
-        {/* Burger menu */}
-        <div className="block sm:hidden">
-          <Squash/>
-        </div>
-
+      {/* Burger menu */}
+      <div className="block sm:hidden">
+        <Squash toggled={burgerMenuOpen} toggle={handleBurgerMenuClicked} />
+        {/* dropdown when burger menu is clicked */}
+        {burgerMenuOpen && (
+          <div className="absolute z-50 w-[97%] md:block top-12 right-2 ml-2">
+            <ul className="font-medium flex flex-col p-4 md:p-0 mt-10 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+              {location.pathname !== "/" && (
+                <li>
+                  <input
+                    type="text"
+                    className="rounded-lg border border-gray-200 h-10 w-44 text-sm block py-2 pl-3 pr-4"
+                    placeholder="Search for items..."
+                  />
+                </li>
+              )}
+              <li
+                onClick={() => {
+                  setBurgerMenuOpen(false);
+                  navigate("/createoffer");
+                }}
+              >
+                <a
+                  href="#"
+                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  Create offer
+                </a>
+              </li>
+              <li
+                onClick={() => {
+                  setBurgerMenuOpen(false);
+                  navigate("/profile");
+                }}
+              >
+                <a
+                  href="#"
+                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  Profile
+                </a>
+              </li>
+              <li
+                onClick={() => {
+                  setBurgerMenuOpen(false);
+                  handleLogOut();
+                }}
+              >
+                <a
+                  href="#"
+                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  Log out
+                </a>
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
