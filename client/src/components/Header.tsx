@@ -24,11 +24,13 @@ const Header = () => {
   }
 
   return (
-    <div className="w-full h-[80px] bg-gray-400 flex items-center justify-between px-4">
-      <div>LOGO</div>
+    <div className="w-full h-[80px] bg-gray-400 flex items-center justify-between px-6">
+      <div className="hover:scale-105 duration-100 cursor-pointer" onClick={() => navigate("/")}>
+        <img src={"../../images/ecoflipr-logo.png"} alt="logo" className="h-8"/>
+      </div>
       {/* AUTHENTICATED */}
       {auth.isAuthenticated && (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {/* SEARCH BOX IF NOT ON FRONT PAGE */}
           <div></div>
 
