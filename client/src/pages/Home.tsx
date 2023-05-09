@@ -8,11 +8,17 @@ import Carousel from "../components/Carousel";
 import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
 import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
 
-export const Home = () => {
+type Props = {
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  isHeaderSearch: boolean;
+  setIsHeaderSearch: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderSearch }: Props) => {
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [lastSearchQuery, setLastSearchQuery] = useState("");
   const [saleOffers, setSaleOffers] = useState([]);
   const [saleOfferCount, setSaleOfferCount] = useState(0);
@@ -47,13 +53,11 @@ export const Home = () => {
     variables: { amount: 10 },
   });
 
-  const executeSearch: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
+  const executeSearch = async (e?: React.FormEvent<HTMLFormElement>) => {
+    e && e.preventDefault();
     if (!searchQuery) {
       return;
     }
-
-    console.log(lastSearchQuery, searchQuery);
 
     if (lastSearchQuery !== searchQuery) {
       setPage(1);
@@ -76,6 +80,13 @@ export const Home = () => {
       setRandomSaleOffers(data2.getRandomSaleOffersByAmount);
     }
   }, [data2]);
+
+  useEffect(() => {
+    if (isHeaderSearch) {
+      executeSearch();
+      setIsHeaderSearch(false)
+    }
+  }, [isHeaderSearch]);
 
   return (
     <div>

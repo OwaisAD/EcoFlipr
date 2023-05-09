@@ -5,7 +5,13 @@ import { HiDocumentText } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
 import { useApolloClient } from "@apollo/client";
 
-const Header = () => {
+type Props = {
+  searchQuery: string
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  setIsHeaderSearch: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useAuth();
@@ -17,6 +23,11 @@ const Header = () => {
     client.clearStore();
     navigate("/");
     window.location.reload();
+  };
+
+  const handleHeaderSearch = () => {
+    setIsHeaderSearch(true)
+    navigate("/");
   };
 
   if (location.pathname === "/login" || location.pathname === "/signup") {
@@ -41,16 +52,32 @@ const Header = () => {
       {auth.isAuthenticated && (
         <div className="flex items-center gap-4">
           {/* SEARCH BOX IF NOT ON FRONT PAGE */}
-          <div></div>
+          {location.pathname !== "/" && (
+            <form onSubmit={handleHeaderSearch}>
+              <input
+                type="text"
+                className="rounded-lg border-none h-10 w-44 text-sm"
+                placeholder="Search for items..."
+                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}
+              />
+            </form>
+          )}
 
           {/* CREATE SAlE OFFER BUTTON */}
 
-          <div className="bg-emerald-600 p-2 rounded-full hover:scale-105 cursor-pointer">
+          <div
+            className="bg-emerald-600 p-2 rounded-full hover:scale-105 cursor-pointer"
+            onClick={() => navigate("/createoffer")}
+          >
             <HiDocumentText className="text-white text-2xl" />
           </div>
 
           {/* PROFILE PAGE BUTTON */}
-          <div className="relative bg-emerald-600 p-2 rounded-full hover:scale-105 cursor-pointer">
+          <div
+            className="relative bg-emerald-600 p-2 rounded-full hover:scale-105 cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
             <CgProfile className="text-white text-2xl" />
             <div className="absolute top-0 right-[-3px] bg-red-500 text-white rounded-full px-1">
               {/* if noti count > 99 should 99+ */}

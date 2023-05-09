@@ -31,6 +31,8 @@ const client = new ApolloClient({
 });
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isHeaderSearch, setIsHeaderSearch] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,10 +52,20 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Header />
+      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} setIsHeaderSearch={setIsHeaderSearch} />
       <Toaster />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <Home
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              isHeaderSearch={isHeaderSearch}
+              setIsHeaderSearch={setIsHeaderSearch}
+            />
+          }
+        />
         <Route path="/createoffer" element={<CreateSaleOffer />} />
         <Route path="/editoffer/:id" element={<EditSaleOffer />} />
         <Route path="/offer/:id" element={<SaleOffer />} />
