@@ -14,7 +14,6 @@ import Error from "./pages/Error";
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
-
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message }) => {
@@ -31,8 +30,8 @@ const client = new ApolloClient({
 });
 
 function App() {
-  const auth = useAuth()
-  const navigate = useNavigate()
+  const auth = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if there's a stored path in local storage
