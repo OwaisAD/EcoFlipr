@@ -6,7 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import { useApolloClient } from "@apollo/client";
 
 type Props = {
-  searchQuery: string
+  searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   setIsHeaderSearch: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -26,7 +26,7 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch }: Props) => {
   };
 
   const handleHeaderSearch = () => {
-    setIsHeaderSearch(true)
+    setIsHeaderSearch(true);
     navigate("/");
   };
 

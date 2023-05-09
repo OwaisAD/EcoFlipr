@@ -84,7 +84,7 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
   useEffect(() => {
     if (isHeaderSearch) {
       executeSearch();
-      setIsHeaderSearch(false)
+      setIsHeaderSearch(false);
     }
   }, [isHeaderSearch]);
 
