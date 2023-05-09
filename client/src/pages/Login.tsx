@@ -48,7 +48,7 @@ const Login = () => {
       const token = data.login.jwtToken;
       localStorage.setItem("ecoflipr-user-token", token);
       auth.login();
-      toast.success("Successfully logged in")
+      toast.success("Successfully logged in");
     }
   }, [data]);
 

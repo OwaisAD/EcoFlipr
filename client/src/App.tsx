@@ -42,17 +42,34 @@ function App() {
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
-      setDarkMode(true)
+      setDarkMode(true);
+      toast("Switched to dark-mode", {
+        icon: "🌙",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+        position: "bottom-right",
+      });
     } else {
       document.documentElement.classList.remove("dark");
-      setDarkMode(false)
+      setDarkMode(false);
+      toast("Switched to light-mode", {
+        icon: "☀️",
+        style: {
+          borderRadius: "10px",
+          background: "#FFF",
+          color: "#333",
+        },
+        position: "bottom-right",
+      });
     }
   }, [theme]);
 
   const handleThemeSwitch = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
-
 
   useEffect(() => {
     // Check if there's a stored path in local storage
@@ -69,7 +86,13 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} setIsHeaderSearch={setIsHeaderSearch} handleThemeSwitch={handleThemeSwitch} isDarkMode={isDarkMode}/>
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        setIsHeaderSearch={setIsHeaderSearch}
+        handleThemeSwitch={handleThemeSwitch}
+        isDarkMode={isDarkMode}
+      />
       <Toaster />
       <Routes>
         <Route

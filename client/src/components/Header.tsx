@@ -12,7 +12,7 @@ type Props = {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   setIsHeaderSearch: React.Dispatch<React.SetStateAction<boolean>>;
   handleThemeSwitch: () => void;
-  isDarkMode: boolean
+  isDarkMode: boolean;
 };
 
 const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwitch, isDarkMode }: Props) => {
