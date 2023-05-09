@@ -6,6 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import { useApolloClient } from "@apollo/client";
 import { toast } from "react-hot-toast";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
+import { Squash as Hamburger, Squash } from 'hamburger-react'
 
 type Props = {
   searchQuery: string;
@@ -60,7 +61,7 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
         <img src={"../../images/ecoflipr-logo-white.png"} alt="logo" className="h-8" />
       </div>
       {/* AUTHENTICATED */}
-      <div>
+      <div className="hidden sm:block">
         {auth.isAuthenticated && (
           <div className="flex items-center gap-4">
             {/* SEARCH BOX IF NOT ON FRONT PAGE */}
@@ -121,6 +122,13 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
           </div>
         )}
       </div>
+
+
+        {/* Burger menu */}
+        <div className="block sm:hidden">
+          <Squash/>
+        </div>
+
     </div>
   );
 };
