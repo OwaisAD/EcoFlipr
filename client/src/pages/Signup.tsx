@@ -123,8 +123,13 @@ const Signup = () => {
       <div className="bg-white flex flex-col justify-center py-[35px] px-[70px] items-center w-full lg:max-w-[600px]">
         <div className="md:min-w-[450px] lg:max-w-[500px] ">
           <form onChange={onChange} className="flex flex-col gap-2">
-            <p className="text-3xl font-normal">Create an account</p>
-            <p className="mb-3">Please fill out the following fields</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-3xl font-normal">Create an account</p>
+                <p className="mb-3">Please fill out the following fields</p>
+              </div>
+              <img src={"../../images/ecoflipr-logo-black.png"} alt="logo" className="h-8 hover:scale-105 duration-100 cursor-pointer mb-4" onClick={() => navigate("/")}/>
+            </div>
             <label htmlFor="first_name" className="text-[16px] font-light ml-[1px] text-gray-500">
               First name
             </label>
