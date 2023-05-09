@@ -128,7 +128,12 @@ const Signup = () => {
                 <p className="text-3xl font-normal">Create an account</p>
                 <p className="mb-3">Please fill out the following fields</p>
               </div>
-              <img src={"../../images/ecoflipr-logo-black.png"} alt="logo" className="h-8 hover:scale-105 duration-100 cursor-pointer mb-4" onClick={() => navigate("/")}/>
+              <img
+                src={"../../images/ecoflipr-logo-black.png"}
+                alt="logo"
+                className="h-8 hover:scale-105 duration-100 cursor-pointer mb-4"
+                onClick={() => navigate("/")}
+              />
             </div>
             <label htmlFor="first_name" className="text-[16px] font-light ml-[1px] text-gray-500">
               First name

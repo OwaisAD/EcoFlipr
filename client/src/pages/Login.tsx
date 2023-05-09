@@ -65,7 +65,12 @@ const Login = () => {
       </div>
       {/* right side with inputs */}
       <div className="relative bg-white flex flex-col justify-center py-[35px] px-[70px] items-center w-full lg:max-w-[600px]">
-        <img src={"../../images/ecoflipr-logo-black.png"} alt="logo" className="h-10 absolute top-32 hover:scale-105 duration-100 cursor-pointer" onClick={() => navigate("/")}/>
+        <img
+          src={"../../images/ecoflipr-logo-black.png"}
+          alt="logo"
+          className="h-10 absolute top-32 hover:scale-105 duration-100 cursor-pointer"
+          onClick={() => navigate("/")}
+        />
         <form onSubmit={handleLogin} className="w-full flex flex-col gap-2 lg:w-full">
           <p className="text-3xl font-normal">Login</p>
           <p className="mb-3">Please login to continue</p>
