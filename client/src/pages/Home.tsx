@@ -79,11 +79,7 @@ export const Home = () => {
 
   return (
     <div>
-      <Header />
-      <h1>Home</h1>
-      <br />
-
-      <form onSubmit={executeSearch} className="flex flex-col items-center mt-2">
+      <form onSubmit={executeSearch} className="flex flex-col items-center mt-10">
         <input
           type="text"
           onChange={(e) => setSearchQuery(e.target.value)}

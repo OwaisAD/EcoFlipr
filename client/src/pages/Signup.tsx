@@ -4,8 +4,10 @@ import { CREATE_USER } from "../GraphQL/mutations/createUser";
 import { toast } from "react-hot-toast";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const Signup = () => {
+  const auth = useAuth();
   const [createUser, { data, error, loading }] = useMutation(CREATE_USER);
   const initialState = {
     first_name: "",
@@ -82,6 +84,12 @@ const Signup = () => {
       },
     });
   };
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      navigate("/");
+    }
+  }, [auth.isAuthenticated]);
 
   useEffect(() => {
     if (data) {
