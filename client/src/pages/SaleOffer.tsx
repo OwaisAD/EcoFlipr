@@ -79,7 +79,7 @@ const SaleOffer = () => {
           {saleOffer.imgs.map((img) => (
             <div className="h-64">
               <img
-                className="h-full object-cover"
+                className="h-full object-contain"
                 alt=""
                 src={isValidHttpUrl(img) ? img : "../../images/No-Image-Placeholder.svg.png"}
               />
@@ -130,44 +130,75 @@ const SaleOffer = () => {
         </div>
       </div>
       {/* THREAD LOGIC */}
+      
       <div className="flex flex-col items-center justify-center my-14">
-        <p className="text-lg">Messages</p>
-        <div>
-          {/* Left side scrollbar */}
-          <div></div>
-          {/* Right side */}
-          <div>
-            {/* Message display */}
-            {saleOffer.threads && saleOffer.threads.length > 0 && (
-              <>
-                {saleOffer.threads[0].comments.map((comment) => (
-                  <div
-                    className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${
-                      comment.author_id === saleOffer.creator_id ? "bg-slate-400" : "bg-slate-300"
-                    }`}
-                  >
-                    <p className="font-light text-lg mb-1 break-words">{comment.content}</p>
-                    <div className="flex justify-between">
-                      <p className="font-thin text-[10px] text-gray-600">
-                        Written by {comment.author_id} <Moment fromNow>{comment.created_at}</Moment>
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-          {/* Message input and Button to submit message input */}
-          <div className="flex gap-2 mt-3">
-            <textarea rows={1} placeholder="Write here..." className="border-none rounded-[12px] font-base flex-1" />
+          <div className="flex gap-6">
+            {/* Left side scrollbar only showing if you are the owner have more than one thread*/}
+            {saleOffer.threads && saleOffer.threads.length > 1 && <>
+            <div className="w-[40px] h-full bg-slate-300 rounded-[10px] mt-9 max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col justify-center items-center">
+              {saleOffer.threads.map((thread) => (
+                <>
+                  <div className="rounded-full my-[7px] bg-green-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                </>
+              ))}
+            </div>
+            </>
+            }
+            {/* Right side */}
             <div>
-              <button className="text-white text-lg bg-blue-700 w-[104px] h-[38px] rounded-[12px] font-light">
-                Send
-              </button>
+            <p className="text-lg text-center">Messages</p>
+              {/* Message display */}
+              {saleOffer.threads && saleOffer.threads.length > 0 && (
+                <>
+                  {saleOffer.threads[0].comments.map((comment) => (
+                    <div
+                      className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${
+                        comment.author_id === saleOffer.creator_id ? "bg-slate-400" : "bg-slate-300"
+                      }`}
+                    >
+                      <p className="font-light text-lg mb-1 break-words">{comment.content}</p>
+                      <div className="flex justify-between">
+                        <p className="font-thin text-[10px] text-gray-600">
+                          Written by {comment.author_id} <Moment fromNow>{comment.created_at}</Moment>
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+              {/* Message input and Button to submit message input */}
+              <div className="flex gap-2 mt-3">
+                <textarea rows={1} placeholder="Write here..." className="border-none rounded-[12px] font-base flex-1" />
+                <div>
+                  <button className="text-white text-lg bg-blue-700 w-[104px] h-[38px] rounded-[12px] font-light">
+                    Send
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 };
