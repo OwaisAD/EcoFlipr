@@ -135,7 +135,10 @@ const SaleOffer = () => {
                 <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2">
                   {saleOffer.threads.map((thread, idx) => (
                     <>
-                      <div className="rounded-full my-[7px] bg-green-600 p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-gray-500 duration-100" key={idx}></div>
+                      <div
+                        className="rounded-full my-[7px] bg-green-600 p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-gray-500 duration-100"
+                        key={idx}
+                      ></div>
                     </>
                   ))}
                 </div>

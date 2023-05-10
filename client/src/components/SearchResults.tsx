@@ -44,19 +44,19 @@ const SearchResults = ({
     let filtered: any = [];
     if (type === "asc") {
       console.log("sorting asc");
-      filtered = saleOffers.sort((a, b) => a.price - b.price)
+      filtered = saleOffers.sort((a, b) => a.price - b.price);
     }
 
     if (type === "desc") {
       console.log("sorting desc");
-      filtered = saleOffers.sort((a, b) => b.price - a.price)
+      filtered = saleOffers.sort((a, b) => b.price - a.price);
     }
-    setSaleOffers(filtered)
+    setSaleOffers(filtered);
     setPriceFiltering(false);
   };
 
   const resetFilter = () => {
-    setSaleOffers(tempSaleOffers);
+    setSaleOffers(tempSaleOffers.concat(saleOffers));
     setPriceFiltering(false);
     setPriceFilterOn(false);
   };

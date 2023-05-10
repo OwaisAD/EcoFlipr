@@ -12,7 +12,7 @@ export function useAuth() {
 
 export const AuthProvider = (props: { children: JSX.Element }) => {
   const [isAuthenticated, setAuthenticated] = useState(() => {
-    console.log("HERE")
+    console.log("HERE");
     const token = localStorage.getItem("ecoflipr-user-token");
     try {
       const decoded = jwtDecode(token!) as { exp: number };
