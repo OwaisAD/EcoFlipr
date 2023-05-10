@@ -14,6 +14,7 @@ import Error from "./pages/Error";
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import Header from "./components/Header";
+import { setContext } from "@apollo/client/link/context";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -23,10 +24,20 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("ecoflipr-user-token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : null,
+    },
+  };
+});
+
 const link = from([errorLink, new HttpLink({ uri: "http://localhost:3001/graphql" })]);
 
 const client = new ApolloClient({
-  link: link,
+  link: authLink.concat(link),
   cache: new InMemoryCache(),
 });
 

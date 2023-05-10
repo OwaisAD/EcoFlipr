@@ -17,7 +17,12 @@ export const AuthProvider = (props: { children: JSX.Element }) => {
       const decoded = jwtDecode(token!) as { exp: number };
       // Token is a JWT
       const currentTime = Date.now() / 1000;
-      return decoded.exp > currentTime;
+      if (!(decoded.exp > currentTime)) {
+        localStorage.removeItem("ecoflipr-user-token");
+        return false;
+      } else {
+        return true;
+      }
     } catch (error) {
       return false;
     }

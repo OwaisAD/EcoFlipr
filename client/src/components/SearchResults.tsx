@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { SaleOffers } from "../types/saleOffer";
 import SaleOfferBox from "./SaleOfferBox";
-import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 import { RxCross2 } from "react-icons/rx";
+import PriceFilter from "./filtering/PriceFilter";
 
 type SearchResultsProps = {
   page: number;
@@ -86,26 +86,7 @@ const SearchResults = ({
         <div>
           {/* sort by price */}
           <div>
-            <button
-              className="p-2 shadow-lg rounded-lg bg-white hover:bg-slate-300 flex items-center gap-2"
-              onClick={() => setPriceFiltering(!priceFiltering)}
-            >
-              Price
-              <span className="text-[10px]">
-                <AiOutlineArrowUp />
-                <AiOutlineArrowDown />
-              </span>
-            </button>
-            {priceFiltering && (
-              <div className="absolute bg-white z-50 rounded-lg mt-2 flex flex-col p-1 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                <button className="flex gap-3 items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer font-light">
-                  <AiOutlineArrowUp size={18} className="text-gray-500" /> Sort Ascending
-                </button>
-                <button className="flex gap-3 items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-200  dark:text-white dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer font-light">
-                  <AiOutlineArrowDown className="text-gray-500" /> Sort Descending
-                </button>
-              </div>
-            )}
+            <PriceFilter priceFiltering={priceFiltering} setPriceFiltering={setPriceFiltering}/>
           </div>
           {/* sort by zip_code */}
           <div></div>
