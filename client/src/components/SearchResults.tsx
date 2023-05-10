@@ -10,6 +10,7 @@ type SearchResultsProps = {
   saleOfferCount: number;
   searchQuery: string;
   saleOffers: SaleOffers;
+  setSaleOffers: React.Dispatch<React.SetStateAction<any>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   getSaleOffers: any;
 };
@@ -24,10 +25,41 @@ const SearchResults = ({
   saleOfferCount,
   searchQuery,
   saleOffers,
+  setSaleOffers,
   setPage,
   getSaleOffers,
 }: SearchResultsProps) => {
+  const [priceFilterOn, setPriceFilterOn] = useState(false);
   const [priceFiltering, setPriceFiltering] = useState(false);
+  const [tempSaleOffers, setTempSaleOffers] = useState<any>([]);
+
+  const handlePriceFilterChange = (type: string) => {
+    if (!priceFilterOn) {
+      setTempSaleOffers(saleOffers);
+      setPriceFilterOn(true);
+    }
+
+    // set midlertidig state til at være den gamle saleOffer
+    // set saleOffers til at være filteret alt efter price ascending eller descending
+    let filtered: any = [];
+    if (type === "asc") {
+      console.log("sorting asc");
+      filtered = saleOffers.sort((a, b) => a.price - b.price)
+    }
+
+    if (type === "desc") {
+      console.log("sorting desc");
+      filtered = saleOffers.sort((a, b) => b.price - a.price)
+    }
+    setSaleOffers(filtered)
+    setPriceFiltering(false);
+  };
+
+  const resetFilter = () => {
+    setSaleOffers(tempSaleOffers);
+    setPriceFiltering(false);
+    setPriceFilterOn(false);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -86,13 +118,17 @@ const SearchResults = ({
         <div>
           {/* sort by price */}
           <div>
-            <PriceFilter priceFiltering={priceFiltering} setPriceFiltering={setPriceFiltering} />
+            <PriceFilter
+              priceFiltering={priceFiltering}
+              setPriceFiltering={setPriceFiltering}
+              handlePriceFilterChange={handlePriceFilterChange}
+            />
           </div>
           {/* sort by zip_code */}
           <div></div>
         </div>
         {/* RESET */}
-        <div className="bg-gray-400 rounded-full p-[2px] cursor-pointer hover:scale-110">
+        <div className="bg-gray-400 rounded-full p-[2px] cursor-pointer hover:scale-110" onClick={resetFilter}>
           <RxCross2 className="text-white text-xs" />
         </div>
       </div>
