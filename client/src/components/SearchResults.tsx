@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { SaleOffers } from "../types/saleOffer";
 import SaleOfferBox from "./SaleOfferBox";
 import { RxCross2 } from "react-icons/rx";
 import PriceFilter from "./filtering/PriceFilter";
+import CityFilter from "./filtering/CityFilter";
+import CategoryFilter from "./filtering/CategoryFilter";
 
 type SearchResultsProps = {
   page: number;
@@ -29,8 +31,19 @@ const SearchResults = ({
   setPage,
   getSaleOffers,
 }: SearchResultsProps) => {
+  // price filtering
   const [priceFilterOn, setPriceFilterOn] = useState(false);
   const [priceFiltering, setPriceFiltering] = useState(false);
+  // city filtering
+  const [cityFiltering, setCityFiltering] = useState(false);
+  const [cityFilteringOn, setCityFilteringOn] = useState(false);
+
+  // category filtering
+  const [categoryFiltering, setCategoryFiltering] = useState(false);
+  const [categoryFilteringOn, setCategoryFilteringOn] = useState(false);
+
+  // is_shippable filtering
+
   const [tempSaleOffers, setTempSaleOffers] = useState<any>([]);
 
   const handlePriceFilterChange = (type: string) => {
@@ -59,6 +72,33 @@ const SearchResults = ({
     setSaleOffers(tempSaleOffers.concat(saleOffers));
     setPriceFiltering(false);
     setPriceFilterOn(false);
+    setCityFiltering(false);
+  };
+
+  const handleCityFilterChange = (city: string) => {
+    console.log("filtering city", city);
+    if (!cityFilteringOn) {
+      setTempSaleOffers(saleOffers);
+      setCityFilteringOn(true);
+    }
+
+    let filtered = saleOffers.filter(
+      (saleOffer) => saleOffer.city.name.includes(city) || saleOffer.city.zip_code.includes(city)
+    );
+    setSaleOffers(filtered);
+    setCityFiltering(false);
+  };
+
+  const handleCategoryFilterChange = (category: string) => {
+    console.log("filtering category", category);
+    if (!categoryFilteringOn) {
+      setTempSaleOffers(saleOffers);
+      setCategoryFilteringOn(true);
+    }
+
+    let filtered = saleOffers.filter((saleOffer) => saleOffer.category.name.toLowerCase().includes(category.toLowerCase()));
+    setSaleOffers(filtered);
+    setCategoryFiltering(false);
   };
 
   return (
@@ -115,7 +155,7 @@ const SearchResults = ({
 
       {/* filtering */}
       <div className="flex items-center w-[500px] h-16 rounded-lg justify-between">
-        <div>
+        <div className="flex gap-2">
           {/* sort by price */}
           <div>
             <PriceFilter
@@ -124,7 +164,23 @@ const SearchResults = ({
               handlePriceFilterChange={handlePriceFilterChange}
             />
           </div>
-          {/* sort by zip_code */}
+          {/* sort by city */}
+          <div>
+            <CityFilter
+              cityFiltering={cityFiltering}
+              setCityFiltering={setCityFiltering}
+              handleCityFilterChange={handleCityFilterChange}
+            />
+          </div>
+          {/* sort by category */}
+          <div>
+            <CategoryFilter
+              categoryFiltering={categoryFiltering}
+              setCategoryFiltering={setCategoryFiltering}
+              handleCategoryFilterChange={handleCategoryFilterChange}
+            />
+          </div>
+          {/* sort by is_shippable */}
           <div></div>
         </div>
         {/* RESET */}

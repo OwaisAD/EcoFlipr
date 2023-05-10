@@ -11,7 +11,7 @@ const PriceFilter = ({ priceFiltering, setPriceFiltering, handlePriceFilterChang
   return (
     <div>
       <button
-        className="p-2 shadow-lg rounded-lg bg-white hover:bg-slate-300 flex items-center gap-2"
+        className="p-2 shadow-md rounded-lg bg-white hover:bg-slate-300 flex items-center gap-2 text-gray-700"
         onClick={() => setPriceFiltering(!priceFiltering)}
       >
         Price

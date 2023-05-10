@@ -104,6 +104,10 @@ function App() {
     }
   }, [auth.isAuthenticated]);
 
+
+
+  // LOAD USER SALE OFFERS AND USER INTERACTED SALE OFFERS AND PASS INTO PROFILE
+  
   return (
     <ApolloProvider client={client}>
       <Header
