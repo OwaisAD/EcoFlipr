@@ -86,7 +86,7 @@ const SearchResults = ({
         <div>
           {/* sort by price */}
           <div>
-            <PriceFilter priceFiltering={priceFiltering} setPriceFiltering={setPriceFiltering}/>
+            <PriceFilter priceFiltering={priceFiltering} setPriceFiltering={setPriceFiltering} />
           </div>
           {/* sort by zip_code */}
           <div></div>
