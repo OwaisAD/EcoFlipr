@@ -141,7 +141,11 @@ const SaleOffer = () => {
             {saleOffer.threads && saleOffer.threads.length > 0 && (
               <>
                 {saleOffer.threads[0].comments.map((comment) => (
-                  <div className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${comment.author_id===saleOffer.creator_id ? "bg-slate-400": "bg-slate-300"}`}>
+                  <div
+                    className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${
+                      comment.author_id === saleOffer.creator_id ? "bg-slate-400" : "bg-slate-300"
+                    }`}
+                  >
                     <p className="font-light text-lg mb-1 break-words">{comment.content}</p>
                     <div className="flex justify-between">
                       <p className="font-thin text-[10px] text-gray-600">
