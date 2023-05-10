@@ -96,7 +96,9 @@ const SearchResults = ({
       setCategoryFilteringOn(true);
     }
 
-    let filtered = saleOffers.filter((saleOffer) => saleOffer.category.name.toLowerCase().includes(category.toLowerCase()));
+    let filtered = saleOffers.filter((saleOffer) =>
+      saleOffer.category.name.toLowerCase().includes(category.toLowerCase())
+    );
     setSaleOffers(filtered);
     setCategoryFiltering(false);
   };
