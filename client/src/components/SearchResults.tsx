@@ -68,12 +68,7 @@ const SearchResults = ({
     setPriceFiltering(false);
   };
 
-  const resetFilter = () => {
-    setSaleOffers(tempSaleOffers.concat(saleOffers));
-    setPriceFiltering(false);
-    setPriceFilterOn(false);
-    setCityFiltering(false);
-  };
+
 
   const handleCityFilterChange = (city: string) => {
     console.log("filtering city", city);
@@ -101,6 +96,14 @@ const SearchResults = ({
     );
     setSaleOffers(filtered);
     setCategoryFiltering(false);
+  };
+
+  const resetFilter = () => {
+    setSaleOffers(tempSaleOffers.concat(saleOffers));
+    setPriceFiltering(false);
+    setPriceFilterOn(false);
+    setCityFiltering(false);
+    setCategoryFiltering(false)
   };
 
   return (

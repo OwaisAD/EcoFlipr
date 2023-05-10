@@ -91,14 +91,10 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
     }
   }, [isHeaderSearch]);
 
-  if (!auth.isAuthenticated) {
-    localStorage.setItem("lastPath", location.pathname);
-    return <Navigate to="/login" />;
-  }
 
   return (
     <div>
-      <form onSubmit={executeSearch} className="relative flex justify-center items-center mt-1 p-3 ">
+      <form onSubmit={executeSearch} className="relative flex justify-center items-center mt-10 p-3 ">
         <div>
           <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-none">
             <RxMagnifyingGlass className="h-5 w-5 text-gray-500" />

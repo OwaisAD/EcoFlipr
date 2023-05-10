@@ -97,7 +97,8 @@ const SaleOffer = () => {
               {saleOffer.city.name}, {saleOffer.city.zip_code}
             </p>
             <iframe
-              height="250"
+              height="280"
+              width="320"
               style={{ border: 0 }}
               loading="lazy"
               allowFullScreen

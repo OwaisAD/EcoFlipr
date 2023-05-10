@@ -86,7 +86,10 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(auth.isAuthenticated);
+    if (!auth.isAuthenticated) {
+      navigate("/");
+      return;
+    }
 
     // Check if there's a stored path in local storage
     const lastPath = localStorage.getItem("lastPath");
@@ -97,10 +100,6 @@ function App() {
       navigate(lastPath);
     } else if (auth.isAuthenticated && location.pathname === "/login") {
       navigate("/");
-    }
-
-    if (!auth.isAuthenticated) {
-      navigate("/login");
     }
   }, [auth.isAuthenticated]);
 
