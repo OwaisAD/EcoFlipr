@@ -65,17 +65,7 @@ const SaleOffer = () => {
       <div className="flex flex-col justify-center items-center sm:flex-col lg:flex-row gap-8 mt-6">
         {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
         {/* left side img carousel */}
-        <Carousel
-          width={"500px"}
-          autoPlay
-          interval={5000}
-          infiniteLoop
-          swipeable={true}
-          showThumbs
-          axis="horizontal"
-          thumbWidth={100}
-          dynamicHeight={false}
-        >
+        <Carousel width={"500px"} autoPlay interval={5000} infiniteLoop swipeable={true} thumbWidth={100}>
           {saleOffer.imgs.map((img) => (
             <div className="h-64">
               <img
@@ -107,10 +97,15 @@ const SaleOffer = () => {
               {saleOffer.city.name}, {saleOffer.city.zip_code}
             </p>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d71330.8159947423!2d12.539608949999991!3d56.03446514999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465231112f400bb3%3A0xf3e36e3c5817f767!2s3000%20Helsing%C3%B8r!5e0!3m2!1sda!2sdk!4v1683708659329!5m2!1sda!2sdk"
               height="250"
+              style={{ border: 0 }}
               loading="lazy"
-            />
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              
+              src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API}
+    &q=${saleOffer.city.zip_code},${saleOffer.city.name}&zoom=10`}
+            ></iframe>
           </div>
           {/*isShipable*/}
           <div>
