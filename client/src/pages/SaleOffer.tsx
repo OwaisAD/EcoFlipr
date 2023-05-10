@@ -61,6 +61,7 @@ const SaleOffer = () => {
   if (error) return <p>Error :(</p>;
 
   return (
+    <>
     <div className="flex flex-col justify-center items-center sm:flex-col lg:flex-row gap-8 mt-6">
       {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
       {/* left side img carousel */}
@@ -127,26 +128,38 @@ const SaleOffer = () => {
           <button>Contact</button>
         </div>
       </div>
-
-      {/* THREAD LOGIC */}
-      <div>
-        <p>Messages</p>
-        <div>
-          {/* Left side scrollbar */}
-          <div></div>
-          {/* Right side */}
-          <div>
-            {/* Message display */}
-
-            {/* Message input and Button to submit message input */}
-            <div className="flex gap-2">
-              <input type="text" placeholder="Write here..." className="border-none rounded-[12px] font-base" />
-              <button className="text-white text-lg bg-blue-700 w-[104px] rounded-[12px] font-light">Send</button>
+    </div>
+    {/* THREAD LOGIC */}
+    <div className="flex flex-col items-center justify-center my-14">
+    <p>Messages</p>
+    <div>
+      {/* Left side scrollbar */}
+      <div></div>
+      {/* Right side */}
+      <div className="bg-slate-300 rounded-[12px]">
+        {/* Message display */}
+        {saleOffer.threads && saleOffer.threads.length > 0 && <>
+          {saleOffer.threads[0].comments.map((comment) =>(
+            <div className="w-[450px] pt-6 pl-6 pr-6">
+              <p className="font-light text-lg mb-1">{comment.content}</p>
+              <div className="flex justify-between">
+                <p className="font-thin text-[10px] text-gray-600">Written by {comment.author_id} <Moment fromNow>{comment.created_at}</Moment></p>
+              </div>
+              <div className="w-full mt-4 border-t border-black"></div>
             </div>
+          ))}
+        </>}
+      </div>
+      {/* Message input and Button to submit message input */}
+      <div className="flex gap-2 mt-3">
+          <textarea rows={1} placeholder="Write here..." className="border-none rounded-[12px] font-base flex-1" />
+          <div>
+            <button className="text-white text-lg bg-blue-700 w-[104px] h-[38px] rounded-[12px] font-light">Send</button>
           </div>
-        </div>
       </div>
     </div>
+  </div>
+  </>
   );
 };
 
