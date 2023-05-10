@@ -130,33 +130,15 @@ const SaleOffer = () => {
           {/* Left side scrollbar only showing if you are the owner have more than one thread*/}
           {saleOffer.threads && saleOffer.threads.length > 1 && (
             <>
-              <div className="w-[40px] h-full bg-slate-300 rounded-[10px] mt-9 max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col justify-center items-center">
-                {saleOffer.threads.map((thread) => (
-                  <>
-                    <div className="rounded-full my-[7px] bg-green-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                  </>
-                ))}
+              <div>
+                <p className="text-xs font-light mt-3">Threads</p>
+                <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2">
+                  {saleOffer.threads.map((thread) => (
+                    <>
+                      <div className="rounded-full my-[7px] bg-green-600 p-[6px] cursor-pointer hover:scale-125 hover:border hover:border-black duration-100"></div>
+                    </>
+                  ))}
+                </div>
               </div>
             </>
           )}
