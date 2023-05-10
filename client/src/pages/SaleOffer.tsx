@@ -129,6 +129,25 @@ const SaleOffer = () => {
       </div>
 
       {/* THREAD LOGIC */}
+      <div>
+        <p>Messages</p>
+        <div>
+          {/* Left side scrollbar */}
+          <div>
+
+          </div>
+          {/* Right side */}
+          <div>
+            {/* Message display */}
+
+            {/* Message input and Button to submit message input */}
+            <div className="flex gap-2">
+              <input type="text" placeholder="Write here..." className="border-none rounded-[12px] font-base"/>
+              <button className="text-white text-lg bg-blue-700 w-[104px] rounded-[12px] font-light">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
