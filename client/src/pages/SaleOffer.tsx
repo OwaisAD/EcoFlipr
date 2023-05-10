@@ -102,7 +102,6 @@ const SaleOffer = () => {
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
-              
               src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API}
     &q=${saleOffer.city.zip_code},${saleOffer.city.name}&zoom=10`}
             ></iframe>
