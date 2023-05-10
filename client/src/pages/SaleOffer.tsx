@@ -131,24 +131,23 @@ const SaleOffer = () => {
       </div>
       {/* THREAD LOGIC */}
       <div className="flex flex-col items-center justify-center my-14">
-        <p>Messages</p>
+        <p className="text-lg">Messages</p>
         <div>
           {/* Left side scrollbar */}
           <div></div>
           {/* Right side */}
-          <div className="bg-slate-300 rounded-[12px]">
+          <div>
             {/* Message display */}
             {saleOffer.threads && saleOffer.threads.length > 0 && (
               <>
                 {saleOffer.threads[0].comments.map((comment) => (
-                  <div className="w-[450px] pt-6 pl-6 pr-6">
-                    <p className="font-light text-lg mb-1">{comment.content}</p>
+                  <div className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${comment.author_id===saleOffer.creator_id ? "bg-slate-400": "bg-slate-300"}`}>
+                    <p className="font-light text-lg mb-1 break-words">{comment.content}</p>
                     <div className="flex justify-between">
                       <p className="font-thin text-[10px] text-gray-600">
                         Written by {comment.author_id} <Moment fromNow>{comment.created_at}</Moment>
                       </p>
                     </div>
-                    <div className="w-full mt-4 border-t border-black"></div>
                   </div>
                 ))}
               </>
