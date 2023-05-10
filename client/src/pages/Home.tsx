@@ -91,7 +91,6 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
     }
   }, [isHeaderSearch]);
 
-
   return (
     <div>
       <form onSubmit={executeSearch} className="relative flex justify-center items-center mt-10 p-3 ">

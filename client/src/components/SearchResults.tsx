@@ -68,8 +68,6 @@ const SearchResults = ({
     setPriceFiltering(false);
   };
 
-
-
   const handleCityFilterChange = (city: string) => {
     console.log("filtering city", city);
     if (!cityFilteringOn) {
@@ -103,7 +101,7 @@ const SearchResults = ({
     setPriceFiltering(false);
     setPriceFilterOn(false);
     setCityFiltering(false);
-    setCategoryFiltering(false)
+    setCategoryFiltering(false);
   };
 
   return (
