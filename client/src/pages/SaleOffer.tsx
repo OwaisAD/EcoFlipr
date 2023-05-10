@@ -7,6 +7,10 @@ import { useParams } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { SaleOfferInterface } from "../types/saleOffer";
 import Moment from "react-moment";
+import { FaShuttleVan } from "react-icons/fa";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { isValidHttpUrl } from "../utils/urlValidator";
 
 const defaultSaleOffer: SaleOfferInterface = {
   id: "",
@@ -42,6 +46,8 @@ const SaleOffer = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data.getSaleOfferById);
+
       setSaleOffer(data.getSaleOfferById);
     }
   }, [data]);
@@ -55,32 +61,146 @@ const SaleOffer = () => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <div>
-      {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
-      <div>
+    <>
+      <div className="flex flex-col justify-center items-center sm:flex-col lg:flex-row gap-8 mt-6">
+        {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
         {/* left side img carousel */}
-        <div></div>
-        {/* right side information */}
-        <div className="h-[400px] w-[250px] bg-white rounded-lg ">
-          <div className="flex items-center justify-between">
-            {/* Price */}
-            <div>
-              <p className="text-xl">{saleOffer.description}</p>
-              <p className="">
-                {new Intl.NumberFormat("dk-DK", { style: "currency", currency: "DKK" }).format(saleOffer.price)}
-              </p>
+        <Carousel
+          width={"500px"}
+          autoPlay
+          interval={5000}
+          infiniteLoop
+          swipeable={true}
+          showThumbs
+          axis="horizontal"
+          thumbWidth={100}
+          dynamicHeight={false}
+        >
+          {saleOffer.imgs.map((img) => (
+            <div className="h-64">
+              <img
+                className="h-full object-contain"
+                alt=""
+                src={isValidHttpUrl(img) ? img : "../../images/No-Image-Placeholder.svg.png"}
+              />
             </div>
-            <div>
+          ))}
+        </Carousel>
+        {/* right side information */}
+        <div className="w-[350px] bg-white rounded-lg flex flex-col gap-3 p-4">
+          <div className="flex flex-col gap-1">
+            {/* Price */}
+            <p className="text-xl">
+              {saleOffer.description}, {saleOffer.category.name}
+            </p>
+            <div className="font-light text-xs">
               <Moment fromNow>{saleOffer.created_at}</Moment>
             </div>
+            <p className="text-blue-700 font-medium text-lg">
+              {new Intl.NumberFormat("dk-DK", { style: "currency", currency: "DKK" }).format(saleOffer.price)}
+            </p>
           </div>
 
           {/* Location */}
+          <div>
+            <p className="my-2">
+              {saleOffer.city.name}, {saleOffer.city.zip_code}
+            </p>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d71330.8159947423!2d12.539608949999991!3d56.03446514999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465231112f400bb3%3A0xf3e36e3c5817f767!2s3000%20Helsing%C3%B8r!5e0!3m2!1sda!2sdk!4v1683708659329!5m2!1sda!2sdk"
+              height="250"
+              loading="lazy"
+            />
+          </div>
+          {/*isShipable*/}
+          <div>
+            {saleOffer.is_shippable ? (
+              <p className="text-green-600 font-medium flex items-center gap-2">
+                Kan sendes
+                <FaShuttleVan className="mt-1" />
+              </p>
+            ) : (
+              <p className="text-red-600 font-medium">Sendes ikke</p>
+            )}
+          </div>
+          {/*TODO:On click Contact button will show the owner's phone number for the sale offer*/}
+          <div>
+            <button>Contact</button>
+          </div>
         </div>
       </div>
-
       {/* THREAD LOGIC */}
-    </div>
+
+      <div className="flex flex-col items-center justify-center my-14">
+        <div className="flex gap-6">
+          {/* Left side scrollbar only showing if you are the owner have more than one thread*/}
+          {saleOffer.threads && saleOffer.threads.length > 1 && (
+            <>
+              <div className="w-[40px] h-full bg-slate-300 rounded-[10px] mt-9 max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col justify-center items-center">
+                {saleOffer.threads.map((thread) => (
+                  <>
+                    <div className="rounded-full my-[7px] bg-green-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
+                  </>
+                ))}
+              </div>
+            </>
+          )}
+          {/* Right side */}
+          <div>
+            <p className="text-lg text-center">Messages</p>
+            {/* Message display */}
+            {saleOffer.threads && saleOffer.threads.length > 0 && (
+              <>
+                {saleOffer.threads[0].comments.map((comment) => (
+                  <div
+                    className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${
+                      comment.author_id === saleOffer.creator_id ? "bg-slate-400" : "bg-slate-300"
+                    }`}
+                  >
+                    <p className="font-light text-lg mb-1 break-words">{comment.content}</p>
+                    <div className="flex justify-between">
+                      <p className="font-thin text-[10px] text-gray-600">
+                        Written by {comment.author_id} <Moment fromNow>{comment.created_at}</Moment>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+            {/* Message input and Button to submit message input */}
+            <div className="flex gap-2 mt-3">
+              <textarea rows={1} placeholder="Write here..." className="border-none rounded-[12px] font-base flex-1" />
+              <div>
+                <button className="text-white text-lg bg-blue-700 w-[104px] h-[38px] rounded-[12px] font-light">
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
