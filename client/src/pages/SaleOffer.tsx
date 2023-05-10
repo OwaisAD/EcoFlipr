@@ -125,7 +125,7 @@ const SaleOffer = () => {
       </div>
       {/* THREAD LOGIC */}
 
-      <div className="flex flex-col items-center justify-center my-14">
+      <div className="flex flex-col items-center justify-center mt-14 mb-28">
         <div className="flex gap-6">
           {/* Left side scrollbar only showing if you are the owner have more than one thread*/}
           {saleOffer.threads && saleOffer.threads.length > 1 && (
