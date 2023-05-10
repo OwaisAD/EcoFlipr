@@ -7,6 +7,10 @@ import { useParams } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { SaleOfferInterface } from "../types/saleOffer";
 import Moment from "react-moment";
+import { FaShuttleVan } from "react-icons/fa";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { isValidHttpUrl } from "../utils/urlValidator";
 
 const defaultSaleOffer: SaleOfferInterface = {
   id: "",
@@ -42,6 +46,8 @@ const SaleOffer = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data.getSaleOfferById);
+      
       setSaleOffer(data.getSaleOfferById);
     }
   }, [data]);
@@ -55,29 +61,43 @@ const SaleOffer = () => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center sm:flex-col lg:flex-row gap-8 mt-6">
       {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
-      <div>
         {/* left side img carousel */}
-        <div></div>
+          <Carousel width={"500px"} autoPlay interval={5000} infiniteLoop swipeable={true} showThumbs axis="horizontal" thumbWidth={100} dynamicHeight={false}>
+            {saleOffer.imgs.map((img) =>(
+              <div className="h-64">
+                <img className="h-full object-cover" alt="" src={isValidHttpUrl(img)?img:"../../images/No-Image-Placeholder.svg.png"} />
+              </div>
+            ))}
+          </Carousel>
         {/* right side information */}
-        <div className="h-[400px] w-[250px] bg-white rounded-lg ">
-          <div className="flex items-center justify-between">
+        <div className="w-[350px] bg-white rounded-lg flex flex-col gap-3 p-4">
+          <div className="flex flex-col gap-1">
             {/* Price */}
-            <div>
-              <p className="text-xl">{saleOffer.description}</p>
-              <p className="">
+              <p className="text-xl">{saleOffer.description}, {saleOffer.category.name}</p>
+              <div className="font-light text-xs">
+                <Moment fromNow>{saleOffer.created_at}</Moment>
+              </div>
+              <p className="text-blue-700 font-medium text-lg">
                 {new Intl.NumberFormat("dk-DK", { style: "currency", currency: "DKK" }).format(saleOffer.price)}
               </p>
-            </div>
-            <div>
-              <Moment fromNow>{saleOffer.created_at}</Moment>
-            </div>
           </div>
 
           {/* Location */}
+          <div>
+            <p className="my-2">{saleOffer.city.name}, {saleOffer.city.zip_code}</p>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d71330.8159947423!2d12.539608949999991!3d56.03446514999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465231112f400bb3%3A0xf3e36e3c5817f767!2s3000%20Helsing%C3%B8r!5e0!3m2!1sda!2sdk!4v1683708659329!5m2!1sda!2sdk"  height="250" loading="lazy"/>    
+          </div>
+          {/*isShipable*/}
+          <div>
+            {saleOffer.is_shippable?<p className="text-green-600 font-medium flex items-center gap-2">Kan sendes<FaShuttleVan className="mt-1"/></p>:<p className="text-red-600 font-medium">Sendes ikke</p>}
+          </div>
+          {/*TODO:On click Contact button will show the owner's phone number for the sale offer*/}
+          <div>
+            <button>Contact</button>
+          </div>
         </div>
-      </div>
 
       {/* THREAD LOGIC */}
     </div>
