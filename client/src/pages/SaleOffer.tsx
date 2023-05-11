@@ -58,7 +58,7 @@ const SaleOffer = () => {
   }
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error) return <p>Error :</p>;
 
   return (
     <>
@@ -94,7 +94,7 @@ const SaleOffer = () => {
           {/* Location */}
           <div>
             <p className="my-2 cursor-default">
-              {saleOffer.city.name}, {saleOffer.city.zip_code}
+              {saleOffer.city.zip_code}, {saleOffer.city.name}
             </p>
             <iframe
               height="280"
