@@ -14,6 +14,7 @@ import { isValidHttpUrl } from "../utils/urlValidator";
 import { GET_USER_DATA_BY_ID } from "../GraphQL/queries/getUserDataById";
 import { FcPhoneAndroid } from "react-icons/fc";
 import { MARK_THREAD_AS_READ } from "../GraphQL/mutations/markThreadAsRead";
+import { CREATE_COMMENT } from "../GraphQL/mutations/createComment";
 
 const defaultSaleOffer: SaleOfferInterface = {
   id: "",
@@ -66,12 +67,15 @@ const SaleOffer = () => {
   const [buyerData, setBuyerData] = useState<UserData>({ id: "", first_name: "", last_name: "", phone_number: "" });
   const [sellerData, setSellerData] = useState<UserData>({ id: "", first_name: "", last_name: "", phone_number: "" });
   const [showNumber, setShowNumber] = useState(false);
+  const [comment, setComment] = useState("");
   const { id } = useParams();
+
+  // Queries
   const queryOptions: QueryHookOptions = {
     variables: { getSaleOfferByIdId: id },
     skip: !auth.isAuthenticated,
   };
-  const { loading, error, data } = useQuery(GET_SALE_OFFER_BY_ID, queryOptions);
+  const { loading, error, data, refetch } = useQuery(GET_SALE_OFFER_BY_ID, queryOptions);
 
   const queryOptions2: QueryHookOptions = {
     variables: { getUserDataByIdId: id },
@@ -93,7 +97,17 @@ const SaleOffer = () => {
     },
   });
 
-  const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ);
+  // mutations
+  const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ, {
+    onCompleted(data, clientOptions) {
+      refetch();
+    },
+  });
+  const [createComment, { data: data5, error: error5 }] = useMutation(CREATE_COMMENT, {
+    onCompleted(data, clientOptions) {
+      refetch();
+    },
+  });
 
   const [currentThreadId, setCurrentThreadId] = useState("");
   const [currentThread, setCurrentThread] = useState<Thread>({
@@ -116,8 +130,14 @@ const SaleOffer = () => {
     if (data) {
       setSaleOffer(data.getSaleOfferById);
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length > 1) {
-        setCurrentThreadId(data.getSaleOfferById.threads[0].id);
-        setCurrentThread(data.getSaleOfferById.threads[0]);
+        if(!currentThreadId) {
+          setCurrentThreadId(data.getSaleOfferById.threads[0].id);
+          setCurrentThread(data.getSaleOfferById.threads[0]);
+        } else {
+          //@ts-ignore
+          let currentThread = data.getSaleOfferById.threads.filter((thread) => thread.id === currentThreadId)[0]
+          setCurrentThread(currentThread)
+        }
         getBuyerDataById({ variables: { getUserDataByIdId: data.getSaleOfferById.threads[0].creator_id } });
       }
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length === 1) {
@@ -140,8 +160,27 @@ const SaleOffer = () => {
     setCurrentThreadId(threadId);
     markThreadAsRead({ variables: { threadId } });
     let thread = saleOffer.threads.filter((thread) => thread.id === threadId);
-    thread[0].comments.forEach((comment) => (comment.is_read = true));
     setCurrentThread({ ...thread[0] });
+  };
+
+  const handleCreateComment = () => {
+    //  validate comment length
+    if (!comment || comment.length < 5 || comment.length > 500) {
+      toast.error("Please enter a valid message between 1 and 500 characters");
+      return;
+    }
+
+    // add comment
+    if (saleOffer.creator_id === auth.userId) {
+      createComment({
+        variables: { input: { content: comment, saleOfferId: saleOffer.id, threadId: currentThreadId } },
+      });
+    } else {
+      createComment({ variables: { input: { content: comment, saleOfferId: saleOffer.id, threadId: "" } } });
+    }
+
+    // clear comment from textarea
+    setComment("");
   };
 
   if (!auth.isAuthenticated) {
@@ -154,7 +193,7 @@ const SaleOffer = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center sm:flex-col lg:flex-row gap-8 mt-6">
+      <div className="flex flex-col justify-center sm:flex-col lg:flex-row gap-8 mt-6">
         {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
         {/* left side img carousel */}
         <Carousel width={"500px"} autoPlay interval={5000} infiniteLoop swipeable={true} thumbWidth={100}>
@@ -176,9 +215,13 @@ const SaleOffer = () => {
               {saleOffer.description}, {saleOffer.category.name}
             </p>
             {/* Created at */}
-            <div className="font-light text-xs cursor-default">
-              <Moment fromNow>{saleOffer.created_at}</Moment>
-            </div>
+            {saleOffer.creator_id !== auth.userId && (
+              <>
+                <div className="font-light text-xs cursor-default">
+                  <Moment fromNow>{saleOffer.created_at}</Moment>
+                </div>
+              </>
+            )}
             {/* Price */}
             <p className="text-blue-700 font-medium text-lg cursor-default">
               {new Intl.NumberFormat("dk-DK", { style: "currency", currency: "DKK" }).format(saleOffer.price)}
@@ -215,12 +258,20 @@ const SaleOffer = () => {
           {/* Display seller data */}
           <div>
             <div className="rounded-lg p-4 mt-2 h-15 flex flex-col justify-between items-center">
-              <div className="w-full flex justify-between">
-                <p>Seller:</p>
-                <p>
-                  {sellerData.first_name} {sellerData.last_name}
-                </p>
-              </div>
+              {saleOffer.creator_id !== auth.userId ? (
+                <div className="w-full flex justify-between">
+                  <p>Seller:</p>
+                  <p>
+                    {sellerData.first_name} {sellerData.last_name}
+                  </p>
+                </div>
+              ) : (
+                <div className="text-sm">
+                  <p>
+                    You have had this item for sale since <Moment fromNow>{saleOffer.created_at}</Moment>
+                  </p>
+                </div>
+              )}
               {/*TODO:On click Contact button will show the owner's phone number for the sale offer*/}
               {saleOffer.creator_id !== auth.userId && (
                 <div className="flex relative ">
@@ -264,24 +315,17 @@ const SaleOffer = () => {
                 <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2">
                   {saleOffer.threads.map((thread) => (
                     <>
-                      {currentThreadId === thread.id ? (
-                        <div
-                          className="rounded-full my-[7px] bg-green-500 p-[6px] cursor-pointer border-[1.5px] border-gray-700"
-                          key={thread.id}
-                        ></div>
-                      ) : (
-                        <div
-                          className={`rounded-full my-[7px] p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-white duration-100 ${
-                            thread.comments.filter(
-                              (comment) => comment.is_read === false && comment.author_id !== auth.userId
-                            ).length > 0
-                              ? "bg-red-700"
-                              : "bg-green-500"
-                          }`}
-                          key={thread.id}
-                          onClick={() => handleThreadChange(thread.id)}
-                        ></div>
-                      )}
+                      <div
+                        className={`rounded-full my-[7px] p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-white duration-100 ${
+                          thread.comments.filter(
+                            (comment) => comment.is_read === false && comment.author_id === buyerData.id
+                          ).length >= 1
+                            ? "bg-red-700"
+                            : "bg-green-500"
+                        } ${currentThreadId === thread.id ? "border-[1.5px] border-gray-700" : ""}`}
+                        key={thread.id}
+                        onClick={() => handleThreadChange(thread.id)}
+                      ></div>
                     </>
                   ))}
                 </div>
@@ -301,7 +345,9 @@ const SaleOffer = () => {
                     }`}
                     key={idx}
                   >
-                    <p className="font-light text-lg mb-1 break-words">{comment.content}</p>
+                    <p className="font-light text-lg mb-1 break-words">
+                      {comment.content} {comment.is_read.toString()}
+                    </p>
                     <div className="flex justify-between">
                       <p className="font-thin text-[10px] text-gray-600">
                         Written by{" "}
@@ -319,9 +365,19 @@ const SaleOffer = () => {
             )}
             {/* Message input and Button to submit message input */}
             <div className="flex gap-2 mt-3">
-              <textarea rows={1} placeholder="Write here..." className="border-none rounded-[12px] font-base flex-1" />
+              <textarea
+                rows={1}
+                placeholder="Write here..."
+                className="border-none rounded-[12px] font-base flex-1"
+                onChange={(e) => setComment(e.target.value)}
+                value={comment}
+              />
               <div>
-                <button className="text-white text-lg bg-blue-700 w-[104px] h-[38px] rounded-[12px] font-light">
+                <button
+                  className={`text-white text-lg bg-blue-700 w-[104px] h-[38px] rounded-[12px] font-light disabled:bg-gray-300 `}
+                  onClick={handleCreateComment}
+                  disabled={!comment.length}
+                >
                   Send
                 </button>
               </div>
