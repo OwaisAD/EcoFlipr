@@ -29,6 +29,31 @@ export const userResolver = {
 
       return await User.findById(currentUser._id, { sale_offers: false });
     },
+    getUserDataById: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      const { id } = args;
+
+      const isValidId = validateId(id);
+
+      if (!isValidId) {
+        throwError(`ID ${id} was not found`);
+      }
+
+      let userFromDB = await User.findById(id, { sale_offers: false });
+      return {
+        id: userFromDB?._id,
+        first_name: userFromDB?.first_name,
+        last_name: userFromDB?.last_name,
+        phone_number: userFromDB?.phone_number,
+      };
+    },
   },
   Mutation: {
     createUser: async (_parent: any, args: any, _context: any, _info: any) => {
