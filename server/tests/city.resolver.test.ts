@@ -30,15 +30,13 @@ async function createUser(email:string="l@live.dk") {
         phone_number:"12345678",
         email:email,
         passwordHash:await bcrypt.hash("test1234", 10)
-})
-}
+})}
     
 async function createCity(name="Helsingør",zip_code="3000"){
     return await City.create({
         zip_code,
         name,
-    })
-}
+    })}
 
 async function createCategory(name="Books"){
     return await Category.create({name});
@@ -57,6 +55,22 @@ async function createSaleOffer() {
   user.sale_offers.push(saleOffer);
       await user.save();
       return saleOffer;
+}
+
+
+
+
+function markThreadAsReadQuery(threadId:string) {
+  return {
+    query:`
+      mutation MarkThreadAsRead($threadId: String) {
+        markThreadAsRead(threadId: $threadId)
+    }
+    `,
+    variables:{
+      "threadId":threadId
+    }
+  }
 }
 
 function createCommentQuery(saleOfferId:any,comment:string,threadId:string | null=null){
@@ -80,6 +94,16 @@ function createCommentQuery(saleOfferId:any,comment:string,threadId:string | nul
       }
     }
   }
+}
+
+async function crerateSaleofferWithOneUnreadComment(){
+  const saleOffer = await createSaleOffer();
+  const commentQuery = createCommentQuery(saleOffer.id,"Har du stadig til salg?");
+  const buyer = await createUser("bo@live.dk");
+  const buyerJWT = await login(buyer.email);
+
+  await createRequest(commentQuery, buyerJWT);
+  return await SaleOffer.findById(saleOffer.id).populate("threads");
 }
 
 function createSaleofferQuery(cityId=city.id, categoryId=category.id) {
@@ -183,7 +207,6 @@ test('createSaleOffer', async () => {
 })
 
 test('addCommentToSaleOffer', async () => {
-  
   const saleOffer = await createSaleOffer();
   const commentQuery = createCommentQuery(saleOffer.id,"Har du stadig til salg?");
   const buyer = await createUser("bo@live.dk");
@@ -195,9 +218,44 @@ test('addCommentToSaleOffer', async () => {
   expect(saleOfferFromDB?.threads.length).toBe(1);
 })
 
+test('checkCommentIsUnread', async ()=> {
+  const saleOfferFromDB = await crerateSaleofferWithOneUnreadComment()
+  const threadId = saleOfferFromDB!.threads[0]._id.toString();
+  const threadFromDB = await Thread.findById(threadId).populate('comments')
+  
+  expect(threadFromDB?.comments[0].is_read).toBe(false)
+})
+
+test('markThreadAsRead', async ()=> {
+  const saleOfferFromDB = await crerateSaleofferWithOneUnreadComment()
+
+  const threadId = saleOfferFromDB!.threads[0]._id.toString();
+  const threadFromDB = await Thread.findById(threadId).populate('comments');
+  
+  const ownerJWT = await login(user.email);
+  const createMarkReadQuery = markThreadAsReadQuery(threadId);
+  await createRequest(createMarkReadQuery,ownerJWT)
+  const updatedThreadFromDB = await Thread.findById(threadId).populate('comments');
+
+  expect(updatedThreadFromDB?.comments[0].is_read).toBe(true)
+})
+
+test('addOwnerCommentToSaleOffer', async () => {
+  const saleOfferFromDB = await crerateSaleofferWithOneUnreadComment();
+  const threadId = saleOfferFromDB!.threads[0]._id.toString();
+  const commentQuery = createCommentQuery(saleOfferFromDB!._id,"Ja stadig til salg?",threadId);
+  const ownerJWT = await login(user.email);
+
+  await createRequest(commentQuery,ownerJWT);
+  const updatedSaleOfferFromDB = await SaleOffer.findById(saleOfferFromDB!.id);
+  const updatedThreadFromDB = await Thread.findById(updatedSaleOfferFromDB?.threads[0]._id).populate('comments');
+  
+  expect(updatedThreadFromDB?.comments.length).toBe(2)
+})
+
 //Lav test:
-// hvor jeg markere en komentar som læst
-// hvor en sælger knytter endnu en kommentar
+
 // sletter et saleoffer
 // sletter en bruger som sælger
 // sletter en bruger som bare vil købe
+// tæller counter på ulæste beskeder rigtigt
