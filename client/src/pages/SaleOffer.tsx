@@ -81,21 +81,27 @@ const SaleOffer = () => {
     variables: { getUserDataByIdId: id },
     skip: !auth.isAuthenticated,
   };
-  const [getBuyerDataById, { loading: loading2, error: error2, data: data2 }] = useLazyQuery(GET_USER_DATA_BY_ID, {
-    fetchPolicy: "no-cache",
-    onCompleted(data2) {
-      setBuyerData({ ...data2.getUserDataById });
-      console.log("BUYER DATA", data2.getUserDataById);
-    },
-  });
+  const [getBuyerDataById, { loading: loading2, error: error2, data: data2 }] = useLazyQuery(
+    GET_USER_DATA_BY_ID,
+    {
+      fetchPolicy: "no-cache",
+      onCompleted(data2) {
+        setBuyerData({ ...data2.getUserDataById });
+        console.log("BUYER DATA", data2.getUserDataById);
+      },
+    }
+  );
 
-  const [getSellerDataById, { loading: loading3, error: error3, data: data3 }] = useLazyQuery(GET_USER_DATA_BY_ID, {
-    fetchPolicy: "no-cache",
-    onCompleted(data3) {
-      setSellerData({ ...data3.getUserDataById });
-      console.log("SELLER DATA", data3.getUserDataById);
-    },
-  });
+  const [getSellerDataById, { loading: loading3, error: error3, data: data3 }] = useLazyQuery(
+    GET_USER_DATA_BY_ID,
+    {
+      fetchPolicy: "no-cache",
+      onCompleted(data3) {
+        setSellerData({ ...data3.getUserDataById });
+        console.log("SELLER DATA", data3.getUserDataById);
+      },
+    }
+  );
 
   // mutations
   const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ, {
@@ -159,8 +165,9 @@ const SaleOffer = () => {
   const handleThreadChange = (threadId: string) => {
     setCurrentThreadId(threadId);
     markThreadAsRead({ variables: { threadId } });
-    let thread = saleOffer.threads.filter((thread) => thread.id === threadId);
-    setCurrentThread({ ...thread[0] });
+    let thread = saleOffer.threads.filter((thread) => thread.id === threadId)[0];
+    getBuyerDataById({ variables: { getUserDataByIdId: thread.creator_id } })
+    setCurrentThread({ ...thread });
   };
 
   const handleCreateComment = () => {
@@ -356,11 +363,25 @@ const SaleOffer = () => {
                     <div className="flex justify-between">
                       <p className="font-thin text-[10px] text-gray-600">
                         Written by{" "}
-                        {comment.author_id === sellerData.id
-                          ? "You"
-                          : `${buyerData.first_name.charAt(0).toUpperCase() + buyerData.first_name.slice(1)} ${
-                              buyerData.last_name.charAt(0).toUpperCase() + buyerData.last_name.slice(1)
-                            }`}{" "}
+                        {comment.author_id === auth.userId ? (
+                          "You"
+                        ) : (
+                          <>
+                            {" "}
+                            {comment.author_id === sellerData.id && (
+                              <>
+                                {sellerData.first_name.charAt(0).toUpperCase() + sellerData.first_name.slice(1)}{" "}
+                                {sellerData.last_name.charAt(0).toUpperCase() + sellerData.last_name.slice(1)}
+                              </>
+                            )}{" "}
+                            {comment.author_id === buyerData.id && (
+                              <>
+                                {buyerData.first_name.charAt(0).toUpperCase() + buyerData.first_name.slice(1)}{" "}
+                                {buyerData.last_name.charAt(0).toUpperCase() + buyerData.last_name.slice(1)}
+                              </>
+                            )}{" "}
+                          </>
+                        )}{" "}
                         <Moment fromNow>{comment.created_at}</Moment>
                       </p>
                     </div>
