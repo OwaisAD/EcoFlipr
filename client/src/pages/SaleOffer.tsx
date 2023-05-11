@@ -81,27 +81,21 @@ const SaleOffer = () => {
     variables: { getUserDataByIdId: id },
     skip: !auth.isAuthenticated,
   };
-  const [getBuyerDataById, { loading: loading2, error: error2, data: data2 }] = useLazyQuery(
-    GET_USER_DATA_BY_ID,
-    {
-      fetchPolicy: "no-cache",
-      onCompleted(data2) {
-        setBuyerData({ ...data2.getUserDataById });
-        console.log("BUYER DATA", data2.getUserDataById);
-      },
-    }
-  );
+  const [getBuyerDataById, { loading: loading2, error: error2, data: data2 }] = useLazyQuery(GET_USER_DATA_BY_ID, {
+    fetchPolicy: "no-cache",
+    onCompleted(data2) {
+      setBuyerData({ ...data2.getUserDataById });
+      console.log("BUYER DATA", data2.getUserDataById);
+    },
+  });
 
-  const [getSellerDataById, { loading: loading3, error: error3, data: data3 }] = useLazyQuery(
-    GET_USER_DATA_BY_ID,
-    {
-      fetchPolicy: "no-cache",
-      onCompleted(data3) {
-        setSellerData({ ...data3.getUserDataById });
-        console.log("SELLER DATA", data3.getUserDataById);
-      },
-    }
-  );
+  const [getSellerDataById, { loading: loading3, error: error3, data: data3 }] = useLazyQuery(GET_USER_DATA_BY_ID, {
+    fetchPolicy: "no-cache",
+    onCompleted(data3) {
+      setSellerData({ ...data3.getUserDataById });
+      console.log("SELLER DATA", data3.getUserDataById);
+    },
+  });
 
   // mutations
   const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ, {
@@ -166,7 +160,7 @@ const SaleOffer = () => {
     setCurrentThreadId(threadId);
     markThreadAsRead({ variables: { threadId } });
     let thread = saleOffer.threads.filter((thread) => thread.id === threadId)[0];
-    getBuyerDataById({ variables: { getUserDataByIdId: thread.creator_id } })
+    getBuyerDataById({ variables: { getUserDataByIdId: thread.creator_id } });
     setCurrentThread({ ...thread });
   };
 
