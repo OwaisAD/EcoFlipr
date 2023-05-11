@@ -86,6 +86,11 @@ function App() {
   };
 
   useEffect(() => {
+    if (!auth.isAuthenticated) {
+      navigate("/");
+      return;
+    }
+
     // Check if there's a stored path in local storage
     const lastPath = localStorage.getItem("lastPath");
     if (auth.isAuthenticated && lastPath) {
@@ -97,6 +102,8 @@ function App() {
       navigate("/");
     }
   }, [auth.isAuthenticated]);
+
+  // LOAD USER SALE OFFERS AND USER INTERACTED SALE OFFERS AND PASS INTO PROFILE
 
   return (
     <ApolloProvider client={client}>

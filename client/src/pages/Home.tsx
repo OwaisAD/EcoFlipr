@@ -8,6 +8,8 @@ import Carousel from "../components/Carousel";
 import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
 import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
 import { RxMagnifyingGlass } from "react-icons/rx";
+import { useAuth } from "../context/AuthProvider";
+import { Navigate } from "react-router-dom";
 
 type Props = {
   searchQuery: string;
@@ -17,9 +19,9 @@ type Props = {
 };
 
 export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderSearch }: Props) => {
+  const auth = useAuth();
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-
   const [lastSearchQuery, setLastSearchQuery] = useState("");
   const [saleOffers, setSaleOffers] = useState([]);
   const [saleOfferCount, setSaleOfferCount] = useState(0);
@@ -91,7 +93,7 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
 
   return (
     <div>
-      <form onSubmit={executeSearch} className="relative flex justify-center items-center mt-1 p-3 ">
+      <form onSubmit={executeSearch} className="relative flex justify-center items-center mt-10 p-3 ">
         <div>
           <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-none">
             <RxMagnifyingGlass className="h-5 w-5 text-gray-500" />
@@ -115,6 +117,7 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
             saleOfferCount={saleOfferCount}
             searchQuery={searchQuery}
             saleOffers={saleOffers}
+            setSaleOffers={setSaleOffers}
             setPage={setPage}
             getSaleOffers={getSaleOffers}
           />

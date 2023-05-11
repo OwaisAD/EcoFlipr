@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { SaleOffers } from "../types/saleOffer";
 import SaleOfferBox from "./SaleOfferBox";
 import { RxCross2 } from "react-icons/rx";
 import PriceFilter from "./filtering/PriceFilter";
+import CityFilter from "./filtering/CityFilter";
+import CategoryFilter from "./filtering/CategoryFilter";
 
 type SearchResultsProps = {
   page: number;
@@ -10,6 +12,7 @@ type SearchResultsProps = {
   saleOfferCount: number;
   searchQuery: string;
   saleOffers: SaleOffers;
+  setSaleOffers: React.Dispatch<React.SetStateAction<any>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   getSaleOffers: any;
 };
@@ -24,10 +27,82 @@ const SearchResults = ({
   saleOfferCount,
   searchQuery,
   saleOffers,
+  setSaleOffers,
   setPage,
   getSaleOffers,
 }: SearchResultsProps) => {
+  // price filtering
+  const [priceFilterOn, setPriceFilterOn] = useState(false);
   const [priceFiltering, setPriceFiltering] = useState(false);
+  // city filtering
+  const [cityFiltering, setCityFiltering] = useState(false);
+  const [cityFilteringOn, setCityFilteringOn] = useState(false);
+
+  // category filtering
+  const [categoryFiltering, setCategoryFiltering] = useState(false);
+  const [categoryFilteringOn, setCategoryFilteringOn] = useState(false);
+
+  // is_shippable filtering
+
+  const [tempSaleOffers, setTempSaleOffers] = useState<any>([]);
+
+  const handlePriceFilterChange = (type: string) => {
+    if (!priceFilterOn) {
+      setTempSaleOffers(saleOffers);
+      setPriceFilterOn(true);
+    }
+
+    // set midlertidig state til at være den gamle saleOffer
+    // set saleOffers til at være filteret alt efter price ascending eller descending
+    let filtered: any = [];
+    if (type === "asc") {
+      console.log("sorting asc");
+      filtered = saleOffers.sort((a, b) => a.price - b.price);
+    }
+
+    if (type === "desc") {
+      console.log("sorting desc");
+      filtered = saleOffers.sort((a, b) => b.price - a.price);
+    }
+    setSaleOffers(filtered);
+    setPriceFiltering(false);
+  };
+
+  const handleCityFilterChange = (city: string) => {
+    console.log("filtering city", city);
+    if (!cityFilteringOn) {
+      setTempSaleOffers(saleOffers);
+      setCityFilteringOn(true);
+    }
+
+    let filtered = saleOffers.filter(
+      (saleOffer) => saleOffer.city.name.includes(city) || saleOffer.city.zip_code.includes(city)
+    );
+    setSaleOffers(filtered);
+    setCityFiltering(false);
+  };
+
+  const handleCategoryFilterChange = (category: string) => {
+    console.log("filtering category", category);
+    if (!categoryFilteringOn) {
+      setTempSaleOffers(saleOffers);
+      setCategoryFilteringOn(true);
+    }
+
+    let filtered = saleOffers.filter((saleOffer) =>
+      saleOffer.category.name.toLowerCase().includes(category.toLowerCase())
+    );
+    setSaleOffers(filtered);
+    setCategoryFiltering(false);
+  };
+
+  const resetFilter = () => {
+    setSaleOffers(tempSaleOffers.concat(saleOffers));
+    setPriceFiltering(false);
+    setPriceFilterOn(false);
+    setCityFiltering(false);
+    setCategoryFiltering(false);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -83,16 +158,36 @@ const SearchResults = ({
 
       {/* filtering */}
       <div className="flex items-center w-[500px] h-16 rounded-lg justify-between">
-        <div>
+        <div className="flex gap-2">
           {/* sort by price */}
           <div>
-            <PriceFilter priceFiltering={priceFiltering} setPriceFiltering={setPriceFiltering} />
+            <PriceFilter
+              priceFiltering={priceFiltering}
+              setPriceFiltering={setPriceFiltering}
+              handlePriceFilterChange={handlePriceFilterChange}
+            />
           </div>
-          {/* sort by zip_code */}
+          {/* sort by city */}
+          <div>
+            <CityFilter
+              cityFiltering={cityFiltering}
+              setCityFiltering={setCityFiltering}
+              handleCityFilterChange={handleCityFilterChange}
+            />
+          </div>
+          {/* sort by category */}
+          <div>
+            <CategoryFilter
+              categoryFiltering={categoryFiltering}
+              setCategoryFiltering={setCategoryFiltering}
+              handleCategoryFilterChange={handleCategoryFilterChange}
+            />
+          </div>
+          {/* sort by is_shippable */}
           <div></div>
         </div>
         {/* RESET */}
-        <div className="bg-gray-400 rounded-full p-[2px] cursor-pointer hover:scale-110">
+        <div className="bg-gray-400 rounded-full p-[2px] cursor-pointer hover:scale-110" onClick={resetFilter}>
           <RxCross2 className="text-white text-xs" />
         </div>
       </div>

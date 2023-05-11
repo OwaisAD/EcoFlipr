@@ -12,12 +12,13 @@ export function useAuth() {
 
 export const AuthProvider = (props: { children: JSX.Element }) => {
   const [isAuthenticated, setAuthenticated] = useState(() => {
+    console.log("HERE");
     const token = localStorage.getItem("ecoflipr-user-token");
     try {
       const decoded = jwtDecode(token!) as { exp: number };
       // Token is a JWT
       const currentTime = Date.now() / 1000;
-      if (!(decoded.exp > currentTime)) {
+      if (decoded.exp < currentTime) {
         localStorage.removeItem("ecoflipr-user-token");
         return false;
       } else {

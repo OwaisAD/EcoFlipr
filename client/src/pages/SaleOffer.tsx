@@ -65,19 +65,9 @@ const SaleOffer = () => {
       <div className="flex flex-col justify-center items-center sm:flex-col lg:flex-row gap-8 mt-6">
         {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
         {/* left side img carousel */}
-        <Carousel
-          width={"500px"}
-          autoPlay
-          interval={5000}
-          infiniteLoop
-          swipeable={true}
-          showThumbs
-          axis="horizontal"
-          thumbWidth={100}
-          dynamicHeight={false}
-        >
-          {saleOffer.imgs.map((img) => (
-            <div className="h-64">
+        <Carousel width={"500px"} autoPlay interval={5000} infiniteLoop swipeable={true} thumbWidth={100}>
+          {saleOffer.imgs.map((img, idx) => (
+            <div className="h-64" key={idx}>
               <img
                 className="h-full object-contain"
                 alt=""
@@ -90,37 +80,42 @@ const SaleOffer = () => {
         <div className="w-[350px] bg-white rounded-lg flex flex-col gap-3 p-4">
           <div className="flex flex-col gap-1">
             {/* Price */}
-            <p className="text-xl">
+            <p className="text-xl cursor-default">
               {saleOffer.description}, {saleOffer.category.name}
             </p>
-            <div className="font-light text-xs">
+            <div className="font-light text-xs cursor-default">
               <Moment fromNow>{saleOffer.created_at}</Moment>
             </div>
-            <p className="text-blue-700 font-medium text-lg">
+            <p className="text-blue-700 font-medium text-lg cursor-default">
               {new Intl.NumberFormat("dk-DK", { style: "currency", currency: "DKK" }).format(saleOffer.price)}
             </p>
           </div>
 
           {/* Location */}
           <div>
-            <p className="my-2">
+            <p className="my-2 cursor-default">
               {saleOffer.city.name}, {saleOffer.city.zip_code}
             </p>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d71330.8159947423!2d12.539608949999991!3d56.03446514999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465231112f400bb3%3A0xf3e36e3c5817f767!2s3000%20Helsing%C3%B8r!5e0!3m2!1sda!2sdk!4v1683708659329!5m2!1sda!2sdk"
-              height="250"
+              height="280"
+              width="320"
+              style={{ border: 0 }}
               loading="lazy"
-            />
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API}
+    &q=${saleOffer.city.zip_code},${saleOffer.city.name}&zoom=10`}
+            ></iframe>
           </div>
           {/*isShipable*/}
           <div>
             {saleOffer.is_shippable ? (
-              <p className="text-green-600 font-medium flex items-center gap-2">
+              <p className="text-green-600 font-medium flex items-center gap-2 cursor-default">
                 Kan sendes
                 <FaShuttleVan className="mt-1" />
               </p>
             ) : (
-              <p className="text-red-600 font-medium">Sendes ikke</p>
+              <p className="text-red-600 font-medium cursor-default">Sendes ikke</p>
             )}
           </div>
           {/*TODO:On click Contact button will show the owner's phone number for the sale offer*/}
@@ -131,38 +126,23 @@ const SaleOffer = () => {
       </div>
       {/* THREAD LOGIC */}
 
-      <div className="flex flex-col items-center justify-center my-14">
+      <div className="flex flex-col items-center justify-center mt-14 mb-28">
         <div className="flex gap-6">
           {/* Left side scrollbar only showing if you are the owner have more than one thread*/}
           {saleOffer.threads && saleOffer.threads.length > 1 && (
             <>
-              <div className="w-[40px] h-full bg-slate-300 rounded-[10px] mt-9 max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col justify-center items-center">
-                {saleOffer.threads.map((thread) => (
-                  <>
-                    <div className="rounded-full my-[7px] bg-green-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                    <div className="rounded-full my-[7px] bg-red-600 p-[6px]"></div>
-                  </>
-                ))}
+              <div>
+                <p className="text-xs font-light mt-3">Threads</p>
+                <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2">
+                  {saleOffer.threads.map((thread, idx) => (
+                    <>
+                      <div
+                        className="rounded-full my-[7px] bg-green-600 p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-gray-500 duration-100"
+                        key={idx}
+                      ></div>
+                    </>
+                  ))}
+                </div>
               </div>
             </>
           )}
@@ -172,11 +152,12 @@ const SaleOffer = () => {
             {/* Message display */}
             {saleOffer.threads && saleOffer.threads.length > 0 && (
               <>
-                {saleOffer.threads[0].comments.map((comment) => (
+                {saleOffer.threads[0].comments.map((comment, idx) => (
                   <div
                     className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${
                       comment.author_id === saleOffer.creator_id ? "bg-slate-400" : "bg-slate-300"
                     }`}
+                    key={idx}
                   >
                     <p className="font-light text-lg mb-1 break-words">{comment.content}</p>
                     <div className="flex justify-between">
