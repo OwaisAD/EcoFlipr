@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_SALE_OFFERS_BY_USER = gql`
-query GetSaleOffersByUser {
+  query GetSaleOffersByUser {
     getSaleOffersByUser {
       notification_count
       description
