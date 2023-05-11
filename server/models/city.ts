@@ -19,7 +19,7 @@ const citySchema = new mongoose.Schema({
 citySchema.plugin(uniqueValidator);
 
 citySchema.set("toJSON", {
-  transform: (document: Document, returnedObject: Record<string, any>) => {
+  transform: (_document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
