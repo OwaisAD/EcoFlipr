@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const GET_SALE_OFFERS_BY_USER = gql`
   query GetSaleOffersByUser {
     getSaleOffersByUser {
+      id
       notification_count
       description
       is_shippable
