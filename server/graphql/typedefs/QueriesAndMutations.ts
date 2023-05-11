@@ -15,8 +15,6 @@ export default gql`
     getUserDataById(id: String): UserData
 
     getCityByZipCode(zip_code: String): City
-
-    
   }
   type Mutation {
     login(input: UserLoginInput): ValidatedUser
