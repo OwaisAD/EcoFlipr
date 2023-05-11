@@ -130,13 +130,13 @@ const SaleOffer = () => {
     if (data) {
       setSaleOffer(data.getSaleOfferById);
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length > 1) {
-        if(!currentThreadId) {
+        if (!currentThreadId) {
           setCurrentThreadId(data.getSaleOfferById.threads[0].id);
           setCurrentThread(data.getSaleOfferById.threads[0]);
         } else {
           //@ts-ignore
-          let currentThread = data.getSaleOfferById.threads.filter((thread) => thread.id === currentThreadId)[0]
-          setCurrentThread(currentThread)
+          let currentThread = data.getSaleOfferById.threads.filter((thread) => thread.id === currentThreadId)[0];
+          setCurrentThread(currentThread);
         }
         getBuyerDataById({ variables: { getUserDataByIdId: data.getSaleOfferById.threads[0].creator_id } });
       }
@@ -313,21 +313,26 @@ const SaleOffer = () => {
               <div>
                 <p className="text-xs font-light mt-3">Threads</p>
                 <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2">
-                  {saleOffer.threads.map((thread) => (
-                    <>
-                      <div
-                        className={`rounded-full my-[7px] p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-white duration-100 ${
-                          thread.comments.filter(
-                            (comment) => comment.is_read === false && comment.author_id === buyerData.id
-                          ).length >= 1
-                            ? "bg-red-700"
-                            : "bg-green-500"
-                        } ${currentThreadId === thread.id ? "border-[1.5px] border-gray-700" : ""}`}
-                        key={thread.id}
-                        onClick={() => handleThreadChange(thread.id)}
-                      ></div>
-                    </>
-                  ))}
+                  {saleOffer.threads.map((thread) => {
+                    let hasUnread = thread.comments.reduce((acc, comment) => {
+                      if (comment.is_read === false && comment.author_id !== auth.userId) {
+                        return true;
+                      }
+                      return acc;
+                    }, false);
+
+                    return (
+                      <>
+                        <div
+                          className={`rounded-full my-[7px] p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-white duration-100 ${
+                            hasUnread ? "bg-red-700" : "bg-green-500"
+                          } ${currentThreadId === thread.id ? "border-[1.5px] border-gray-700" : ""}`}
+                          key={thread.id}
+                          onClick={() => handleThreadChange(thread.id)}
+                        ></div>
+                      </>
+                    );
+                  })}
                 </div>
               </div>
             </>
