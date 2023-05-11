@@ -13,22 +13,26 @@ const Profile = () => {
   const location = useLocation();
   const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER);
 
-  function DeleteSaleOffer({saleOfferId}:{saleOfferId:string}) {
+  function DeleteSaleOffer({ saleOfferId }: { saleOfferId: string }) {
     const [mutation] = useMutation(DELETE_SALE_OFFER_BY_ID, {
-      variables: {deleteSaleOfferById:saleOfferId},
-      refetchQueries: [GET_SALE_OFFERS_BY_USER]
-    })
-    return(
-        <button className="flex justify-center rounded-3xl mt-1 h-[12px] w-[12px] bg-red-500 text-[8px] text-slate-300" 
-        style={{float:"right"}}
-        onClick={()=> { 
-          if(confirm("Are you sure you want to delete this sale offer")) {
-            mutation()  
+      variables: { deleteSaleOfferById: saleOfferId },
+      refetchQueries: [GET_SALE_OFFERS_BY_USER],
+    });
+    return (
+      <button
+        className="flex justify-center rounded-3xl mt-1 h-[12px] w-[12px] bg-red-500 text-[8px] text-slate-300"
+        style={{ float: "right" }}
+        onClick={() => {
+          if (confirm("Are you sure you want to delete this sale offer")) {
+            mutation();
           } else {
-            return
+            return;
           }
-      }}>X</button>
-    )
+        }}
+      >
+        X
+      </button>
+    );
   }
 
   if (!auth.isAuthenticated) {
@@ -44,7 +48,7 @@ const Profile = () => {
       <div></div>
       {/* Display of user's sale offers */}
       <p className="text-2xl">Mine annoncer</p>
-      <div >
+      <div>
         {data.getSaleOffersByUser.map((offer: SaleOfferInterface) => (
           <div className="flex bg-slate-300 sm:flex-col lg:flex-row gap-2 mt-6">
             {/* Images */}
@@ -56,9 +60,8 @@ const Profile = () => {
               ))}
             </Carousel>
             {/* Delete button */}
-            <DeleteSaleOffer saleOfferId={offer.id}/>
+            <DeleteSaleOffer saleOfferId={offer.id} />
             <div className="flex flex-col">
-              
               {/* Description and category name */}
               <p>
                 {offer.description}, {offer.category.name}
@@ -73,12 +76,10 @@ const Profile = () => {
               {/* Location and shippable*/}
               <div className="flex text-xs">
                 <p>
-                  {offer.city.zip_code}, {offer.city.name} 
+                  {offer.city.zip_code}, {offer.city.name}
                 </p>
                 <p className="pr-2 pl-2">|</p>
-                {offer.is_shippable ? 
-                  <p>Kan sendes</p> : 
-                  <p>Sendes ikke</p>}
+                {offer.is_shippable ? <p>Kan sendes</p> : <p>Sendes ikke</p>}
               </div>
             </div>
           </div>
