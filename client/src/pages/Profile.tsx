@@ -45,6 +45,7 @@ const Profile = () => {
       <div className="bg-slate-400">
         {data.getSaleOffersByUser.map((offer: SaleOfferOnProfilePage) => (
           <div className="flex">
+            {/* Images */}
             <Carousel width={"200px"} showThumbs={false} showStatus={false}>
               {offer.imgs.map((img) => (
                 <div>
@@ -53,14 +54,25 @@ const Profile = () => {
               ))}
             </Carousel>
             <div className="flex flex-col">
+              {/* Description and category name */}
               <p>
                 {offer.description}, {offer.category.name}
               </p>
+              {/* Price */}
               <div className="flex">
                 <Moment fromNow>{offer.created_at}</Moment>
-                <p className="m-auto">
+                <p className="">
                   {new Intl.NumberFormat("dk-DK", { style: "currency", currency: "DKK" }).format(offer.price)}
                 </p>
+              </div>
+              {/* Location and shippable*/}
+              <div className="flex">
+                <p>{offer.city.zip_code}, {offer.city.name} |</p>
+                {offer.is_shippable ? (
+                  <p className="pl-2">Kan sendes</p>
+                ) : (
+                  <p className="pl-2">Sendes ikke</p>
+                )}
               </div>
             </div>
           </div>
