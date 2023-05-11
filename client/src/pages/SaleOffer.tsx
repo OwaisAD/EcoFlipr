@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { Navigate, useLocation } from "react-router-dom";
-import { QueryHookOptions, useLazyQuery, useQuery } from "@apollo/client";
+import { QueryHookOptions, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SALE_OFFER_BY_ID } from "../GraphQL/queries/getSaleOfferById";
 import { useParams } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
@@ -13,6 +13,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { isValidHttpUrl } from "../utils/urlValidator";
 import { GET_USER_DATA_BY_ID } from "../GraphQL/queries/getUserDataById";
 import { FcPhoneAndroid } from "react-icons/fc";
+import { MARK_THREAD_AS_READ } from "../GraphQL/mutations/markThreadAsRead";
 
 const defaultSaleOffer: SaleOfferInterface = {
   id: "",
@@ -92,6 +93,8 @@ const SaleOffer = () => {
     },
   });
 
+  const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ);
+
   const [currentThreadId, setCurrentThreadId] = useState("");
   const [currentThread, setCurrentThread] = useState<Thread>({
     id: "",
@@ -135,7 +138,9 @@ const SaleOffer = () => {
 
   const handleThreadChange = (threadId: string) => {
     setCurrentThreadId(threadId);
+    markThreadAsRead({ variables: { threadId } });
     let thread = saleOffer.threads.filter((thread) => thread.id === threadId);
+    thread[0].comments.forEach((comment) => (comment.is_read = true));
     setCurrentThread({ ...thread[0] });
   };
 
