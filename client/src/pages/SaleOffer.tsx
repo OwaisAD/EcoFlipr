@@ -272,7 +272,7 @@ const SaleOffer = () => {
                   </p>
                 </div>
               )}
-              {/*TODO:On click Contact button will show the owner's phone number for the sale offer*/}
+              {/*On click Contact button will show the owner's phone number for the sale offer*/}
               {saleOffer.creator_id !== auth.userId && (
                 <div className="flex relative ">
                   <button
