@@ -67,12 +67,10 @@ const Profile = () => {
               </div>
               {/* Location and shippable*/}
               <div className="flex">
-                <p>{offer.city.zip_code}, {offer.city.name} |</p>
-                {offer.is_shippable ? (
-                  <p className="pl-2">Kan sendes</p>
-                ) : (
-                  <p className="pl-2">Sendes ikke</p>
-                )}
+                <p>
+                  {offer.city.zip_code}, {offer.city.name} |
+                </p>
+                {offer.is_shippable ? <p className="pl-2">Kan sendes</p> : <p className="pl-2">Sendes ikke</p>}
               </div>
             </div>
           </div>
