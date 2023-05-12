@@ -16,9 +16,9 @@ const Profile = () => {
   const auth = useAuth();
   const location = useLocation();
   const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
-  const [showMySaleOffers, setShowMySaleOffers] = useState(true)
-  const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false)
-  const [showMyProfileSettings, setShowMyProfileSettings] = useState(false)
+  const [showMySaleOffers, setShowMySaleOffers] = useState(true);
+  const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false);
+  const [showMyProfileSettings, setShowMyProfileSettings] = useState(false);
 
   const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER, {
     onCompleted(data) {
@@ -37,7 +37,7 @@ const Profile = () => {
     deleteSaleOffer({ variables: { deleteSaleOfferById: saleOfferId } });
   };
 
-  const handleHeaderChange = () => {}
+  const handleHeaderChange = () => {};
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -50,15 +50,36 @@ const Profile = () => {
     <div className="flex flex-col justify-center items-center">
       {/* Tab bar to switch between 'Mine annoncer' and 'Profiloplysninger'*/}
       <div className="flex gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 mb-20">
-        <button onClick={() => {
-          setShowMySaleOffers(!showMySaleOffers)
-        }} className={`${showMySaleOffers && "font-semibold"}`}>My sale offers</button>
-        <button onClick={() => {
-          setShowMyInteractedSaleOffers(!showMyInteractedSaleOffers)
-        }} className={`${showMyInteractedSaleOffers && "font-semibold"}`}>Sale offers interacted with</button>
-        <button onClick={() => {
-          setShowMyProfileSettings(!showMyProfileSettings)
-        }} className={`${showMyProfileSettings && "font-semibold"}`}>Profile information</button>
+        <button
+          onClick={() => {
+            setShowMySaleOffers(true);
+            setShowMyInteractedSaleOffers(false)
+            setShowMyProfileSettings(false)
+          }}
+          className={`${showMySaleOffers && "font-semibold"}`}
+        >
+          My sale offers
+        </button>
+        <button
+          onClick={() => {
+            setShowMyInteractedSaleOffers(true);
+            setShowMySaleOffers(false)
+            setShowMyProfileSettings(false)
+          }}
+          className={`${showMyInteractedSaleOffers && "font-semibold"}`}
+        >
+          Sale offers interacted with
+        </button>
+        <button
+          onClick={() => {
+            setShowMyProfileSettings(true);
+            setShowMySaleOffers(false)
+            setShowMyInteractedSaleOffers(false)
+          }}
+          className={`${showMyProfileSettings && "font-semibold"}`}
+        >
+          Profile information
+        </button>
       </div>
       {/* Display of user's sale offers */}
       <div>
