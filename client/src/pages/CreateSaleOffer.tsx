@@ -35,8 +35,7 @@ const uploaderOptions = {
   },
 };
 
-
-const handleCreateSaleOffer = () => {}
+const handleCreateSaleOffer = () => {};
 
 const CreateSaleOffer = () => {
   const auth = useAuth();
