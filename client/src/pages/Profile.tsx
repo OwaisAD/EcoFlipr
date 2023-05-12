@@ -53,8 +53,8 @@ const Profile = () => {
         <button
           onClick={() => {
             setShowMySaleOffers(true);
-            setShowMyInteractedSaleOffers(false)
-            setShowMyProfileSettings(false)
+            setShowMyInteractedSaleOffers(false);
+            setShowMyProfileSettings(false);
           }}
           className={`${showMySaleOffers && "font-semibold"}`}
         >
@@ -63,8 +63,8 @@ const Profile = () => {
         <button
           onClick={() => {
             setShowMyInteractedSaleOffers(true);
-            setShowMySaleOffers(false)
-            setShowMyProfileSettings(false)
+            setShowMySaleOffers(false);
+            setShowMyProfileSettings(false);
           }}
           className={`${showMyInteractedSaleOffers && "font-semibold"}`}
         >
@@ -73,8 +73,8 @@ const Profile = () => {
         <button
           onClick={() => {
             setShowMyProfileSettings(true);
-            setShowMySaleOffers(false)
-            setShowMyInteractedSaleOffers(false)
+            setShowMySaleOffers(false);
+            setShowMyInteractedSaleOffers(false);
           }}
           className={`${showMyProfileSettings && "font-semibold"}`}
         >
@@ -82,66 +82,94 @@ const Profile = () => {
         </button>
       </div>
       {/* Display of user's sale offers */}
-      <div>
-        <p className="text-center font-thin text-lg">My sale offers</p>
-        {userSaleOffers.map((userSaleOffer) => (
-          <div className="relative">
-            <Link to={`/offer/${userSaleOffer.id}`}>
-              <div
-                key={userSaleOffer.id}
-                className="relative bg-gray-300 w-[500px] h-[180px] rounded-xl p-2 flex shadow-md font-light hover:scale-105 transform 
+      {showMySaleOffers && (
+        <div>
+          <p className="text-center font-thin text-lg">My sale offers</p>
+          {userSaleOffers.map((userSaleOffer) => (
+            <div className="relative">
+              <Link to={`/offer/${userSaleOffer.id}`}>
+                <div
+                  key={userSaleOffer.id}
+                  className="relative bg-gray-300 w-[500px] h-[180px] rounded-xl p-2 flex shadow-md font-light hover:scale-105 transform 
            transition duration-100 my-4"
-              >
-                {userSaleOffer.notification_count > 0 && (
-                  <div className="absolute bg-red-400 bottom-[-10px] right-[-4px] z-50 px-2 py-1 text-white rounded-full text-sm">
-                    <div className="">{userSaleOffer.notification_count}</div>
+                >
+                  {userSaleOffer.notification_count > 0 && (
+                    <div className="absolute bg-red-400 bottom-[-10px] right-[-4px] z-50 px-2 py-1 text-white rounded-full text-sm">
+                      <div className="">{userSaleOffer.notification_count}</div>
+                    </div>
+                  )}
+                  <div className="absolute top-0 right-0 flex items-center gap-1 text-[10px] bg-gray-100 rounded-bl rounded-tr p-[1.5px] shadow-sm">
+                    {userSaleOffer.is_shippable ? "Kan sendes" : "Sendes ikke"}{" "}
+                    {userSaleOffer.is_shippable && <FaShuttleVan className="" />}
                   </div>
-                )}
-                <div className="absolute top-0 right-0 flex items-center gap-1 text-[10px] bg-gray-100 rounded-bl rounded-tr p-[1.5px] shadow-sm">
-                  {userSaleOffer.is_shippable ? "Kan sendes" : "Sendes ikke"}{" "}
-                  {userSaleOffer.is_shippable && <FaShuttleVan className="" />}
-                </div>
-                {/* left area */}
-                <div className="relative overflow-hidden bg-cover bg-no-repeat">
-                  <img
-                    src={
-                      isValidHttpUrl(userSaleOffer.imgs[0])
-                        ? userSaleOffer.imgs[0]
-                        : `../../images/No-Image-Placeholder.svg.png`
-                    }
-                    alt={`Img description ${userSaleOffer.description}`}
-                    className="h-40 w-40 rounded-xl object-cover transition duration-300 ease-in-out hover:scale-110"
-                  />
-                </div>
-                {/* right area */}
-                <div className="flex-grow flex flex-col h-40 justify-center gap-4 p-4">
-                  <p className="text-lg">
-                    {userSaleOffer.description.substring(0, 35)}
-                    {userSaleOffer.description.length > 35 && "..."}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs">
-                      <Moment fromNow>{userSaleOffer.created_at}</Moment>
+                  {/* left area */}
+                  <div className="relative overflow-hidden bg-cover bg-no-repeat">
+                    <img
+                      src={
+                        isValidHttpUrl(userSaleOffer.imgs[0])
+                          ? userSaleOffer.imgs[0]
+                          : `../../images/No-Image-Placeholder.svg.png`
+                      }
+                      alt={`Img description ${userSaleOffer.description}`}
+                      className="h-40 w-40 rounded-xl object-cover transition duration-300 ease-in-out hover:scale-110"
+                    />
+                  </div>
+                  {/* right area */}
+                  <div className="flex-grow flex flex-col h-40 justify-center gap-4 p-4">
+                    <p className="text-lg">
+                      {userSaleOffer.description.substring(0, 35)}
+                      {userSaleOffer.description.length > 35 && "..."}
                     </p>
-                    <p className="text-xl font-semibold">{userSaleOffer.price},- kr</p>
-                  </div>
-                  <div className="text-sm">
-                    <div>
-                      {userSaleOffer.city.zip_code} {userSaleOffer.city.name}
+                    <div className="flex justify-between items-center">
+                      <p className="text-xs">
+                        <Moment fromNow>{userSaleOffer.created_at}</Moment>
+                      </p>
+                      <p className="text-xl font-semibold">{userSaleOffer.price},- kr</p>
+                    </div>
+                    <div className="text-sm">
+                      <div>
+                        {userSaleOffer.city.zip_code} {userSaleOffer.city.name}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-            <button
-              className="absolute top-0 right-[-30px] hover:scale-110 duration:100"
-              onClick={() => handleDeleteSaleOffer(userSaleOffer.id)}
-            >
-              <IoRemoveCircle color="red" />
-            </button>
-          </div>
-        ))}
-      </div>
+              </Link>
+              <button
+                className="absolute top-0 right-[-30px] hover:scale-110 duration:100"
+                onClick={() => handleDeleteSaleOffer(userSaleOffer.id)}
+              >
+                <IoRemoveCircle color="red" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Profile information */}
+      {showMyProfileSettings && (
+        <div>
+          <p className="text-center font-thin text-lg">Profile information</p>
+          <form className="flex flex-col gap-2 mt-5">
+            {/* FIRST NAME AND LAST NAME */}
+            <div>
+              <input type="text" />
+              <input type="text" />
+            </div>
+            {/* EMAIL*/}
+            <input type="text" />
+            {/* ADDRESS */}
+            <input type="text" />
+            {/* PHONE NUMBER */}
+            <input type="text" />
+            <button>Edit</button>
+            {/* PASSWORD */}
+            <div className="flex">
+              <input type="text" />
+              <button>Edit</button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
