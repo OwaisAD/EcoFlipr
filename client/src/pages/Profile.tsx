@@ -13,6 +13,9 @@ import { FaShuttleVan } from "react-icons/fa";
 import { IoRemoveCircle } from "react-icons/io5";
 import { FiEdit } from "react-icons/fi";
 import { GET_USER } from "../GraphQL/queries/getUser";
+import { toast } from "react-hot-toast";
+import { UPDATE_USER } from "../GraphQL/mutations/updateUser";
+import validator from "validator";
 
 type User = {
   id: string;
@@ -34,6 +37,12 @@ const Profile = () => {
     phone_number: "",
     address: "",
   });
+  const [updatedFirstName, setUpdatedFirstName] = useState(userData.first_name);
+  const [updatedLastName, setUpdatedLastName] = useState("");
+  const [updatedAddress, setUpdatedAddress] = useState("");
+  const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState("");
+  const [updatedEmail, setUpdatedEmail] = useState("");
+
   const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
   const [showMySaleOffers, setShowMySaleOffers] = useState(true);
   const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false);
@@ -58,8 +67,15 @@ const Profile = () => {
   } = useQuery(GET_USER, {
     onCompleted(data) {
       setUserData(data.getUser);
+      setUpdatedFirstName(data.getUser.first_name);
+      setUpdatedLastName(data.getUser.last_name);
+      setUpdatedEmail(data.getUser.email);
+      setUpdatedAddress(data.getUser.address);
+      setUpdatedPhoneNumber(data.getUser.phone_number);
     },
   });
+
+  const [updateUser, { data: data4, loading: loading4, error: error4 }] = useMutation(UPDATE_USER);
 
   const handleDeleteSaleOffer = (saleOfferId: string) => {
     let confirmation = confirm("Are you sure you want to delete the offer?");
@@ -77,10 +93,71 @@ const Profile = () => {
         return;
       }
     } else {
+      // check if any information changed and update the user if true
+      if (
+        userData.first_name !== updatedFirstName ||
+        userData.last_name !== updatedLastName ||
+        userData.email !== updatedEmail ||
+        userData.phone_number !== updatedPhoneNumber ||
+        userData.address !== updatedAddress
+      ) {
+        console.log("Trying to update");
+        if (!updatedFirstName || updatedFirstName.length < 2 || updatedFirstName.length > 50) {
+          toast.error("Please enter a valid first name");
+          setUpdatedFirstName(userData.first_name);
+          return;
+        }
+        if (!updatedLastName || updatedLastName.length < 2 || updatedLastName.length > 50) {
+          toast.error("Please enter a valid last name");
+          setUpdatedLastName(userData.last_name);
+          return;
+        }
+
+        if (!updatedEmail || !validator.isEmail(updatedEmail)) {
+          toast.error("Please enter a valid email");
+          setUpdatedEmail(userData.email);
+          return;
+        }
+
+        if (!updatedAddress || updatedAddress.length < 5 || updatedAddress.length > 100) {
+          toast.error("Address must be between 5 and 100 characters");
+          setUpdatedEmail(userData.address);
+          return;
+        }
+
+        if (!updatedPhoneNumber || !validator.isMobilePhone(updatedPhoneNumber, "da-DK")) {
+          toast.error("Phone number must be a valid danish number");
+          setUpdatedPhoneNumber(userData.phone_number)
+          return;
+        }
+
+        toast.promise(
+          updateUser({
+            variables: {
+              input: {
+                first_name: updatedFirstName,
+                last_name: updatedLastName,
+                email: updatedEmail,
+                address: updatedAddress,
+                phone_number: updatedPhoneNumber,
+              },
+            },
+          }),
+          {
+            loading: "Updating...",
+            success: <b>Updated successfully!</b>,
+            error: <b>Could not save.</b>,
+          }
+        );
+      } else {
+        toast.error("Applied no changes.");
+      }
     }
 
     setEditProfileInfo(!editProfileInfo);
   };
+
+  const onChangeProfileData = () => {};
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -205,7 +282,8 @@ const Profile = () => {
                   placeholder="Enter first name"
                   className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                   disabled={!editProfileInfo}
-                  value={userData.first_name}
+                  value={updatedFirstName}
+                  onChange={(e) => setUpdatedFirstName(e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -218,7 +296,8 @@ const Profile = () => {
                   className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                   placeholder="Enter last name"
                   disabled={!editProfileInfo}
-                  value={userData.last_name}
+                  value={updatedLastName}
+                  onChange={(e) => setUpdatedLastName(e.target.value)}
                 />
               </div>
             </div>
@@ -233,7 +312,8 @@ const Profile = () => {
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter email"
                 disabled={!editProfileInfo}
-                value={userData.email}
+                value={updatedEmail}
+                onChange={(e) => setUpdatedEmail(e.target.value)}
               />
             </div>
             {/* ADDRESS */}
@@ -247,7 +327,8 @@ const Profile = () => {
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter address"
                 disabled={!editProfileInfo}
-                value={userData.address}
+                value={updatedAddress}
+                onChange={(e) => setUpdatedAddress(e.target.value)}
               />
             </div>
             {/* PHONE NUMBER */}
@@ -261,19 +342,22 @@ const Profile = () => {
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter phone number"
                 disabled={!editProfileInfo}
-                value={userData.phone_number}
+                value={updatedPhoneNumber}
+                onChange={(e) => setUpdatedPhoneNumber(e.target.value)}
               />
             </div>
             <div className="text-center">
               <button type="submit" className="px-6 py-2 bg-[#2C2E48] rounded-full text-white font-normal">
-                Edit
+                {editProfileInfo ? "Save" : "Edit"}
               </button>
             </div>
           </form>
           {/* PASSWORD */}
           <div className="flex gap-2">
             <div className="flex flex-col flex-1 gap-1">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password" className="font-light">
+                Password
+              </label>
               <input
                 type="text"
                 id="password"

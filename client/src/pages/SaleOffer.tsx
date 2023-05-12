@@ -198,7 +198,7 @@ const SaleOffer = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center sm:flex-col lg:flex-row gap-8 mt-6">
+      <div className="flex flex-col justify-center sm:flex-col lg:flex-row gap-8 mt-6 xs:items-center lg:items-start">
         {/* TOP PART THAT CONSISTS OF LEFT SIDE: IMAGE CAROUSEL AND RIGHT SIDE: SALE OFFER INFORMATION*/}
         {/* left side img carousel */}
         <Carousel width={"500px"} autoPlay interval={5000} infiniteLoop swipeable={true} thumbWidth={100}>
