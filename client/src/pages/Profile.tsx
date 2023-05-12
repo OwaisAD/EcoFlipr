@@ -12,10 +12,28 @@ import { Link } from "react-router-dom";
 import { FaShuttleVan } from "react-icons/fa";
 import { IoRemoveCircle } from "react-icons/io5";
 import { FiEdit } from "react-icons/fi";
+import { GET_USER } from "../GraphQL/queries/getUser";
+
+type User = {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  address: string;
+};
 
 const Profile = () => {
   const auth = useAuth();
   const location = useLocation();
+  const [userData, setUserData] = useState<User>({
+    id: "",
+    email: "",
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+    address: "",
+  });
   const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
   const [showMySaleOffers, setShowMySaleOffers] = useState(true);
   const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false);
@@ -31,6 +49,16 @@ const Profile = () => {
   });
   const [deleteSaleOffer, { data: data2, loading: loading2, error: error2 }] = useMutation(DELETE_SALE_OFFER_BY_ID, {
     refetchQueries: [GET_SALE_OFFERS_BY_USER],
+  });
+
+  const {
+    data: data3,
+    loading: loading3,
+    error: error3,
+  } = useQuery(GET_USER, {
+    onCompleted(data) {
+      setUserData(data.getUser);
+    },
   });
 
   const handleDeleteSaleOffer = (saleOfferId: string) => {
@@ -49,7 +77,6 @@ const Profile = () => {
         return;
       }
     } else {
-      
     }
 
     setEditProfileInfo(!editProfileInfo);
@@ -177,7 +204,7 @@ const Profile = () => {
                   id="first_name"
                   placeholder="Enter first name"
                   className="font-light border-none rounded-[12px] disabled:bg-gray-300"
-                  disabled={!editProfileInfo}
+                  disabled={!editProfileInfo} value={userData.first_name}
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -189,7 +216,7 @@ const Profile = () => {
                   id="last_name"
                   className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                   placeholder="Enter last name"
-                  disabled={!editProfileInfo}
+                  disabled={!editProfileInfo} value={userData.last_name}
                 />
               </div>
             </div>
@@ -203,7 +230,7 @@ const Profile = () => {
                 id="email"
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter email"
-                disabled={!editProfileInfo}
+                disabled={!editProfileInfo} value={userData.email}
               />
             </div>
             {/* ADDRESS */}
@@ -216,7 +243,7 @@ const Profile = () => {
                 id="address"
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter address"
-                disabled={!editProfileInfo}
+                disabled={!editProfileInfo} value={userData.address}
               />
             </div>
             {/* PHONE NUMBER */}
@@ -229,7 +256,7 @@ const Profile = () => {
                 id="phone_number"
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter phone number"
-                disabled={!editProfileInfo}
+                disabled={!editProfileInfo} value={userData.phone_number}
               />
             </div>
             <div className="text-center">
@@ -248,7 +275,6 @@ const Profile = () => {
                   className="border-none rounded-[12px]"
                 />
               </div>
-
               <button>
                 <FiEdit />
               </button>
