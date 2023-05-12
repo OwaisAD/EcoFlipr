@@ -18,6 +18,7 @@ import { UPDATE_USER } from "../GraphQL/mutations/updateUser";
 import validator from "validator";
 import { AiOutlineSave } from "react-icons/ai";
 import { UPDATE_PASSWORD } from "../GraphQL/mutations/updatePassword";
+import { GET_SALE_OFFERS_BY_USER_INTERACTION } from "../GraphQL/queries/getSaleOffersByUserInteraction";
 
 type User = {
   id: string;
@@ -48,6 +49,8 @@ const Profile = () => {
   const [updatedPassConfirm, setUpdatedPassConfirm] = useState("");
 
   const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
+  const [userSaleOffersInteractions, setUserSaleOffersInteractions] = useState<SaleOffer[]>([]);
+
   const [showMySaleOffers, setShowMySaleOffers] = useState(true);
   const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false);
   const [showMyProfileSettings, setShowMyProfileSettings] = useState(false);
@@ -60,6 +63,17 @@ const Profile = () => {
       setUserSaleOffers(data.getSaleOffersByUser);
     },
   });
+
+  const {
+    loading: loading6,
+    error: error6,
+    data: data6,
+  } = useQuery(GET_SALE_OFFERS_BY_USER_INTERACTION, {
+    onCompleted(data) {
+      setUserSaleOffersInteractions(data.getSaleOffersByUserInteraction);
+    },
+  });
+
   const [deleteSaleOffer, { data: data2, loading: loading2, error: error2 }] = useMutation(DELETE_SALE_OFFER_BY_ID, {
     refetchQueries: [GET_SALE_OFFERS_BY_USER],
   });
@@ -247,7 +261,74 @@ const Profile = () => {
       {showMySaleOffers && (
         <div>
           <p className="text-center font-thin text-lg">My sale offers</p>
+          {!userSaleOffers.length && <p className="font-light text-sm">You haven't created any offers</p>}
           {userSaleOffers.map((userSaleOffer) => (
+            <div className="relative">
+              <Link to={`/offer/${userSaleOffer.id}`}>
+                <div
+                  key={userSaleOffer.id}
+                  className="relative bg-gray-300 w-[500px] h-[180px] rounded-xl p-2 flex shadow-md font-light hover:scale-105 transform 
+           transition duration-100 my-4"
+                >
+                  {userSaleOffer.notification_count > 0 && (
+                    <div className="absolute bg-red-400 bottom-[-10px] right-[-4px] z-50 px-2 py-1 text-white rounded-full text-sm">
+                      <div className="">{userSaleOffer.notification_count}</div>
+                    </div>
+                  )}
+                  <div className="absolute top-0 right-0 flex items-center gap-1 text-[10px] bg-gray-100 rounded-bl rounded-tr p-[1.5px] shadow-sm">
+                    {userSaleOffer.is_shippable ? "Kan sendes" : "Sendes ikke"}{" "}
+                    {userSaleOffer.is_shippable && <FaShuttleVan className="" />}
+                  </div>
+                  {/* left area */}
+                  <div className="relative overflow-hidden bg-cover bg-no-repeat">
+                    <img
+                      src={
+                        isValidHttpUrl(userSaleOffer.imgs[0])
+                          ? userSaleOffer.imgs[0]
+                          : `../../images/No-Image-Placeholder.svg.png`
+                      }
+                      alt={`Img description ${userSaleOffer.description}`}
+                      className="h-40 w-40 rounded-xl object-cover transition duration-300 ease-in-out hover:scale-110"
+                    />
+                  </div>
+                  {/* right area */}
+                  <div className="flex-grow flex flex-col h-40 justify-center gap-4 p-4">
+                    <p className="text-lg">
+                      {userSaleOffer.description.substring(0, 35)}
+                      {userSaleOffer.description.length > 35 && "..."}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-xs">
+                        <Moment fromNow>{userSaleOffer.created_at}</Moment>
+                      </p>
+                      <p className="text-xl font-semibold">{userSaleOffer.price},- kr</p>
+                    </div>
+                    <div className="text-sm">
+                      <div>
+                        {userSaleOffer.city.zip_code} {userSaleOffer.city.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+              <button
+                className="absolute top-0 right-[-30px] hover:scale-110 duration:100"
+                onClick={() => handleDeleteSaleOffer(userSaleOffer.id)}
+              >
+                <IoRemoveCircle color="red" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showMyInteractedSaleOffers && (
+        <div>
+          <p className="text-center font-thin text-lg">Your sale offer interactions</p>
+          {!userSaleOffersInteractions.length && (
+            <p className="font-light text-sm">You haven't interacted with any offers</p>
+          )}
+          {userSaleOffersInteractions.map((userSaleOffer) => (
             <div className="relative">
               <Link to={`/offer/${userSaleOffer.id}`}>
                 <div
