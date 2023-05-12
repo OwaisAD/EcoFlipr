@@ -129,7 +129,7 @@ const SaleOffer = () => {
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length > 1) {
         if (!currentThreadId) {
           setCurrentThreadId(data.getSaleOfferById.threads[0].id);
-          markThreadAsRead({variables: {threadId: data.getSaleOfferById.threads[0].id}})
+          markThreadAsRead({ variables: { threadId: data.getSaleOfferById.threads[0].id } });
           setCurrentThread(data.getSaleOfferById.threads[0]);
         } else {
           //@ts-ignore
@@ -140,7 +140,7 @@ const SaleOffer = () => {
       }
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length === 1) {
         setCurrentThreadId(data.getSaleOfferById.threads[0].id);
-        markThreadAsRead({variables: {threadId: data.getSaleOfferById.threads[0].id}})
+        markThreadAsRead({ variables: { threadId: data.getSaleOfferById.threads[0].id } });
         setCurrentThread(data.getSaleOfferById.threads[0]);
         getBuyerDataById({ variables: { getUserDataByIdId: data.getSaleOfferById.threads[0].creator_id } });
       }
