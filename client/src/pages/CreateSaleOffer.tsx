@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { Navigate, useLocation } from "react-router-dom";
 import { Uploader } from "uploader";
 import { UploadDropzone } from "react-uploader";
+import { toast } from "react-hot-toast";
 
 // https://www.npmjs.com/package/uploader
 // Initialize once (at the start of your app).
@@ -35,23 +36,45 @@ const uploaderOptions = {
   },
 };
 
-const handleCreateSaleOffer = () => {};
-
 const CreateSaleOffer = () => {
   const auth = useAuth();
   const location = useLocation();
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [shipping, setShipping] = useState(false);
+  const [zipCode, setZipCode] = useState("");
+  const [price, setPrice] = useState("");
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
     return <Navigate to="/login" />;
   }
 
+  const handleCreateSaleOffer = () => {
+    console.log(description);
+    if (!description || description.length < 10 || description.length > 300) {
+      toast.error("Please add a valid description with length between 5 and 300 characters");
+      return;
+    }
+
+    console.log(category);
+
+    console.log(shipping);
+    console.log(zipCode);
+    console.log(price);
+  };
+
   return (
     <div className="h-screen w-screen flex items-center justify-center">
       <div className="flex flex-col w-[600px] gap-4">
         <h1 className="text-center text-2xl font-light">Create offer</h1>
         {/* OFFER DESCRIPTION */}
-        <textarea placeholder="Offer description" className="border-none rounded-[12px] h-[80px] max-h-[300px]" />
+        <textarea
+          placeholder="Offer description"
+          className="border-none rounded-[12px] h-[80px] max-h-[300px]"
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
+        />
 
         {/* OFFER CATEGORY */}
         <select name="" id="" className="border-none rounded-[12px]">
@@ -107,6 +130,14 @@ const CreateSaleOffer = () => {
             onComplete={(files) => alert(files.map((x) => x.fileUrl).join("\n"))}
             height="240px"
           />
+        </div>
+        <div className="text-center mt-5">
+          <button
+            className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:scale-105 duration-100"
+            onClick={handleCreateSaleOffer}
+          >
+            Create
+          </button>
         </div>
       </div>
     </div>
