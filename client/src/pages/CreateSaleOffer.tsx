@@ -149,9 +149,9 @@ const CreateSaleOffer = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center">
+    <div className="h-screen  flex items-center justify-center font-light">
       <div className="flex flex-col w-[600px] gap-4">
-        <h1 className="text-center text-2xl font-light">Create offer</h1>
+        <h1 className="text-center text-4xl font-thin mb-10">Create Offer</h1>
         {/* OFFER DESCRIPTION */}
         <textarea
           placeholder="Offer description"

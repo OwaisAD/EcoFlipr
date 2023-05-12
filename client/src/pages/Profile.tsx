@@ -5,35 +5,33 @@ import { GET_SALE_OFFERS_BY_USER } from "../GraphQL/queries/getSaleOfferByUser";
 import { Carousel } from "react-responsive-carousel";
 import Moment from "react-moment";
 import { DELETE_SALE_OFFER_BY_ID } from "../GraphQL/mutations/deleteSaleOfferById";
-import { SaleOfferInterface } from "../types/saleOffer";
+import { SaleOffer, SaleOfferInterface } from "../types/saleOffer";
 import { isValidHttpUrl } from "../utils/urlValidator";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaShuttleVan } from "react-icons/fa";
+import { IoRemoveCircle } from "react-icons/io5";
 
 const Profile = () => {
   const auth = useAuth();
   const location = useLocation();
-  const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER);
+  const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
+  const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER, {
+    onCompleted(data) {
+      setUserSaleOffers(data.getSaleOffersByUser);
+    },
+  });
+  const [deleteSaleOffer, {data: data2, loading: loading2, error: error2}] = useMutation(DELETE_SALE_OFFER_BY_ID, {
+    refetchQueries: [GET_SALE_OFFERS_BY_USER],
+  });
 
-  function DeleteSaleOffer({ saleOfferId }: { saleOfferId: string }) {
-    const [mutation] = useMutation(DELETE_SALE_OFFER_BY_ID, {
-      variables: { deleteSaleOfferById: saleOfferId },
-      refetchQueries: [GET_SALE_OFFERS_BY_USER],
-    });
-    return (
-      <button
-        className="flex justify-center rounded-3xl mt-1 h-[12px] w-[12px] bg-red-500 text-[8px] text-slate-300"
-        style={{ float: "right" }}
-        onClick={() => {
-          if (confirm("Are you sure you want to delete this sale offer")) {
-            mutation();
-          } else {
-            return;
-          }
-        }}
-      >
-        X
-      </button>
-    );
-  }
+  const handleDeleteSaleOffer = (saleOfferId: string) => {
+    let confirmation = confirm("Are you sure you want to delete the offer?");
+    if (!confirmation) {
+      return;
+    }
+    deleteSaleOffer({variables: {deleteSaleOfferById: saleOfferId}})
+  };
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -45,43 +43,68 @@ const Profile = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       {/* Tab bar to switch between 'Mine annoncer' and 'Profiloplysninger'*/}
-      <div></div>
+      <div className="flex gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 mb-20">
+        <p>My sale offers</p>
+        <p>Sale offers interacted with</p>
+        <p>Profile information</p>
+      </div>
       {/* Display of user's sale offers */}
-      <p className="text-2xl">Mine annoncer</p>
       <div>
-        {data.getSaleOffersByUser.map((offer: SaleOfferInterface) => (
-          <div className="flex bg-slate-300 sm:flex-col lg:flex-row gap-2 mt-6">
-            {/* Images */}
-            <Carousel width={"110px"} showThumbs={false} showStatus={false}>
-              {offer.imgs.map((img) => (
-                <div key={img}>
-                  <img src={isValidHttpUrl(img) ? img : "../../images/No-Image-Placeholder.svg.png"} alt="" />
+        {userSaleOffers.map((userSaleOffer) => (
+          <div className="relative">
+            <Link to={`/offer/${userSaleOffer.id}`}>
+              <div
+                key={userSaleOffer.id}
+                className="relative bg-gray-300 w-[500px] h-[180px] rounded-xl p-2 flex shadow-md font-light hover:scale-105 transform 
+           transition duration-100 my-4"
+              >
+                {userSaleOffer.notification_count > 0 && (
+                  <div className="absolute bg-red-400 bottom-[-10px] right-[-4px] z-50 px-2 py-1 text-white rounded-full text-sm">
+                    <div className="">{userSaleOffer.notification_count}</div>
+                  </div>
+                )}
+                <div className="absolute top-0 right-0 flex items-center gap-1 text-[10px] bg-gray-100 rounded-bl rounded-tr p-[1.5px] shadow-sm">
+                  {userSaleOffer.is_shippable ? "Kan sendes" : "Sendes ikke"}{" "}
+                  {userSaleOffer.is_shippable && <FaShuttleVan className="" />}
                 </div>
-              ))}
-            </Carousel>
-            {/* Delete button */}
-            <DeleteSaleOffer saleOfferId={offer.id} />
-            <div className="flex flex-col">
-              {/* Description and category name */}
-              <p>
-                {offer.description}, {offer.category.name}
-              </p>
-              {/* Price */}
-              <div className="flex">
-                <Moment fromNow>{offer.created_at}</Moment>
-                <p className="ml-auto font-semibold">
-                  {new Intl.NumberFormat("dk-DK", { style: "currency", currency: "DKK" }).format(offer.price)}
-                </p>
+                {/* left area */}
+                <div className="relative overflow-hidden bg-cover bg-no-repeat">
+                  <img
+                    src={
+                      isValidHttpUrl(userSaleOffer.imgs[0])
+                        ? userSaleOffer.imgs[0]
+                        : `../../images/No-Image-Placeholder.svg.png`
+                    }
+                    alt={`Img description ${userSaleOffer.description}`}
+                    className="h-40 w-40 rounded-xl object-cover transition duration-300 ease-in-out hover:scale-110"
+                  />
+                </div>
+                {/* right area */}
+                <div className="flex-grow flex flex-col h-40 justify-center gap-4 p-4">
+                  <p className="text-lg">
+                    {userSaleOffer.description.substring(0, 35)}
+                    {userSaleOffer.description.length > 35 && "..."}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <p className="text-xs">
+                      <Moment fromNow>{userSaleOffer.created_at}</Moment>
+                    </p>
+                    <p className="text-xl font-semibold">{userSaleOffer.price},- kr</p>
+                  </div>
+                  <div className="text-sm">
+                    <div>
+                      {userSaleOffer.city.zip_code} {userSaleOffer.city.name}
+                    </div>
+                  </div>
+                </div>
               </div>
-              {/* Location and shippable*/}
-              <div className="flex text-xs">
-                <p>
-                  {offer.city.zip_code}, {offer.city.name}
-                </p>
-                <p className="pr-2 pl-2">|</p>
-                {offer.is_shippable ? <p>Kan sendes</p> : <p>Sendes ikke</p>}
-              </div>
-            </div>
+            </Link>
+            <button
+              className="absolute top-0 right-[-30px] hover:scale-110 duration:100"
+              onClick={() => handleDeleteSaleOffer(userSaleOffer.id)}
+            >
+              <IoRemoveCircle color="red" />
+            </button>
           </div>
         ))}
       </div>

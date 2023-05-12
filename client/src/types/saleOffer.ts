@@ -1,4 +1,5 @@
 export type SaleOffer = {
+  notification_count: number;
   id: string;
   creator_id: string;
   description: string;
