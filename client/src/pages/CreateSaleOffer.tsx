@@ -173,7 +173,7 @@ const CreateSaleOffer = () => {
         </select>
 
         {/* IS SHIPPABLE */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
           <p className="text-lg">Do you offer shipping?</p>
           <input
             type="checkbox"
