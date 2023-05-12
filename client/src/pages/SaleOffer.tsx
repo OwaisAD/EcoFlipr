@@ -99,11 +99,7 @@ const SaleOffer = () => {
   });
 
   // mutations
-  const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ, {
-    onCompleted(data, clientOptions) {
-      refetch();
-    },
-  });
+  const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ);
   const [createComment, { data: data5, error: error5 }] = useMutation(CREATE_COMMENT, {
     onCompleted(data, clientOptions) {
       refetch();
@@ -133,6 +129,7 @@ const SaleOffer = () => {
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length > 1) {
         if (!currentThreadId) {
           setCurrentThreadId(data.getSaleOfferById.threads[0].id);
+          markThreadAsRead({variables: {threadId: data.getSaleOfferById.threads[0].id}})
           setCurrentThread(data.getSaleOfferById.threads[0]);
         } else {
           //@ts-ignore
@@ -143,6 +140,7 @@ const SaleOffer = () => {
       }
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length === 1) {
         setCurrentThreadId(data.getSaleOfferById.threads[0].id);
+        markThreadAsRead({variables: {threadId: data.getSaleOfferById.threads[0].id}})
         setCurrentThread(data.getSaleOfferById.threads[0]);
         getBuyerDataById({ variables: { getUserDataByIdId: data.getSaleOfferById.threads[0].creator_id } });
       }
@@ -174,6 +172,11 @@ const SaleOffer = () => {
 
     // add comment
     if (saleOffer.creator_id === auth.userId) {
+      if (!currentThreadId) {
+        toast.error("You can't start a conversation on your own offer");
+        return;
+      }
+
       createComment({
         variables: { input: { content: comment, saleOfferId: saleOffer.id, threadId: currentThreadId } },
       });
@@ -308,6 +311,9 @@ const SaleOffer = () => {
       {/* THREAD LOGIC */}
 
       <div className="flex flex-col items-center justify-center mt-14 mb-28">
+        {saleOffer.threads && saleOffer.threads.length === 0 && (
+          <p className="text-lg font-light text-center">Currently no</p>
+        )}
         <div className="flex gap-6">
           {/* Left side scrollbar only showing if you are the owner have more than one thread*/}
           {saleOffer.threads && saleOffer.threads.length > 1 && (
@@ -316,11 +322,9 @@ const SaleOffer = () => {
                 <p className="text-xs font-light mt-3">Threads</p>
                 <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2 shadow-sm">
                   {saleOffer.threads.map((thread) => {
-                    console.log(thread);
                     let hasUnreadComments = thread.comments.some(
                       (comment) => !comment.is_read && comment.author_id !== auth.userId
                     );
-
                     return (
                       <>
                         <div
