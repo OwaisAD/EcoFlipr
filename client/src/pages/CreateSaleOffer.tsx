@@ -129,7 +129,7 @@ const CreateSaleOffer = () => {
       price: +price,
     };
 
-    console.log(comment)
+    console.log(comment);
     createSaleOffer({ variables: { input: comment } });
   };
 
