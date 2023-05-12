@@ -53,4 +53,11 @@ export default gql`
   type DeletedUser {
     id: ID!
   }
+
+  type UserData {
+    id: ID!
+    first_name: String!
+    last_name: String!
+    phone_number: String!
+  }
 `;

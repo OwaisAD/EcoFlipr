@@ -12,6 +12,8 @@ export default gql`
     getRandomSaleOffersByAmount(amount: Int): [SaleOfferBasic]
 
     getUser: UserWithoutSaleoffers
+    getUserDataById(id: String): UserData
+    getUserNotificationCount: Int
 
     getCityByZipCode(zip_code: String): City
   }

@@ -12,6 +12,10 @@ import resolvers from "./graphql/resolvers";
 import { PORT, MONGO_URI } from "./utils/config";
 import User from "./models/user";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import Category from "./models/category";
+import { categories } from "./data/categories";
+import City from "./models/city";
+import { cities } from "./data/zipsAndCities";
 
 dotenv.config();
 
@@ -50,6 +54,7 @@ const startServer = async () => {
     .connect(URL)
     .then(() => {
       infoLog("connected to MongoDB");
+
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);

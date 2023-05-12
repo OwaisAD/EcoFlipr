@@ -4,8 +4,10 @@ import { CREATE_USER } from "../GraphQL/mutations/createUser";
 import { toast } from "react-hot-toast";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const Signup = () => {
+  const auth = useAuth();
   const [createUser, { data, error, loading }] = useMutation(CREATE_USER);
   const initialState = {
     first_name: "",
@@ -28,7 +30,7 @@ const Signup = () => {
       signUpCredentials.first_name.length < 2 ||
       signUpCredentials.first_name.length > 50
     ) {
-      toast.error("First name must be between 2 and 50 characters", { position: "top-right" });
+      toast.error("First name must be between 2 and 50 characters");
       return;
     }
     if (
@@ -36,36 +38,36 @@ const Signup = () => {
       signUpCredentials.last_name.length < 2 ||
       signUpCredentials.last_name.length > 50
     ) {
-      toast.error("Last name must be between 2 and 50 characters", { position: "top-right" });
+      toast.error("Last name must be between 2 and 50 characters");
       return;
     }
     if (!signUpCredentials.address || signUpCredentials.address.length < 5 || signUpCredentials.address.length > 100) {
-      toast.error("Address must be between 5 and 100 characters", { position: "top-right" });
+      toast.error("Address must be between 5 and 100 characters");
       return;
     }
 
     if (!signUpCredentials.phone_number || !validator.isMobilePhone(signUpCredentials.phone_number, "da-DK")) {
-      toast.error("Phone number must be a valid danish number", { position: "top-right" });
+      toast.error("Phone number must be a valid danish number");
       return;
     }
 
     if (!signUpCredentials.email || !validator.isEmail(signUpCredentials.email)) {
-      toast.error("Please enter a valid email", { position: "top-right" });
+      toast.error("Please enter a valid email");
       return;
     }
 
     if (!signUpCredentials.password || signUpCredentials.password.length < 8) {
-      toast.error("Password should be at least 8 characters", { position: "top-right" });
+      toast.error("Password should be at least 8 characters");
       return;
     }
 
     if (signUpCredentials.password !== signUpCredentials.confirm_password) {
-      toast.error("Passwords does not match", { position: "top-right" });
+      toast.error("Passwords does not match");
       return;
     }
 
     if (!toc_confirmed) {
-      toast.error("You must agree to the Terms and Conditions", { position: "top-right" });
+      toast.error("You must agree to the Terms and Conditions");
       return;
     }
 
@@ -82,6 +84,12 @@ const Signup = () => {
       },
     });
   };
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      navigate("/");
+    }
+  }, [auth.isAuthenticated]);
 
   useEffect(() => {
     if (data) {
@@ -102,7 +110,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen w-full flex">
       {/* left side */}
-      <div className="relative hidden lg:block">
+      <div className="relative hidden lg:block w-full">
         <img
           src={"../../images/signin_background.jpg"}
           alt="sign in background image"
@@ -112,35 +120,101 @@ const Signup = () => {
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black opacity-40"></div>
       </div>
       {/* right side with inputs */}
-      <div className="bg-white flex flex-col justify-center py-[35px] px-[70px] w-full md:max-w-full lg:max-w-[640px] items-center">
-        <div className="min-w-[450px]">
+      <div className="bg-white flex flex-col justify-center py-[35px] px-[70px] items-center w-full lg:max-w-[600px]">
+        <div className="md:min-w-[450px] lg:max-w-[500px] ">
           <form onChange={onChange} className="flex flex-col gap-2">
-            <p className="text-3xl font-light">Create an account</p>
-            <p>Please fill out the following fields</p>
-            <label htmlFor="first_name">First name</label>
-            <input type="text" placeholder="Enter first name" id="first_name" className="rounded-[0.2rem]" />
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-3xl font-normal">Create an account</p>
+                <p className="mb-3">Please fill out the following fields</p>
+              </div>
+              <img
+                src={"../../images/ecoflipr-logo-black.png"}
+                alt="logo"
+                className="h-8 hover:scale-105 duration-100 cursor-pointer mb-4"
+                onClick={() => navigate("/")}
+              />
+            </div>
+            <label htmlFor="first_name" className="text-[16px] font-light ml-[1px] text-gray-500">
+              First name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter first name"
+              id="first_name"
+              className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm"
+            />
 
-            <label htmlFor="last_name">Last name</label>
-            <input type="text" placeholder="Enter last name" id="last_name" className="rounded-[0.2rem]" />
+            <label htmlFor="last_name" className="text-[16px] font-light ml-[1px] text-gray-500">
+              Last name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter last name"
+              id="last_name"
+              className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm"
+            />
 
-            <label htmlFor="address">Address</label>
-            <input type="text" placeholder="Enter address" id="address" className="rounded-[0.2rem]" />
+            <label htmlFor="address" className="text-[16px] font-light ml-[1px] text-gray-500">
+              Address
+            </label>
+            <input
+              type="text"
+              placeholder="Enter address"
+              id="address"
+              className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm"
+            />
 
-            <label htmlFor="phone_number">Phone number</label>
-            <input type="text" placeholder="Enter phone number" id="phone_number" className="rounded-[0.2rem]" />
+            <label htmlFor="phone_number" className="text-[16px] font-light ml-[1px] text-gray-500">
+              Phone number
+            </label>
+            <input
+              type="text"
+              placeholder="Enter phone number"
+              id="phone_number"
+              className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm"
+            />
 
-            <label htmlFor="email">Email</label>
-            <input type="text" placeholder="Enter email" id="email" className="rounded-[0.2rem]" />
+            <label htmlFor="email" className="text-[16px] font-light ml-[1px] text-gray-500">
+              Email
+            </label>
+            <input
+              type="text"
+              placeholder="Enter email"
+              id="email"
+              className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm"
+            />
 
-            <label htmlFor="password">Password</label>
-            <input type="password" placeholder="Enter password" id="password" className="rounded-[0.2rem]" />
-            <label htmlFor="confirm_password">Confirm password</label>
-            <input type="password" placeholder="Confirm password" id="confirm_password" className="rounded-[0.2rem]" />
+            <label htmlFor="password" className="text-[16px] font-light ml-[1px] text-gray-500">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter password"
+              id="password"
+              className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm "
+            />
+            <label htmlFor="confirm_password" className="text-[16px] font-light ml-[1px] text-gray-500">
+              Confirm password
+            </label>
+            <input
+              type="password"
+              placeholder="Confirm password"
+              id="confirm_password"
+              className="border border-gray-300 rounded-[0.25rem] py-[12px] px-[20px] mb-[8px] text-sm"
+            />
 
             <div className="flex items-center justify-center gap-2 my-3">
-              <input type="checkbox" onChange={(e) => setToc_confirmed(e.target.checked)} />
+              <input
+                type="checkbox"
+                onChange={(e) => setToc_confirmed(e.target.checked)}
+                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
               <p>
-                I agree to these <span className="text-blue-700 cursor-pointer">Terms and Conditions</span>
+                I agree to these{" "}
+                <span className="text-blue-700 dark:text-blue-500 hover:underline cursor-pointer">
+                  Terms and Conditions
+                </span>
               </p>
             </div>
 

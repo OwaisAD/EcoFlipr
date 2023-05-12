@@ -230,7 +230,7 @@ export const saleOfferResolver = {
       const regex = new RegExp(searchTerms.join("|"), "i");
 
       const skip = (page - 1) * ITEMS_PER_PAGE;
-      const countPromise = SaleOffer.estimatedDocumentCount({});
+      const countPromise = SaleOffer.find({ description: regex });
 
       const saleOffersPromise = SaleOffer.find({ description: regex }, { threads: false })
         .populate([
@@ -248,9 +248,10 @@ export const saleOfferResolver = {
       }
 
       // for instance, if we have 400 items and 20 items per page, then we can calculate the amount of pages
-      const pageCount = count / ITEMS_PER_PAGE;
 
-      return { pagination: { count, pageCount: page }, saleOffers };
+      const pageCount = Math.ceil(count.length / ITEMS_PER_PAGE);
+
+      return { pagination: { count: count.length, pageCount: pageCount }, saleOffers };
     },
     getRecentSaleOffersByAmount: async (_parent: never, { amount }: SaleOffersAmountInput) => {
       if (amount < 1) {

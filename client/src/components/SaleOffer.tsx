@@ -24,13 +24,13 @@ const SaleOffer = ({ saleOffer }: SaleOfferProps) => {
           className="absolute top-0 left-0 w-40 h-40 text-white  hover:bg-black/60 opacity-0 hover:opacity-100 rounded-xl m-2 z-50"
         >
           <div className="white-space-normal text-xs md:text-sm flex flex-col justify-center items-center h-full text-center font-light gap-2">
-            <p className="text-base">{saleOffer.description}</p>
+            <p className="text-base">{saleOffer.description.substring(0, 15)}</p>
             <p className="text-xl">{saleOffer.price},-</p>
             <p className="mt-2">{saleOffer.city.name}</p>
           </div>
         </div>
         {!isHovered && (
-          <div className="absolute bottom-3 right-7 text-blue rounded-xl m-2">
+          <div className="absolute bottom-3 right-7 text-blue rounded-xl m-2 xs:right-[-4px] sm:right-4 md:right-6">
             <div className="white-space-normal flex flex-col justify-center items-center h-full text-center font-bold gap-2">
               <p className="bg-white rounded-md shadow-md shadow-gray-400 text-sm p-[1px]">{saleOffer.price},-</p>
             </div>
