@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Uploader } from "uploader";
 import { UploadDropzone } from "react-uploader";
 import { toast } from "react-hot-toast";
@@ -53,6 +53,7 @@ type City = {
 
 const CreateSaleOffer = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -131,6 +132,7 @@ const CreateSaleOffer = () => {
 
     console.log(comment);
     createSaleOffer({ variables: { input: comment } });
+    navigate("/profile");
   };
 
   const handleFindCity = (zipCode: string) => {
