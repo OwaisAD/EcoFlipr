@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaShuttleVan } from "react-icons/fa";
 import { IoRemoveCircle } from "react-icons/io5";
+import { FiEdit } from "react-icons/fi";
 
 const Profile = () => {
   const auth = useAuth();
@@ -42,6 +43,15 @@ const Profile = () => {
 
   const handleEditProfileInformation = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!editProfileInfo) {
+      let confirmation = confirm("Are you sure you want to edit your profile information?");
+      if (!confirmation) {
+        return;
+      }
+    } else {
+      
+    }
+
     setEditProfileInfo(!editProfileInfo);
   };
 
@@ -155,32 +165,72 @@ const Profile = () => {
       {showMyProfileSettings && (
         <div>
           <p className="text-center font-thin text-lg">Profile information</p>
-          <form className="flex flex-col gap-2 mt-5" onSubmit={handleEditProfileInformation}>
+          <form className="flex flex-col gap-3 mt-5" onSubmit={handleEditProfileInformation}>
             {/* FIRST NAME AND LAST NAME */}
             <div className="flex gap-5">
-              <div className="flex flex-col">
-                <label htmlFor="first_name">First name</label>
-                <input type="text" id="first_name" placeholder="Enter first name" className="font-light" disabled={!editProfileInfo}/>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="first_name" className="font-light">
+                  First name
+                </label>
+                <input
+                  type="text"
+                  id="first_name"
+                  placeholder="Enter first name"
+                  className="font-light border-none rounded-[12px] disabled:bg-gray-300"
+                  disabled={!editProfileInfo}
+                />
               </div>
-              <div className="flex flex-col">
-                <label htmlFor="last_name">Last name</label>
-                <input type="text" id="last_name" className="font-light" placeholder="Enter last name" disabled={!editProfileInfo}/>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="last_name" className="font-light">
+                  Last name
+                </label>
+                <input
+                  type="text"
+                  id="last_name"
+                  className="font-light border-none rounded-[12px] disabled:bg-gray-300"
+                  placeholder="Enter last name"
+                  disabled={!editProfileInfo}
+                />
               </div>
             </div>
             {/* EMAIL*/}
-            <div className="flex flex-col">
-              <label htmlFor="email">Email</label>
-              <input type="text" id="email" className="font-light" placeholder="Enter email" disabled={!editProfileInfo}/>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="email" className="font-light">
+                Email
+              </label>
+              <input
+                type="text"
+                id="email"
+                className="font-light border-none rounded-[12px] disabled:bg-gray-300"
+                placeholder="Enter email"
+                disabled={!editProfileInfo}
+              />
             </div>
             {/* ADDRESS */}
-            <div className="flex flex-col">
-              <label htmlFor="address">Address</label>
-              <input type="text" id="address" className="font-light" placeholder="Enter address" disabled={!editProfileInfo}/>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="address" className="font-light">
+                Address
+              </label>
+              <input
+                type="text"
+                id="address"
+                className="font-light border-none rounded-[12px] disabled:bg-gray-300"
+                placeholder="Enter address"
+                disabled={!editProfileInfo}
+              />
             </div>
             {/* PHONE NUMBER */}
-            <div className="flex flex-col">
-              <label htmlFor="phone_number">Phone number</label>
-              <input type="text" id="phone_number" className="font-light" placeholder="Enter phone number" disabled={!editProfileInfo}/>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="phone_number" className="font-light">
+                Phone number
+              </label>
+              <input
+                type="text"
+                id="phone_number"
+                className="font-light border-none rounded-[12px] disabled:bg-gray-300"
+                placeholder="Enter phone number"
+                disabled={!editProfileInfo}
+              />
             </div>
             <div className="text-center">
               <button type="submit" className="px-6 py-2 bg-[#2C2E48] rounded-full text-white font-normal">
@@ -189,8 +239,19 @@ const Profile = () => {
             </div>
             {/* PASSWORD */}
             <div className="flex">
-              <input type="text" />
-              <button>Edit</button>
+              <div className="flex flex-col flex-1">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="text"
+                  id="password"
+                  placeholder="******************"
+                  className="border-none rounded-[12px]"
+                />
+              </div>
+
+              <button>
+                <FiEdit />
+              </button>
             </div>
           </form>
         </div>
