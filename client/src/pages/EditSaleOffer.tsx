@@ -177,7 +177,7 @@ const EditSaleOffer = () => {
                 <div className="relative">
                   <img src={img} alt="" className="w-44 h-44 object-cover shadow-lg" />
                   <div className="absolute top-1 right-1 hover:scale-125 duration-100">
-                    <IoRemoveCircle color="red" size={24}/>
+                    <IoRemoveCircle color="red" size={24} />
                   </div>
                 </div>
               </>
