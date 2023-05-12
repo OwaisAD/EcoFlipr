@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthProvider";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { QueryHookOptions, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SALE_OFFER_BY_ID } from "../GraphQL/queries/getSaleOfferById";
 import { useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ import { FcPhoneAndroid } from "react-icons/fc";
 import { MARK_THREAD_AS_READ } from "../GraphQL/mutations/markThreadAsRead";
 import { CREATE_COMMENT } from "../GraphQL/mutations/createComment";
 import { RiCheckDoubleFill } from "react-icons/ri";
+import { FiEdit } from "react-icons/fi";
 
 const defaultSaleOffer: SaleOfferInterface = {
   id: "",
@@ -70,6 +71,7 @@ const SaleOffer = () => {
   const [showNumber, setShowNumber] = useState(false);
   const [comment, setComment] = useState("");
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // Queries
   const queryOptions: QueryHookOptions = {
@@ -135,6 +137,7 @@ const SaleOffer = () => {
           //@ts-ignore
           let currentThread = data.getSaleOfferById.threads.filter((thread) => thread.id === currentThreadId)[0];
           setCurrentThread(currentThread);
+          setCurrentThreadId(currentThread.id);
         }
         getBuyerDataById({ variables: { getUserDataByIdId: data.getSaleOfferById.threads[0].creator_id } });
       }
@@ -235,7 +238,7 @@ const SaleOffer = () => {
 
           {/* Location */}
           <div>
-            <p className="my-2 cursor-default text-[8px] text-end">
+            <p className="my-2 cursor-default text-[10px] text-end">
               The items are located in {saleOffer.city.name}, {saleOffer.city.zip_code}
             </p>
             <iframe
@@ -271,10 +274,13 @@ const SaleOffer = () => {
                   </p>
                 </div>
               ) : (
-                <div className="text-sm">
+                <div className="flex flex-col items-center text-sm gap-3">
                   <p>
                     You have had this item for sale since <Moment fromNow>{saleOffer.created_at}</Moment>
                   </p>
+                  <button className="flex items-center py-3 px-6 rounded-full gap-2 text-base bg-[#2C2E48] text-white" onClick={() => navigate(`/editoffer/${saleOffer.id}`)}>
+                    <FiEdit /> Edit Offer
+                  </button>
                 </div>
               )}
               {/*On click Contact button will show the owner's phone number for the sale offer*/}
