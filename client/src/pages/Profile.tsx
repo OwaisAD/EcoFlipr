@@ -204,7 +204,8 @@ const Profile = () => {
                   id="first_name"
                   placeholder="Enter first name"
                   className="font-light border-none rounded-[12px] disabled:bg-gray-300"
-                  disabled={!editProfileInfo} value={userData.first_name}
+                  disabled={!editProfileInfo}
+                  value={userData.first_name}
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -216,7 +217,8 @@ const Profile = () => {
                   id="last_name"
                   className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                   placeholder="Enter last name"
-                  disabled={!editProfileInfo} value={userData.last_name}
+                  disabled={!editProfileInfo}
+                  value={userData.last_name}
                 />
               </div>
             </div>
@@ -230,7 +232,8 @@ const Profile = () => {
                 id="email"
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter email"
-                disabled={!editProfileInfo} value={userData.email}
+                disabled={!editProfileInfo}
+                value={userData.email}
               />
             </div>
             {/* ADDRESS */}
@@ -243,7 +246,8 @@ const Profile = () => {
                 id="address"
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter address"
-                disabled={!editProfileInfo} value={userData.address}
+                disabled={!editProfileInfo}
+                value={userData.address}
               />
             </div>
             {/* PHONE NUMBER */}
@@ -256,7 +260,8 @@ const Profile = () => {
                 id="phone_number"
                 className="font-light border-none rounded-[12px] disabled:bg-gray-300"
                 placeholder="Enter phone number"
-                disabled={!editProfileInfo} value={userData.phone_number}
+                disabled={!editProfileInfo}
+                value={userData.phone_number}
               />
             </div>
             <div className="text-center">
@@ -264,22 +269,24 @@ const Profile = () => {
                 Edit
               </button>
             </div>
-            {/* PASSWORD */}
-            <div className="flex">
-              <div className="flex flex-col flex-1">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="text"
-                  id="password"
-                  placeholder="******************"
-                  className="border-none rounded-[12px]"
-                />
-              </div>
-              <button>
+          </form>
+          {/* PASSWORD */}
+          <div className="flex gap-2">
+            <div className="flex flex-col flex-1 gap-1">
+              <label htmlFor="password">Password</label>
+              <input
+                type="text"
+                id="password"
+                placeholder="******************"
+                className="border-none rounded-[12px]"
+              />
+            </div>
+            <div className="mt-8">
+              <button className="py-2 px-2 bg-[#2C2E48] text-white rounded-full">
                 <FiEdit />
               </button>
             </div>
-          </form>
+          </div>
         </div>
       )}
     </div>
