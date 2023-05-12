@@ -15,6 +15,7 @@ import { GET_USER_DATA_BY_ID } from "../GraphQL/queries/getUserDataById";
 import { FcPhoneAndroid } from "react-icons/fc";
 import { MARK_THREAD_AS_READ } from "../GraphQL/mutations/markThreadAsRead";
 import { CREATE_COMMENT } from "../GraphQL/mutations/createComment";
+import { RiCheckDoubleFill } from "react-icons/ri";
 
 const defaultSaleOffer: SaleOfferInterface = {
   id: "",
@@ -315,18 +316,16 @@ const SaleOffer = () => {
                 <p className="text-xs font-light mt-3">Threads</p>
                 <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2">
                   {saleOffer.threads.map((thread) => {
-                    let hasUnread = thread.comments.reduce((acc, comment) => {
-                      if (comment.is_read === false && comment.author_id !== auth.userId) {
-                        return true;
-                      }
-                      return acc;
-                    }, false);
+                    console.log(thread);
+                    let hasUnreadComments = thread.comments.some(
+                      (comment) => !comment.is_read && comment.author_id !== auth.userId
+                    );
 
                     return (
                       <>
                         <div
                           className={`rounded-full my-[7px] p-[6px] cursor-pointer hover:scale-110 hover:border hover:border-white duration-100 ${
-                            hasUnread ? "bg-red-700" : "bg-green-500"
+                            hasUnreadComments ? "bg-red-700" : "bg-green-500"
                           } ${currentThreadId === thread.id ? "border-[1.5px] border-gray-700" : ""}`}
                           key={thread.id}
                           onClick={() => handleThreadChange(thread.id)}
@@ -347,15 +346,13 @@ const SaleOffer = () => {
                 {currentThread.comments.map((comment, idx) => (
                   <div
                     className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${
-                      comment.author_id === saleOffer.creator_id ? "bg-slate-400" : "bg-slate-300"
+                      comment.author_id === saleOffer.creator_id ? "bg-slate-400/60" : "bg-slate-300"
                     }`}
                     key={idx}
                   >
-                    <p className="font-light text-lg mb-1 break-words">
-                      {comment.content} {comment.is_read.toString()}
-                    </p>
+                    <p className="font-light text-lg mb-2 break-words">{comment.content}</p>
                     <div className="flex justify-between">
-                      <p className="font-thin text-[10px] text-gray-600">
+                      <p className="font-thin text-[11px] text-stone-600">
                         Written by{" "}
                         {comment.author_id === auth.userId ? (
                           "You"
@@ -378,6 +375,7 @@ const SaleOffer = () => {
                         )}{" "}
                         <Moment fromNow>{comment.created_at}</Moment>
                       </p>
+                      {comment.is_read && <RiCheckDoubleFill className="text-stone-600" />}
                     </div>
                   </div>
                 ))}
