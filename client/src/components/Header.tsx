@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import { HiDocumentText } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useLazyQuery, useQuery } from "@apollo/client";
 import { toast } from "react-hot-toast";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
 import { Squash as Hamburger, Squash } from "hamburger-react";
+import { GET_USER_NOTIFICATION_COUNT } from "../GraphQL/queries/getUserNotificationCount";
 
 type Props = {
   searchQuery: string;

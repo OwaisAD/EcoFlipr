@@ -54,6 +54,17 @@ export const userResolver = {
         phone_number: userFromDB?.phone_number,
       };
     },
+    getUserNotificationCount: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      // CALCULATE NOTIFICATION COUNT BASED ON SALE OFFERS YOU CREATED AND THREADS
+    },
   },
   Mutation: {
     createUser: async (_parent: any, args: any, _context: any, _info: any) => {

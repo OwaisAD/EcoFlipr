@@ -7,7 +7,7 @@ import CreateSaleOffer from "./pages/CreateSaleOffer";
 import SaleOffer from "./pages/SaleOffer";
 import Profile from "./pages/Profile";
 import EditSaleOffer from "./pages/EditSaleOffer";
-import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from, useQuery } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { Toaster, toast } from "react-hot-toast";
 import Error from "./pages/Error";

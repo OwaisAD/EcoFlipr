@@ -13,6 +13,7 @@ export default gql`
 
     getUser: UserWithoutSaleoffers
     getUserDataById(id: String): UserData
+    getUserNotificationCount: Int
 
     getCityByZipCode(zip_code: String): City
   }
