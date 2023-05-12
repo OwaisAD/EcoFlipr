@@ -20,6 +20,9 @@ const Profile = () => {
   const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false);
   const [showMyProfileSettings, setShowMyProfileSettings] = useState(false);
 
+  const [editProfileInfo, setEditProfileInfo] = useState(false);
+  const [editPassword, setEditPassword] = useState(false);
+
   const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER, {
     onCompleted(data) {
       setUserSaleOffers(data.getSaleOffersByUser);
@@ -37,7 +40,10 @@ const Profile = () => {
     deleteSaleOffer({ variables: { deleteSaleOfferById: saleOfferId } });
   };
 
-  const handleHeaderChange = () => {};
+  const handleEditProfileInformation = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setEditProfileInfo(!editProfileInfo);
+  };
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -149,19 +155,38 @@ const Profile = () => {
       {showMyProfileSettings && (
         <div>
           <p className="text-center font-thin text-lg">Profile information</p>
-          <form className="flex flex-col gap-2 mt-5">
+          <form className="flex flex-col gap-2 mt-5" onSubmit={handleEditProfileInformation}>
             {/* FIRST NAME AND LAST NAME */}
-            <div>
-              <input type="text" />
-              <input type="text" />
+            <div className="flex gap-5">
+              <div className="flex flex-col">
+                <label htmlFor="first_name">First name</label>
+                <input type="text" id="first_name" placeholder="Enter first name" className="font-light" disabled={!editProfileInfo}/>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="last_name">Last name</label>
+                <input type="text" id="last_name" className="font-light" placeholder="Enter last name" disabled={!editProfileInfo}/>
+              </div>
             </div>
             {/* EMAIL*/}
-            <input type="text" />
+            <div className="flex flex-col">
+              <label htmlFor="email">Email</label>
+              <input type="text" id="email" className="font-light" placeholder="Enter email" disabled={!editProfileInfo}/>
+            </div>
             {/* ADDRESS */}
-            <input type="text" />
+            <div className="flex flex-col">
+              <label htmlFor="address">Address</label>
+              <input type="text" id="address" className="font-light" placeholder="Enter address" disabled={!editProfileInfo}/>
+            </div>
             {/* PHONE NUMBER */}
-            <input type="text" />
-            <button>Edit</button>
+            <div className="flex flex-col">
+              <label htmlFor="phone_number">Phone number</label>
+              <input type="text" id="phone_number" className="font-light" placeholder="Enter phone number" disabled={!editProfileInfo}/>
+            </div>
+            <div className="text-center">
+              <button type="submit" className="px-6 py-2 bg-[#2C2E48] rounded-full text-white font-normal">
+                Edit
+              </button>
+            </div>
             {/* PASSWORD */}
             <div className="flex">
               <input type="text" />
