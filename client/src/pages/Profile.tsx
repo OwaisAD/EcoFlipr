@@ -16,6 +16,10 @@ const Profile = () => {
   const auth = useAuth();
   const location = useLocation();
   const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
+  const [showMySaleOffers, setShowMySaleOffers] = useState(true)
+  const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false)
+  const [showMyProfileSettings, setShowMyProfileSettings] = useState(false)
+
   const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER, {
     onCompleted(data) {
       setUserSaleOffers(data.getSaleOffersByUser);
@@ -33,6 +37,8 @@ const Profile = () => {
     deleteSaleOffer({ variables: { deleteSaleOfferById: saleOfferId } });
   };
 
+  const handleHeaderChange = () => {}
+
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
     return <Navigate to="/login" />;
@@ -44,12 +50,19 @@ const Profile = () => {
     <div className="flex flex-col justify-center items-center">
       {/* Tab bar to switch between 'Mine annoncer' and 'Profiloplysninger'*/}
       <div className="flex gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 mb-20">
-        <p>My sale offers</p>
-        <p>Sale offers interacted with</p>
-        <p>Profile information</p>
+        <button onClick={() => {
+          setShowMySaleOffers(!showMySaleOffers)
+        }} className={`${showMySaleOffers && "font-semibold"}`}>My sale offers</button>
+        <button onClick={() => {
+          setShowMyInteractedSaleOffers(!showMyInteractedSaleOffers)
+        }} className={`${showMyInteractedSaleOffers && "font-semibold"}`}>Sale offers interacted with</button>
+        <button onClick={() => {
+          setShowMyProfileSettings(!showMyProfileSettings)
+        }} className={`${showMyProfileSettings && "font-semibold"}`}>Profile information</button>
       </div>
       {/* Display of user's sale offers */}
       <div>
+        <p className="text-center font-thin text-lg">My sale offers</p>
         {userSaleOffers.map((userSaleOffer) => (
           <div className="relative">
             <Link to={`/offer/${userSaleOffer.id}`}>
