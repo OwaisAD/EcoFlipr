@@ -21,7 +21,7 @@ const Profile = () => {
       setUserSaleOffers(data.getSaleOffersByUser);
     },
   });
-  const [deleteSaleOffer, {data: data2, loading: loading2, error: error2}] = useMutation(DELETE_SALE_OFFER_BY_ID, {
+  const [deleteSaleOffer, { data: data2, loading: loading2, error: error2 }] = useMutation(DELETE_SALE_OFFER_BY_ID, {
     refetchQueries: [GET_SALE_OFFERS_BY_USER],
   });
 
@@ -30,7 +30,7 @@ const Profile = () => {
     if (!confirmation) {
       return;
     }
-    deleteSaleOffer({variables: {deleteSaleOfferById: saleOfferId}})
+    deleteSaleOffer({ variables: { deleteSaleOfferById: saleOfferId } });
   };
 
   if (!auth.isAuthenticated) {
