@@ -314,7 +314,7 @@ const SaleOffer = () => {
             <>
               <div>
                 <p className="text-xs font-light mt-3">Threads</p>
-                <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2">
+                <div className="w-[50px] bg-slate-300 rounded-[10px] mt-2 h-full max-h-[200px] scroll-smooth scrollbar-hide overflow-y-scroll flex flex-col items-center py-2 shadow-sm">
                   {saleOffer.threads.map((thread) => {
                     console.log(thread);
                     let hasUnreadComments = thread.comments.some(
@@ -345,17 +345,17 @@ const SaleOffer = () => {
               <>
                 {currentThread.comments.map((comment, idx) => (
                   <div
-                    className={`w-[450px] py-4 px-6 rounded-[12px] my-2 ${
+                    className={`w-[450px] py-4 px-6 rounded-[12px] my-3 shadow-sm ${
                       comment.author_id === saleOffer.creator_id ? "bg-slate-400/60" : "bg-slate-300"
                     }`}
                     key={idx}
                   >
-                    <p className="font-light text-lg mb-2 break-words">{comment.content}</p>
+                    <p className="font-light text-base mb-2 break-words">{comment.content}</p>
                     <div className="flex justify-between">
                       <p className="font-thin text-[11px] text-stone-600">
                         Written by{" "}
                         {comment.author_id === auth.userId ? (
-                          "You"
+                          <div className="inline-block font-medium">you</div>
                         ) : (
                           <>
                             {" "}
@@ -382,7 +382,7 @@ const SaleOffer = () => {
               </>
             )}
             {/* Message input and Button to submit message input */}
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 mt-5">
               <textarea
                 rows={1}
                 placeholder="Write here..."
