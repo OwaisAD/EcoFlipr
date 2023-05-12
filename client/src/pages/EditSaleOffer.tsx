@@ -94,7 +94,7 @@ const EditSaleOffer = () => {
               className="border-none rounded-[12px] w-40 relative"
               placeholder="Enter a price"
             />
-            <p className="absolute top-2 right-2 text-gray-500">,-</p>
+            <p className="absolute top-2 right-2 text-gray-500 cursor-default select-none">,-</p>
           </div>
         </div>
 

@@ -4,6 +4,10 @@ import { Navigate, useLocation } from "react-router-dom";
 import { Uploader } from "uploader";
 import { UploadDropzone } from "react-uploader";
 import { toast } from "react-hot-toast";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { GET_ALL_CATEGORIES } from "../GraphQL/queries/getAllCategories";
+import { GET_CITY_BY_ZIP_CODE } from "../GraphQL/queries/getCityByZipCode";
+import { CREATE_SALE_OFFER } from "../GraphQL/mutations/createSaleOffer";
 
 // https://www.npmjs.com/package/uploader
 // Initialize once (at the start of your app).
@@ -36,14 +40,44 @@ const uploaderOptions = {
   },
 };
 
+type Category = {
+  id: string;
+  name: string;
+};
+
+type City = {
+  id: string;
+  name: string;
+  zip_code: string;
+};
+
 const CreateSaleOffer = () => {
   const auth = useAuth();
   const location = useLocation();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [foundCity, setFoundCity] = useState<City>({ id: "", name: "", zip_code: "" });
+
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [shipping, setShipping] = useState(false);
   const [zipCode, setZipCode] = useState("");
   const [price, setPrice] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+
+  const { data, loading, error } = useQuery(GET_ALL_CATEGORIES, {
+    onCompleted(data) {
+      setCategories(data.getAllCategories);
+    },
+  });
+
+  const [getCityByZipCode, { data: data1, loading: loading1, error: error1 }] = useLazyQuery(GET_CITY_BY_ZIP_CODE, {
+    onCompleted(data) {
+      setFoundCity(data.getCityByZipCode);
+    },
+  });
+
+  const [createSaleOffer, { data: data2 }] = useMutation(CREATE_SALE_OFFER);
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -58,10 +92,58 @@ const CreateSaleOffer = () => {
     }
 
     console.log(category);
+    if (!category) {
+      toast.error("Please select a category");
+      return;
+    }
 
     console.log(shipping);
+
     console.log(zipCode);
+    if (!foundCity.name) {
+      toast.error("Please enter a valid zip code");
+      return;
+    }
+
     console.log(price);
+    if (!price || +price < 1 || +price > 9999999) {
+      toast.error("Please enter a valid price");
+    }
+
+    console.log(images);
+
+    if (!images) {
+      let confirmation = confirm("Are you sure you want to create an offer with no images");
+      if (!confirmation) {
+        return;
+      }
+    }
+
+    // create comment
+    let comment = {
+      category: { id: category },
+      city: { id: foundCity.id },
+      description,
+      imgs: images,
+      is_shippable: shipping,
+      price: +price,
+    };
+
+    console.log(comment)
+    createSaleOffer({ variables: { input: comment } });
+  };
+
+  const handleFindCity = (zipCode: string) => {
+    if (isNaN(+zipCode)) {
+      console.log("Not a number");
+      return;
+    }
+
+    if (+zipCode < 1000 || +zipCode > 9999) {
+      return;
+    }
+
+    getCityByZipCode({ variables: { zipCode } });
   };
 
   return (
@@ -77,12 +159,15 @@ const CreateSaleOffer = () => {
         />
 
         {/* OFFER CATEGORY */}
-        <select name="" id="" className="border-none rounded-[12px]">
+        <select name="" id="" className="border-none rounded-[12px]" onChange={(e) => setCategory(e.target.value)}>
           <option disabled selected>
             Select a category
           </option>
-          <option value="">1</option>
-          <option value="">2</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
         </select>
 
         {/* IS SHIPPABLE */}
@@ -91,20 +176,30 @@ const CreateSaleOffer = () => {
           <input
             type="checkbox"
             className="w-6 h-6 text-blue-600  border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            onChange={(e) => setShipping(!shipping)}
           />
         </div>
 
         {/* CITY */}
         <div>
           <input
-            type="number"
-            placeholder="Select zip code"
-            className="rounded-l-[12px] border-none w-48"
-            min={1000}
-            max={9999}
+            type="text"
+            pattern="[0-9]{4}"
+            maxLength={4}
+            placeholder="Enter a zip code"
+            className="rounded-l-[12px] border-none w-44"
+            onChange={(e) => {
+              handleFindCity(e.target.value);
+            }}
           />
           <div className="inline-block border-slate-800 border-r-2"></div>
-          <input type="text" disabled placeholder="Chosen city" className="rounded-r-[12px] border-none bg-gray-300" />
+          <input
+            type="text"
+            disabled
+            placeholder="Chosen city"
+            className="rounded-r-[12px] border-none bg-gray-300"
+            value={foundCity && foundCity.name}
+          />
         </div>
 
         {/* Price */}
@@ -114,10 +209,11 @@ const CreateSaleOffer = () => {
               type="text"
               pattern="\d*"
               maxLength={8}
-              className="border-none rounded-[12px] w-40 relative"
+              className="border-none rounded-[12px] w-36 relative"
               placeholder="Enter a price"
+              onChange={(e) => setPrice(e.target.value)}
             />
-            <p className="absolute top-2 right-2 text-gray-500">,-</p>
+            <p className="absolute top-2 right-2 text-gray-500 cursor-default select-none">,-</p>
           </div>
         </div>
 
@@ -127,7 +223,9 @@ const CreateSaleOffer = () => {
             uploader={uploader}
             options={uploaderOptions}
             onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
-            onComplete={(files) => alert(files.map((x) => x.fileUrl).join("\n"))}
+            onComplete={(files) => {
+              files.map((x) => setImages([...images, x.fileUrl]));
+            }}
             height="240px"
           />
         </div>

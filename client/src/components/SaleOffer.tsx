@@ -24,7 +24,7 @@ const SaleOffer = ({ saleOffer }: SaleOfferProps) => {
           className="absolute top-0 left-0 w-40 h-40 text-white  hover:bg-black/60 opacity-0 hover:opacity-100 rounded-xl m-2 z-50"
         >
           <div className="white-space-normal text-xs md:text-sm flex flex-col justify-center items-center h-full text-center font-light gap-2">
-            <p className="text-base">{saleOffer.description}</p>
+            <p className="text-base">{saleOffer.description.substring(0, 20)}</p>
             <p className="text-xl">{saleOffer.price},-</p>
             <p className="mt-2">{saleOffer.city.name}</p>
           </div>
