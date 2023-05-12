@@ -48,13 +48,13 @@ const CreateSaleOffer = () => {
 
   return (
     <div className="h-screen w-screen flex items-center justify-center">
-      <div className="flex flex-col w-[600px]">
-        <h1 className="text-center">Create offer</h1>
+      <div className="flex flex-col w-[600px] gap-4">
+        <h1 className="text-center text-2xl font-light">Create offer</h1>
         {/* OFFER DESCRIPTION */}
-        <input type="text" placeholder="Offer description" />
+        <textarea placeholder="Offer description" className="border-none rounded-[12px] h-[80px] max-h-[300px]" />
 
         {/* OFFER CATEGORY */}
-        <select name="" id="">
+        <select name="" id="" className="border-none rounded-[12px]">
           <option disabled selected>
             Select a category
           </option>
@@ -64,17 +64,38 @@ const CreateSaleOffer = () => {
 
         {/* IS SHIPPABLE */}
         <div className="flex items-center justify-between">
-          <p>Can the item be shipped?</p>
+          <p className="text-lg">Do you offer shipping?</p>
           <input
             type="checkbox"
-            className="w-4 h-4 text-blue-600  border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-6 h-6 text-blue-600  border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
 
         {/* CITY */}
         <div>
-          <input type="text" placeholder="Select zip code" className="rounded-lg" />
-          <input type="text" disabled placeholder="Chosen city" />
+          <input
+            type="number"
+            placeholder="Select zip code"
+            className="rounded-l-[12px] border-none w-48"
+            min={1000}
+            max={9999}
+          />
+          <div className="inline-block border-slate-800 border-r-2"></div>
+          <input type="text" disabled placeholder="Chosen city" className="rounded-r-[12px] border-none bg-gray-300" />
+        </div>
+
+        {/* Price */}
+        <div className="text-right ">
+          <div className="relative">
+            <input
+              type="text"
+              pattern="\d*"
+              maxLength={8}
+              className="border-none rounded-[12px] w-40 relative"
+              placeholder="Enter a price"
+            />
+            <p className="absolute top-2 right-2 text-gray-500">,-</p>
+          </div>
         </div>
 
         {/* UPLOAD IMAGES */}
