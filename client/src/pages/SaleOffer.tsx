@@ -278,7 +278,10 @@ const SaleOffer = () => {
                   <p>
                     You have had this item for sale since <Moment fromNow>{saleOffer.created_at}</Moment>
                   </p>
-                  <button className="flex items-center py-3 px-6 rounded-full gap-2 text-base bg-[#2C2E48] text-white" onClick={() => navigate(`/editoffer/${saleOffer.id}`)}>
+                  <button
+                    className="flex items-center py-3 px-6 rounded-full gap-2 text-base bg-[#2C2E48] text-white"
+                    onClick={() => navigate(`/editoffer/${saleOffer.id}`)}
+                  >
                     <FiEdit /> Edit Offer
                   </button>
                 </div>

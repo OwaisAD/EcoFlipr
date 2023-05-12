@@ -96,7 +96,7 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
               onClick={() => navigate("/profile")}
             >
               <CgProfile className="text-white text-2xl" />
-              <div className="absolute top-0 right-[-3px] bg-red-500 text-white rounded-full px-1">
+              <div className="absolute top-0 right-[-3px] bg-red-500 text-white rounded-full px-1 animate-bounce">
                 {/* if noti count > 99 should 99+ */}
                 <p className="text-[9px]">1</p>
               </div>
