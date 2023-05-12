@@ -54,7 +54,6 @@ const startServer = async () => {
     .connect(URL)
     .then(() => {
       infoLog("connected to MongoDB");
-
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);

@@ -16,6 +16,8 @@ import { GET_USER } from "../GraphQL/queries/getUser";
 import { toast } from "react-hot-toast";
 import { UPDATE_USER } from "../GraphQL/mutations/updateUser";
 import validator from "validator";
+import { AiOutlineSave } from "react-icons/ai";
+import { UPDATE_PASSWORD } from "../GraphQL/mutations/updatePassword";
 
 type User = {
   id: string;
@@ -42,6 +44,8 @@ const Profile = () => {
   const [updatedAddress, setUpdatedAddress] = useState("");
   const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState("");
   const [updatedEmail, setUpdatedEmail] = useState("");
+  const [updatedPass, setUpdatedPass] = useState("");
+  const [updatedPassConfirm, setUpdatedPassConfirm] = useState("");
 
   const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
   const [showMySaleOffers, setShowMySaleOffers] = useState(true);
@@ -76,6 +80,8 @@ const Profile = () => {
   });
 
   const [updateUser, { data: data4, loading: loading4, error: error4 }] = useMutation(UPDATE_USER);
+
+  const [updatePassword, { data: data5, loading: loading5, error: error5 }] = useMutation(UPDATE_PASSWORD);
 
   const handleDeleteSaleOffer = (saleOfferId: string) => {
     let confirmation = confirm("Are you sure you want to delete the offer?");
@@ -127,7 +133,7 @@ const Profile = () => {
 
         if (!updatedPhoneNumber || !validator.isMobilePhone(updatedPhoneNumber, "da-DK")) {
           toast.error("Phone number must be a valid danish number");
-          setUpdatedPhoneNumber(userData.phone_number)
+          setUpdatedPhoneNumber(userData.phone_number);
           return;
         }
 
@@ -157,7 +163,43 @@ const Profile = () => {
     setEditProfileInfo(!editProfileInfo);
   };
 
-  const onChangeProfileData = () => {};
+  const handlePasswordChange = () => {
+    if (!editPassword) {
+      let confirmation = confirm("Are you sure you want to change your password?");
+      if (!confirmation) {
+        return;
+      }
+    } else {
+      if (!updatedPass || updatedPass.length < 8) {
+        toast.error("Password should be at least 8 characters");
+        return;
+      }
+
+      if (updatedPassConfirm !== updatedPass) {
+        toast.error("Passwords does not match");
+        return;
+      }
+
+      toast.promise(
+        updatePassword({
+          variables: {
+            input: {
+              newPassword: updatedPass,
+            },
+          },
+        }),
+        {
+          loading: "Updating...",
+          success: <b>Updated successfully!</b>,
+          error: <b>Could not save.</b>,
+        }
+      );
+
+      setUpdatedPass("");
+      setUpdatedPassConfirm("");
+    }
+    setEditPassword(!editPassword);
+  };
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -359,15 +401,34 @@ const Profile = () => {
                 Password
               </label>
               <input
-                type="text"
+                type="password"
                 id="password"
                 placeholder="******************"
-                className="border-none rounded-[12px]"
+                className="border-none rounded-[12px] disabled:bg-gray-300"
+                disabled={!editPassword}
+                value={updatedPass}
+                onChange={(e) => setUpdatedPass(e.target.value)}
               />
+              {editPassword && (
+                <>
+                  <label htmlFor="password" className="font-light">
+                    Confirm password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    placeholder="******************"
+                    className="border-none rounded-[12px] disabled:bg-gray-300"
+                    disabled={!editPassword}
+                    onChange={(e) => setUpdatedPassConfirm(e.target.value)}
+                    value={updatedPassConfirm}
+                  />
+                </>
+              )}
             </div>
             <div className="mt-8">
-              <button className="py-2 px-2 bg-[#2C2E48] text-white rounded-full">
-                <FiEdit />
+              <button className="py-2 px-2 bg-[#2C2E48] text-white rounded-full" onClick={handlePasswordChange}>
+                {editPassword ? <AiOutlineSave /> : <FiEdit />}
               </button>
             </div>
           </div>
