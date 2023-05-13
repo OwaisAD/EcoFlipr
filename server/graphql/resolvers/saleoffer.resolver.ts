@@ -204,7 +204,7 @@ export const saleOfferResolver = {
       return saleOffers;
     },
     getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch) => {
-      const ITEMS_PER_PAGE = 20;
+      const ITEMS_PER_PAGE = 10;
 
       let searchWords = args.searchQuery;
       if (!searchWords) {

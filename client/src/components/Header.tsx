@@ -25,7 +25,9 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
 
-  const { data } = useQuery(GET_USER_NOTIFICATION_COUNT);
+  const { data } = useQuery(GET_USER_NOTIFICATION_COUNT, {
+    skip: !auth.isAuthenticated
+  });
 
   useEffect(() => {
     if (data) {
@@ -112,6 +114,7 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
                 </div>
               )}
             </div>
+
 
             {/* DARK MODE BTN */}
             <DarkModeSwitch checked={isDarkMode} onChange={toggleDarkMode} size={30} />

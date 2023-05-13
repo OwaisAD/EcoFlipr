@@ -18,6 +18,7 @@ import { setContext } from "@apollo/client/link/context";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
+    if (graphQLErrors[0].message === "Cannot read properties of undefined (reading 'thread_id')") return;
     graphQLErrors.map(({ message }) => {
       toast.error(`${message}`);
     });

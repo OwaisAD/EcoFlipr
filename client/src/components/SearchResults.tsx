@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { SaleOffers } from "../types/saleOffer";
 import SaleOfferBox from "./SaleOfferBox";
 import { RxCross2 } from "react-icons/rx";
@@ -31,6 +31,7 @@ const SearchResults = ({
   setPage,
   getSaleOffers,
 }: SearchResultsProps) => {
+  const [initialSaleOffers, setInitialSaleOffers] = useState(saleOffers);
   // price filtering
   const [priceFilterOn, setPriceFilterOn] = useState(false);
   const [priceFiltering, setPriceFiltering] = useState(false);
@@ -48,7 +49,7 @@ const SearchResults = ({
 
   const handlePriceFilterChange = (type: string) => {
     if (!priceFilterOn) {
-      setTempSaleOffers(saleOffers);
+      setTempSaleOffers([...saleOffers]);
       setPriceFilterOn(true);
     }
 
@@ -71,7 +72,7 @@ const SearchResults = ({
   const handleCityFilterChange = (city: string) => {
     console.log("filtering city", city);
     if (!cityFilteringOn) {
-      setTempSaleOffers(saleOffers);
+      setTempSaleOffers([...saleOffers]);
       setCityFilteringOn(true);
     }
 
@@ -97,23 +98,41 @@ const SearchResults = ({
   };
 
   const resetFilter = () => {
-    setSaleOffers(tempSaleOffers.concat(saleOffers));
+    setSaleOffers([...tempSaleOffers]);
     setPriceFiltering(false);
     setPriceFilterOn(false);
     setCityFiltering(false);
     setCategoryFiltering(false);
+    setCategoryFilteringOn(false)
+    setCityFilteringOn(false)
   };
+
+  console.log(
+    "page",
+    page,
+    "pageCount",
+    pageCount,
+    "saleOfferCount",
+    saleOfferCount,
+    "saleOffers.length",
+    saleOffers.length
+  );
+
+  const [displayCount, setDisplayCount] = useState(saleOffers.length + (page - 1) * 10);
+  const calculateCount = () => {
+    setDisplayCount(saleOffers.length + (page - 1) * 10);
+  };
+
+  useEffect(() => {
+    calculateCount();
+  }, [saleOffers]);
 
   return (
     <div className="flex flex-col gap-4">
       {saleOffers.length ? (
         <>
           <p className="text-xl font-light text-center mt-4">
-            Showing
-            {page === pageCount && saleOfferCount !== 1 && (saleOfferCount - saleOffers.length) % 20 === 0
-              ? ` ${saleOffers.length + 20} `
-              : ` ${saleOffers.length} `}
-            {saleOffers.length === 1 ? "result" : "results"} of {saleOfferCount}
+            Showing {displayCount} results of {saleOfferCount}
           </p>
         </>
       ) : (
@@ -184,7 +203,7 @@ const SearchResults = ({
             />
           </div>
           {/* sort by is_shippable */}
-          <div></div>
+          <div>{(priceFilterOn || categoryFilteringOn || cityFilteringOn) && <p className="my-2 font-light text-sm">Filtering on</p>}</div>
         </div>
         {/* RESET */}
         <div className="bg-gray-400 rounded-full p-[2px] cursor-pointer hover:scale-110" onClick={resetFilter}>

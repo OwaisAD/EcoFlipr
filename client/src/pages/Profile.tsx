@@ -60,7 +60,8 @@ const Profile = () => {
 
   const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER, {
     onCompleted(data) {
-      setUserSaleOffers(data.getSaleOffersByUser);
+      let saleOffers = [...data.getSaleOffersByUser].sort((a: SaleOffer, b: SaleOffer) => b.notification_count - a.notification_count);
+      setUserSaleOffers(saleOffers);
     },
   });
 
@@ -225,7 +226,7 @@ const Profile = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       {/* Tab bar to switch between 'Mine annoncer' and 'Profiloplysninger'*/}
-      <div className="flex gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 mb-20">
+      <div className="flex gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 mb-20 cursor-pointer">
         <button
           onClick={() => {
             setShowMySaleOffers(true);
@@ -263,7 +264,7 @@ const Profile = () => {
           <p className="text-center font-thin text-lg">My sale offers</p>
           {!userSaleOffers.length && <p className="font-light text-sm">You haven't created any offers</p>}
           {userSaleOffers.map((userSaleOffer) => (
-            <div className="relative">
+            <div className="relative" key={userSaleOffer.id}>
               <Link to={`/offer/${userSaleOffer.id}`}>
                 <div
                   key={userSaleOffer.id}
