@@ -190,7 +190,7 @@ const EditSaleOffer = () => {
         error: <b>Could not save.</b>,
       }
     );
-    navigate(`/offer/${saleOfferData!.id}`)
+    navigate(`/offer/${saleOfferData!.id}`);
   };
 
   const handleFindCity = (zipCode: string) => {

@@ -25,7 +25,7 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
 
-  const { data} = useQuery(GET_USER_NOTIFICATION_COUNT);
+  const { data } = useQuery(GET_USER_NOTIFICATION_COUNT);
 
   useEffect(() => {
     if (data) {
