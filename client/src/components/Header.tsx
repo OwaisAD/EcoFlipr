@@ -26,7 +26,7 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
   const [notificationCount, setNotificationCount] = useState(0);
 
   const { data } = useQuery(GET_USER_NOTIFICATION_COUNT, {
-    skip: !auth.isAuthenticated
+    skip: !auth.isAuthenticated,
   });
 
   useEffect(() => {
@@ -114,7 +114,6 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
                 </div>
               )}
             </div>
-
 
             {/* DARK MODE BTN */}
             <DarkModeSwitch checked={isDarkMode} onChange={toggleDarkMode} size={30} />

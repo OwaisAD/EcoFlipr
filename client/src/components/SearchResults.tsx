@@ -103,8 +103,8 @@ const SearchResults = ({
     setPriceFilterOn(false);
     setCityFiltering(false);
     setCategoryFiltering(false);
-    setCategoryFilteringOn(false)
-    setCityFilteringOn(false)
+    setCategoryFilteringOn(false);
+    setCityFilteringOn(false);
   };
 
   console.log(
@@ -203,7 +203,11 @@ const SearchResults = ({
             />
           </div>
           {/* sort by is_shippable */}
-          <div>{(priceFilterOn || categoryFilteringOn || cityFilteringOn) && <p className="my-2 font-light text-sm">Filtering on</p>}</div>
+          <div>
+            {(priceFilterOn || categoryFilteringOn || cityFilteringOn) && (
+              <p className="my-2 font-light text-sm">Filtering on</p>
+            )}
+          </div>
         </div>
         {/* RESET */}
         <div className="bg-gray-400 rounded-full p-[2px] cursor-pointer hover:scale-110" onClick={resetFilter}>

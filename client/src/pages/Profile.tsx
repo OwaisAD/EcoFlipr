@@ -60,7 +60,9 @@ const Profile = () => {
 
   const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER, {
     onCompleted(data) {
-      let saleOffers = [...data.getSaleOffersByUser].sort((a: SaleOffer, b: SaleOffer) => b.notification_count - a.notification_count);
+      let saleOffers = [...data.getSaleOffersByUser].sort(
+        (a: SaleOffer, b: SaleOffer) => b.notification_count - a.notification_count
+      );
       setUserSaleOffers(saleOffers);
     },
   });
