@@ -23,6 +23,15 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
   const auth = useAuth();
   const client = useApolloClient();
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  const { data} = useQuery(GET_USER_NOTIFICATION_COUNT);
+
+  useEffect(() => {
+    if (data) {
+      setNotificationCount(data.getUserNotificationCount);
+    }
+  }, [data]);
 
   const handleBurgerMenuClicked = () => setBurgerMenuOpen(!burgerMenuOpen);
 
@@ -96,10 +105,12 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
               onClick={() => navigate("/profile")}
             >
               <CgProfile className="text-white text-2xl" />
-              <div className="absolute top-0 right-[-3px] bg-red-500 text-white rounded-full px-1 animate-bounce">
-                {/* if noti count > 99 should 99+ */}
-                <p className="text-[9px]">1</p>
-              </div>
+              {notificationCount > 0 && (
+                <div className="absolute top-0 right-[-3px] bg-red-500 text-white rounded-full px-1 animate-bounce">
+                  {/* if noti count > 99 should 99+ */}
+                  <p className="text-[9px]">{notificationCount}</p>
+                </div>
+              )}
             </div>
 
             {/* DARK MODE BTN */}

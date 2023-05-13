@@ -64,6 +64,55 @@ export const userResolver = {
       }
 
       // CALCULATE NOTIFICATION COUNT BASED ON SALE OFFERS YOU CREATED AND THREADS
+      // løb igennem dine sale offers tråde og tjek
+      let notificationCount = 0;
+
+      const saleOffers = await SaleOffer.find({ creator_id: currentUser._id })
+        .populate("city")
+        .populate("category")
+        .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+
+      // calculate notifications
+      saleOffers.forEach((saleOffer) => {
+        saleOffer.threads.forEach((thread) => {
+          //@ts-ignore
+          thread.comments.forEach((comment) => {
+            if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
+              notificationCount++;
+            }
+          });
+        });
+      });
+
+      // løb igennem threads du har oprettet
+      const threads = await Thread.find({ creator_id: currentUser._id });
+
+      if (!threads) {
+        throwError("You haven't interacted on any sale offers");
+      }
+      let threadIds = threads.map((thread) => new mongoose.Types.ObjectId(thread.sale_offer_id));
+
+      const saleOffersInteractedWith = await SaleOffer.find({ _id: { $in: threadIds } })
+        .populate("category")
+        .populate("city")
+        .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
+
+      // calculate notifications
+      saleOffersInteractedWith.forEach((saleOffer) => {
+        saleOffer.threads.forEach((thread) => {
+          //@ts-ignore
+          if (thread && thread.creator_id.toString() === currentUser._id.toString()) {
+            //@ts-ignore
+            thread.comments.forEach((comment) => {
+              if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
+                notificationCount++;
+              }
+            });
+          }
+        });
+      });
+
+      return notificationCount;
     },
   },
   Mutation: {

@@ -139,14 +139,12 @@ export const saleOfferResolver = {
       saleOffers.forEach((saleOffer) => {
         let notificationCount = 0;
         saleOffer.threads.forEach((thread) => {
-          if (thread) {
-            //@ts-ignore
-            thread.comments.forEach((comment) => {
-              if (!comment.is_read) {
-                notificationCount++;
-              }
-            });
-          }
+          //@ts-ignore
+          thread.comments.forEach((comment) => {
+            if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
+              notificationCount++;
+            }
+          });
         });
         //@ts-ignore
         saleOffer.notification_count = notificationCount;

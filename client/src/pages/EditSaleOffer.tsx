@@ -3,12 +3,14 @@ import { useAuth } from "../context/AuthProvider";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Uploader } from "uploader";
 import { UploadDropzone } from "react-uploader";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SALE_OFFER_BY_ID } from "../GraphQL/queries/getSaleOfferById";
 import { SaleOffer } from "../types/saleOffer";
 import { GET_ALL_CATEGORIES } from "../GraphQL/queries/getAllCategories";
 import { GET_CITY_BY_ZIP_CODE } from "../GraphQL/queries/getCityByZipCode";
 import { IoRemoveCircle } from "react-icons/io5";
+import { toast } from "react-hot-toast";
+import { UPDATE_SALE_OFFER } from "../GraphQL/mutations/updateSaleOffer";
 
 // https://www.npmjs.com/package/uploader
 // Initialize once (at the start of your app).
@@ -62,12 +64,12 @@ const EditSaleOffer = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [foundCity, setFoundCity] = useState<City>({ id: "", name: "", zip_code: "" });
 
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [shipping, setShipping] = useState(false);
-  const [zipCode, setZipCode] = useState("");
-  const [price, setPrice] = useState("");
-  const [images, setImages] = useState<string[]>([]);
+  const [updatedDescription, setUpdatedDescription] = useState("");
+  const [updatedCategory, setUpdatedCategory] = useState("");
+  const [updatedShipping, setUpdatedShipping] = useState(false);
+  const [updatedZipCode, setUpdatedZipCode] = useState("");
+  const [updatedPrice, setUpdatedPrice] = useState("");
+  const [updatedImages, setUpdatedImages] = useState<string[]>([]);
 
   const { data, loading, error } = useQuery(GET_ALL_CATEGORIES, {
     onCompleted(data) {
@@ -88,12 +90,14 @@ const EditSaleOffer = () => {
         navigate("/error");
       } else {
         setSaleOfferData(data.getSaleOfferById);
-        setDescription(data.getSaleOfferById.description);
-        setCategory(data.getSaleOfferById.category.id);
-        setZipCode(data.getSaleOfferById.city.zip_code);
-        setShipping(data.getSaleOfferById.is_shippable);
-        setPrice(data.getSaleOfferById.price);
-        setImages([...data.getSaleOfferById.imgs]);
+        //
+        setUpdatedDescription(data.getSaleOfferById.description);
+        setUpdatedCategory(data.getSaleOfferById.category.id);
+        setUpdatedZipCode(data.getSaleOfferById.city.zip_code);
+        setUpdatedShipping(data.getSaleOfferById.is_shippable);
+        setUpdatedPrice(data.getSaleOfferById.price);
+        setUpdatedImages([...data.getSaleOfferById.imgs]);
+        getCityByZipCode({ variables: { zipCode: data.getSaleOfferById.city.zip_code } });
       }
     },
     onError(error) {
@@ -101,31 +105,141 @@ const EditSaleOffer = () => {
     },
   });
 
+  const [updateSaleOffer, { data: data2, loading: loading2, error: error2 }] = useMutation(UPDATE_SALE_OFFER);
+
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
     return <Navigate to="/login" />;
   }
 
-  const handleEditSaleOffer = () => {};
+  const handleEditSaleOffer = () => {
+    // VALIDATE IF ANYTHING HAS CHANGED..
+    console.log(saleOfferData);
+
+    if (
+      saleOfferData?.description === updatedDescription &&
+      saleOfferData.category.id === updatedCategory &&
+      saleOfferData.is_shippable === updatedShipping &&
+      saleOfferData.city.zip_code === updatedZipCode &&
+      saleOfferData.price === +updatedPrice
+    ) {
+      const imagesDiffer =
+        saleOfferData.imgs.length !== updatedImages.length ||
+        !saleOfferData.imgs.every((element, index) => element === updatedImages[index]);
+      if (!imagesDiffer) {
+        toast.error("No changes");
+        return;
+      }
+    }
+    console.log(updatedDescription);
+    if (!updatedDescription || updatedDescription.length < 10 || updatedDescription.length > 300) {
+      toast.error("Please add a valid description with length between 5 and 300 characters");
+      return;
+    }
+
+    console.log(updatedCategory);
+    if (!updatedCategory) {
+      toast.error("Please select a category");
+      return;
+    }
+
+    console.log(updatedShipping);
+
+    console.log(updatedZipCode);
+    if (!foundCity.name) {
+      toast.error("Please enter a valid zip code");
+      return;
+    }
+
+    console.log(updatedPrice);
+    if (!updatedPrice || +updatedPrice < 1 || +updatedPrice > 9999999) {
+      toast.error("Please enter a valid price");
+    }
+
+    console.log(updatedImages);
+    if (!updatedImages) {
+      let confirmation = confirm("Are you sure you want to create an offer with no images");
+      if (!confirmation) {
+        return;
+      }
+    }
+
+    // update offer
+    let confirmation = confirm("Are you sure you want to update your offer?");
+    if (!confirmation) {
+      return;
+    }
+
+    toast.promise(
+      updateSaleOffer({
+        variables: {
+          updateSaleOfferId: saleOfferData!.id,
+          input: {
+            description: updatedDescription,
+            category: { id: updatedCategory },
+            city: { id: foundCity.id },
+            imgs: updatedImages,
+            is_shippable: updatedShipping,
+            price: +updatedPrice,
+          },
+        },
+      }),
+      {
+        loading: "Updating...",
+        success: <b>Updated successfully!</b>,
+        error: <b>Could not save.</b>,
+      }
+    );
+    navigate(`/offer/${saleOfferData!.id}`)
+  };
+
+  const handleFindCity = (zipCode: string) => {
+    setUpdatedZipCode(zipCode);
+    if (isNaN(+zipCode)) {
+      console.log("Not a number");
+      return;
+    }
+
+    if (+zipCode < 1000 || +zipCode > 9999) {
+      return;
+    }
+
+    getCityByZipCode({ variables: { zipCode } });
+  };
+
+  const handleRemoveImage = (link: string) => {
+    console.log("Trying to remove", link);
+
+    const updatedImageList = updatedImages.filter((string) => string !== link);
+    console.log("current", saleOfferData!.imgs);
+    console.log(updatedImageList);
+    setUpdatedImages(updatedImageList);
+  };
 
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="flex flex-col w-[600px] gap-4">
-        <h1 className="text-center text-2xl font-light">Edit offer</h1>
+        <h1 className="text-center text-4xl font-thin mb-10">Editing offer</h1>
         {/* OFFER DESCRIPTION */}
         <textarea
           placeholder="Offer description"
           className="border-none rounded-[12px] h-[80px] max-h-[300px]"
-          value={description}
+          value={updatedDescription}
+          onChange={(e) => setUpdatedDescription(e.target.value)}
         />
 
         {/* OFFER CATEGORY */}
-        <select name="" id="" className="border-none rounded-[12px]">
+        <select
+          name=""
+          id=""
+          className="border-none rounded-[12px]"
+          onChange={(e) => setUpdatedCategory(e.target.value)}
+        >
           <option disabled selected>
             Select a category
           </option>
           {categories.map((c) => (
-            <option key={c.id} value={c.id} selected={c.id === category}>
+            <option key={c.id} value={c.id} selected={c.id === saleOfferData?.category.id}>
               {c.name}
             </option>
           ))}
@@ -137,22 +251,31 @@ const EditSaleOffer = () => {
           <input
             type="checkbox"
             className="w-6 h-6 text-blue-600  border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            checked={shipping}
+            checked={updatedShipping}
+            onChange={(e) => setUpdatedShipping(!updatedShipping)}
           />
         </div>
 
         {/* CITY */}
         <div>
           <input
-            type="number"
-            placeholder="Select zip code"
+            type="text"
+            placeholder="Enter a zip code"
             className="rounded-l-[12px] border-none w-48"
-            min={1000}
-            max={9999}
-            value={+zipCode}
+            pattern="[0-9]{4}"
+            value={+updatedZipCode}
+            onChange={(e) => {
+              handleFindCity(e.target.value);
+            }}
           />
           <div className="inline-block border-slate-800 border-r-2"></div>
-          <input type="text" disabled placeholder="Chosen city" className="rounded-r-[12px] border-none bg-gray-300" />
+          <input
+            type="text"
+            disabled
+            placeholder="Chosen city"
+            className="rounded-r-[12px] border-none bg-gray-300"
+            value={foundCity.name}
+          />
         </div>
 
         {/* Price */}
@@ -164,19 +287,20 @@ const EditSaleOffer = () => {
               maxLength={8}
               className="border-none rounded-[12px] w-40 relative"
               placeholder="Enter a price"
-              value={price}
+              value={updatedPrice}
+              onChange={(e) => setUpdatedPrice(e.target.value)}
             />
             <p className="absolute top-2 right-2 text-gray-500 cursor-default select-none">,-</p>
           </div>
         </div>
 
-        {images.length && (
-          <div className="w-[600px] flex flex-wrap justify-center gap-2">
-            {images.map((img) => (
+        {saleOfferData && (
+          <div className="w-[600px] flex flex-wrap gap-2">
+            {updatedImages.map((img) => (
               <>
-                <div className="relative">
-                  <img src={img} alt="" className="w-44 h-44 object-cover shadow-lg" />
-                  <div className="absolute top-1 right-1 hover:scale-125 duration-100">
+                <div className="relative" onClick={() => handleRemoveImage(img)}>
+                  <img src={img} alt="" className="w-44 h-44 object-cover shadow-lg rounded-[12px]" />
+                  <div className="absolute top-1 right-1 hover:scale-125 duration-100 cursor-pointer">
                     <IoRemoveCircle color="red" size={24} />
                   </div>
                 </div>
@@ -191,9 +315,19 @@ const EditSaleOffer = () => {
             uploader={uploader}
             options={uploaderOptions}
             onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
-            onComplete={(files) => alert(files.map((x) => x.fileUrl).join("\n"))}
+            onComplete={(files) => {
+              files.map((x) => setUpdatedImages([...updatedImages, x.fileUrl]));
+            }}
             height="240px"
           />
+        </div>
+        <div className="text-center mt-5">
+          <button
+            className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:scale-105 duration-100"
+            onClick={handleEditSaleOffer}
+          >
+            Update offer
+          </button>
         </div>
       </div>
     </div>

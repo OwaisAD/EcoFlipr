@@ -120,8 +120,8 @@ const CreateSaleOffer = () => {
       }
     }
 
-    // create comment
-    let comment = {
+    // create offer
+    let offer = {
       category: { id: category },
       city: { id: foundCity.id },
       description,
@@ -130,8 +130,8 @@ const CreateSaleOffer = () => {
       price: +price,
     };
 
-    console.log(comment);
-    createSaleOffer({ variables: { input: comment } });
+    console.log(offer);
+    createSaleOffer({ variables: { input: offer } });
     navigate("/profile");
   };
 
