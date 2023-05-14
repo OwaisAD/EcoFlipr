@@ -1,5 +1,4 @@
-import React, { FormEventHandler, useEffect, useState } from "react";
-import Header from "../components/Header";
+import React, { useEffect, useState } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_SALE_OFFERS_BY_SEARCH_QUERY } from "../GraphQL/queries/getSaleOfferBySearchQuery";
 import { toast } from "react-hot-toast";
@@ -9,7 +8,6 @@ import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSa
 import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
 import { RxMagnifyingGlass } from "react-icons/rx";
 import { useAuth } from "../context/AuthProvider";
-import { Navigate } from "react-router-dom";
 
 type Props = {
   searchQuery: string;
@@ -19,7 +17,7 @@ type Props = {
 };
 
 export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderSearch }: Props) => {
-  const auth = useAuth();
+  useAuth();
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [lastSearchQuery, setLastSearchQuery] = useState("");
@@ -27,32 +25,21 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
   const [saleOfferCount, setSaleOfferCount] = useState(0);
   const [recentSaleOffers, setRecentSaleOffers] = useState([]);
   const [randomSaleOffers, setRandomSaleOffers] = useState([]);
-  const [getSaleOffers, { loading, error, data, refetch }] = useLazyQuery(GET_SALE_OFFERS_BY_SEARCH_QUERY, {
+  const [getSaleOffers] = useLazyQuery(GET_SALE_OFFERS_BY_SEARCH_QUERY, {
     fetchPolicy: "no-cache",
     onCompleted(data) {
       setSaleOffers(data.getSaleOfferBySearchQuery.saleOffers);
       setPageCount(data.getSaleOfferBySearchQuery.pagination.pageCount);
       setSaleOfferCount(data.getSaleOfferBySearchQuery.pagination.count);
-      console.log("NEW DATA", data);
       toast.success(`Found results for ${searchQuery}`);
     },
   });
 
-  const {
-    loading: loading1,
-    error: error1,
-    data: data1,
-    refetch: refetch1,
-  } = useQuery(GET_RECENT_SALE_OFFERS_BY_AMOUNT, {
+  const { data: data_recent } = useQuery(GET_RECENT_SALE_OFFERS_BY_AMOUNT, {
     variables: { amount: 10 },
   });
 
-  const {
-    loading: loading2,
-    error: error2,
-    data: data2,
-    refetch: refetch2,
-  } = useQuery(GET_RANDOM_SALE_OFFERS_BY_AMOUNT, {
+  const { data: data_random } = useQuery(GET_RANDOM_SALE_OFFERS_BY_AMOUNT, {
     variables: { amount: 10 },
   });
 
@@ -73,16 +60,16 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
   };
 
   useEffect(() => {
-    if (data1) {
-      setRecentSaleOffers(data1.getRecentSaleOffersByAmount);
+    if (data_recent) {
+      setRecentSaleOffers(data_recent.getRecentSaleOffersByAmount);
     }
-  }, [data1]);
+  }, [data_recent]);
 
   useEffect(() => {
-    if (data2) {
-      setRandomSaleOffers(data2.getRandomSaleOffersByAmount);
+    if (data_random) {
+      setRandomSaleOffers(data_random.getRandomSaleOffersByAmount);
     }
-  }, [data2]);
+  }, [data_random]);
 
   useEffect(() => {
     if (isHeaderSearch) {

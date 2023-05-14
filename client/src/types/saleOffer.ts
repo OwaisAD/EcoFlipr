@@ -1,4 +1,4 @@
-export type SaleOffer = {
+export type SaleOfferType = {
   notification_count: number;
   id: string;
   creator_id: string;
@@ -41,7 +41,7 @@ export type SaleOfferData = {
   };
 };
 
-export type SaleOffers = SaleOffer[];
+export type SaleOffers = SaleOfferType[];
 
 export type SaleOfferBasic = {
   id: string;

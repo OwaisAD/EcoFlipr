@@ -1,10 +1,11 @@
 import { GraphQLError } from "graphql";
 import City from "../../models/city";
 import { Context } from "../../types/context";
+import { CityInput } from "../../types/city";
 
 export const cityResolver = {
   Query: {
-    getCityByZipCode: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    getCityByZipCode: async (_parent: never, args: CityInput, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -23,8 +24,8 @@ export const cityResolver = {
         }
 
         return city;
-      } catch (error: any) {
-        throw new Error(error.message);
+      } catch (error: unknown) {
+        throw new Error("Something went wrong");
       }
     },
   },

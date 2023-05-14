@@ -5,7 +5,6 @@ import { User } from "../models/user";
 export const userRouter = Router();
 
 userRouter.post("/", async (req: Request, res: Response) => {
-  console.log("CREATING USER");
   const { email, first_name, last_name, phone_number, address, password } = req.body;
 
   if (!email || !first_name || !last_name || !phone_number || !address || !password) {

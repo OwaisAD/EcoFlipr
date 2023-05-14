@@ -11,21 +11,32 @@ type User = {
   sale_offers: SaleOffer[];
 };
 
+type UserInput = {
+  input: {
+    email: string;
+    password: string;
+  };
+};
+
 type UserInputWithPass = {
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  address: string;
-  password: string;
+  input: {
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    address: string;
+    password: string;
+  };
 };
 
 type UserInputWithoutPass = {
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  address: string;
+  input: {
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    address: string;
+  };
 };
 
 type UserUpdatePassInput = {
@@ -35,4 +46,8 @@ type UserUpdatePassInput = {
   };
 };
 
-export { User, UserInputWithPass, UserInputWithoutPass, UserUpdatePassInput };
+interface UserId {
+  id: mongoose.Types.ObjectId | string;
+}
+
+export { User, UserInput, UserInputWithPass, UserInputWithoutPass, UserUpdatePassInput, UserId };

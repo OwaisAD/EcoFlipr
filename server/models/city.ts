@@ -1,8 +1,6 @@
 import { Document } from "mongoose";
-
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import validator from "validator";
 
 const citySchema = new mongoose.Schema({
   zip_code: {

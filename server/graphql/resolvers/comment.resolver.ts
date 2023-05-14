@@ -1,18 +1,17 @@
-import { GraphQLError } from "graphql";
 import Comment from "../../models/comment";
 import { CommentInput } from "../../types/comment";
 import { Context } from "../../types/context";
 import SaleOffer from "../../models/saleoffer";
 import { validateId } from "../../utils/validator";
 import User from "../../models/user";
-import Thread from "../../models/thread";
+import Thread, { ThreadDocument } from "../../models/thread";
 import { IThread } from "../../types/thread";
 import { infoLog } from "../../utils/logger";
 import { throwError } from "../../utils/errorHandler";
 
 export const commentResolver = {
   Mutation: {
-    createComment: async (_parent: never, args: CommentInput, { currentUser }: Context, _info: any) => {
+    createComment: async (_parent: never, args: CommentInput, { currentUser }: Context) => {
       // Checking if currentUser is valid
       if (!currentUser) {
         throwError("not authenticated");
@@ -32,11 +31,11 @@ export const commentResolver = {
       }
 
       // checking who the owner of the saleoffer is and comparing it to the currentuser
-      const saleOfferOwner: any = await User.findOne({ sale_offers: saleOffer!._id });
+      const saleOfferOwner = await User.findOne({ sale_offers: saleOffer!._id });
 
-      if (saleOfferOwner._id.toString() === currentUser!._id.toString()) {
+      if (saleOfferOwner!._id.toString() === currentUser!._id.toString()) {
         infoLog("OWNER OF SALEOFFER");
-        const isValidThreadId = validateId(threadId);
+        const isValidThreadId = validateId(threadId!);
         if (!threadId || !isValidThreadId) {
           throwError("Please enter a valid thread id");
         }
@@ -63,10 +62,7 @@ export const commentResolver = {
             }`
           );
           const newThread = await Thread.create({ sale_offer_id: saleOffer!._id, creator_id: currentUser!._id });
-          console.log("created thread");
-          console.log(newThread);
           if (newThread) {
-            console.log("creating comment");
             const newComment = await Comment.create({
               content,
               thread_id: newThread._id,
@@ -99,7 +95,7 @@ export const commentResolver = {
           } else {
             infoLog(`no threads for ${currentUser!.first_name}, creating a new thread`);
             await Thread.create({ sale_offer_id: saleOffer!._id, creator_id: currentUser!._id });
-            const getTheNewThread: IThread | null = await Thread.findOne({
+            const getTheNewThread: ThreadDocument | null = await Thread.findOne({
               sale_offer_id: saleOffer!._id,
               creator_id: currentUser!._id,
             });
