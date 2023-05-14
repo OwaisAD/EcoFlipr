@@ -84,7 +84,6 @@ const CreateSaleOffer = () => {
       is_shippable: shipping,
       price: +price,
     };
-
     createSaleOffer({ variables: { input: offer } });
     navigate("/profile");
   };
@@ -185,10 +184,12 @@ const CreateSaleOffer = () => {
             uploader={uploader}
             options={uploaderOptions}
             onUpdate={(files) => {
-              files.map((x) => setImages([...images, x.fileUrl]));
+              let newImages = files.map((x) => x.fileUrl);
+              setImages([...images, ...newImages]);
             }}
             onComplete={(files) => {
-              files.map((x) => setImages([...images, x.fileUrl]));
+              let newImages = files.map((x) => x.fileUrl);
+              setImages([...images, ...newImages]);
             }}
             height="240px"
           />
