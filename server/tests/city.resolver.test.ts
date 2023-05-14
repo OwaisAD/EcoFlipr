@@ -340,7 +340,7 @@ test("deleteMeAsBuyer", async () => {
 test.only("countUnreadComments", async () => {
   await createSaleofferWithOneUnreadComment();
   await createSaleofferWithOneUnreadComment("m@live.dk");
-  
+
   const countQuery = getUnreadCommentsCountQuery();
 
   const response = await createRequest(countQuery, token);

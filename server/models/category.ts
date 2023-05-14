@@ -12,7 +12,7 @@ const categorySchema = new mongoose.Schema({
 categorySchema.plugin(uniqueValidator);
 
 categorySchema.set("toJSON", {
-  transform: (_document: Document, returnedObject: Record<string,any>) => {
+  transform: (_document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
