@@ -262,9 +262,13 @@ const EditSaleOffer = () => {
           <UploadDropzone
             uploader={uploader}
             options={uploaderOptions}
-            onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
+            onUpdate={(files) => {
+              let newImages = files.map((x) => x.fileUrl);
+              setUpdatedImages([...updatedImages, ...newImages]);
+            }}
             onComplete={(files) => {
-              files.map((x) => setUpdatedImages([...updatedImages, x.fileUrl]));
+              let newImages = files.map((x) => x.fileUrl);
+              setUpdatedImages([...updatedImages, ...newImages]);
             }}
             height="240px"
           />
