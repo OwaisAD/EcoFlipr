@@ -7,7 +7,7 @@ export const validateId = (id: any) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 export const validateUserInput = (userInput: UserInputWithPass | UserInputWithoutPass) => {
-  const { email, first_name, last_name, phone_number, address } = userInput;
+  const { email, first_name, last_name, phone_number, address } = userInput.input;
 
   if (!email || !validator.isEmail(email)) {
     throw new Error("Invalid email");
@@ -28,7 +28,7 @@ export const validateUserInput = (userInput: UserInputWithPass | UserInputWithou
     throw new Error("Please enter a valid address");
   }
 
-  if ("password" in userInput && (!userInput.password || userInput.password.length < 8)) {
+  if ("password" in userInput.input && (!userInput.input.password || userInput.input.password.length < 8)) {
     throw new Error("Please enter a valid password");
   }
   return true;

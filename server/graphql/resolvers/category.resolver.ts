@@ -1,11 +1,10 @@
 import { GraphQLError } from "graphql";
 import Category from "../../models/category";
-import { User } from "../../types/user";
 import { Context } from "../../types/context";
 
 export const categoryResolver = {
   Query: {
-    getAllCategories: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    getAllCategories: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -13,7 +12,6 @@ export const categoryResolver = {
           },
         });
       }
-
       const categories = await Category.find({});
       return categories;
     },

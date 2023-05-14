@@ -1,19 +1,17 @@
-import { ObjectId, isValidObjectId } from "mongoose";
 import Thread from "../../models/thread";
 import { Context } from "../../types/context";
 import { ThreadInput } from "../../types/thread";
 import { throwError } from "../../utils/errorHandler";
 import { validateId } from "../../utils/validator";
-import Comment from "../../models/comment";
+import Comment, { CommentDocument } from "../../models/comment";
+import { Types } from "mongoose";
 
 export const threadResolver = {
   Mutation: {
-    markThreadAsRead: async (_parent: never, args: ThreadInput, { currentUser }: Context, _info: any) => {
+    markThreadAsRead: async (_parent: never, { threadId }: ThreadInput, { currentUser }: Context) => {
       if (!currentUser) {
         throwError("not authenticated");
       }
-
-      const { threadId } = args;
 
       const isValidThreadId = validateId(threadId);
 
@@ -47,6 +45,6 @@ export const threadResolver = {
   },
 };
 
-const saveComment = async (comment: any) => {
+const saveComment = async (comment: CommentDocument & {_id: Types.ObjectId;}) => {
   await comment.save();
 };

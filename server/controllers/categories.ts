@@ -1,11 +1,9 @@
 import { Request, Response, Router } from "express";
+import Category from "../models/category";
 
 export const categoriesRouter = Router();
 
-const Category = require("../models/category");
-const jwt = require("jsonwebtoken");
-
-categoriesRouter.get("/", async (req: Request, res: Response) => {
+categoriesRouter.get("/", async (_req: Request, res: Response) => {
   const categories = await Category.find({});
   res.json(categories);
 });

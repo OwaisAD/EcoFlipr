@@ -19,6 +19,7 @@ export interface SaleOfferDocument extends Document {
   threads: ThreadDocument[];
   created_at: Date;
   updated_at: Date;
+  notification_count: number;
 }
 
 const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
