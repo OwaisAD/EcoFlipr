@@ -26,8 +26,7 @@ type UserInputWithPass = {
     phone_number: string;
     address: string;
     password: string;
-
-  }  
+  };
 };
 
 type UserInputWithoutPass = {
@@ -37,7 +36,7 @@ type UserInputWithoutPass = {
     last_name: string;
     phone_number: string;
     address: string;
-  }  
+  };
 };
 
 type UserUpdatePassInput = {
@@ -48,7 +47,7 @@ type UserUpdatePassInput = {
 };
 
 interface UserId {
-  id: mongoose.Types.ObjectId | string
-} 
+  id: mongoose.Types.ObjectId | string;
+}
 
 export { User, UserInput, UserInputWithPass, UserInputWithoutPass, UserUpdatePassInput, UserId };

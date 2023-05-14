@@ -45,6 +45,6 @@ export const threadResolver = {
   },
 };
 
-const saveComment = async (comment: CommentDocument & {_id: Types.ObjectId;}) => {
+const saveComment = async (comment: CommentDocument & { _id: Types.ObjectId }) => {
   await comment.save();
 };

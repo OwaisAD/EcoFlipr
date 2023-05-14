@@ -41,7 +41,7 @@ export const validatePassword = (password: string) => {
   return true;
 };
 
-export const validateLogin = (email: any, password: string) => {
+export const validateLogin = (email: string, password: string) => {
   if (!email || !validator.isEmail(email)) {
     throwError("Invalid email");
   }

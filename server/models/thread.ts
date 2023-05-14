@@ -1,10 +1,7 @@
 import { Document } from "mongoose";
-
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import validator from "validator";
-import Comment, { CommentDocument } from "./comment";
-import { NextFunction } from "express";
+import { CommentDocument } from "./comment";
 
 export interface ThreadDocument extends Document {
   sale_offer_id: mongoose.Types.ObjectId;
@@ -27,7 +24,7 @@ const threadSchema = new mongoose.Schema<ThreadDocument>({
 threadSchema.plugin(uniqueValidator);
 
 threadSchema.set("toJSON", {
-  transform: (document: Document, returnedObject: Record<string, any>) => {
+  transform: (_document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

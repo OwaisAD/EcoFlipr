@@ -8,7 +8,7 @@ import { UserId, UserInputWithPass, UserInputWithoutPass, UserUpdatePassInput } 
 import { throwError } from "../../utils/errorHandler";
 import Thread from "../../models/thread";
 import SaleOffer from "../../models/saleoffer";
-import Comment from "../../models/comment"; 
+import Comment from "../../models/comment";
 
 export const userResolver = {
   Query: {
@@ -102,7 +102,7 @@ export const userResolver = {
     },
   },
   Mutation: {
-    createUser: async (_parent: never, args:UserInputWithPass, _context: never) => {
+    createUser: async (_parent: never, args: UserInputWithPass, _context: never) => {
       let { email, first_name, last_name, phone_number, address, password } = args.input;
 
       validateUserInput(args);
@@ -126,7 +126,7 @@ export const userResolver = {
         throw new Error("Couldn't create new user");
       }
     },
-    updateUser: async (_parent:never, args: UserInputWithoutPass, { currentUser }: Context) => {
+    updateUser: async (_parent: never, args: UserInputWithoutPass, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {

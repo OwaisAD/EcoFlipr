@@ -1,12 +1,8 @@
-import { NextFunction } from "express";
-import { Types, CallbackError, Date, Document } from "mongoose";
+import { CallbackError, Date, Document } from "mongoose";
 import type { SaleOffer } from "../types/saleoffer";
-
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import validator from "validator";
-import { CommentDocument } from "./comment";
-import Thread, { ThreadDocument } from "./thread";
+import { ThreadDocument } from "./thread";
 
 export interface SaleOfferDocument extends Document {
   creator_id: mongoose.Types.ObjectId;
@@ -75,7 +71,7 @@ saleOfferSchema.pre("save", function (this: SaleOffer, next: (err?: CallbackErro
 });
 
 saleOfferSchema.set("toJSON", {
-  transform: (document: Document, returnedObject: Record<string, any>) => {
+  transform: (_document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

@@ -1,3 +1,3 @@
 export type CityInput = {
-    zip_code:string;
-  };
+  zip_code: string;
+};
