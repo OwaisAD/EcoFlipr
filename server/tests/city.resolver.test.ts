@@ -348,7 +348,7 @@ test("deleteMeAsBuyer", async () => {
   expect(updatedCommentFromDB).toBe(null);
 });
 
-test.only("countUnreadComments", async () => {
+test("countUnreadComments", async () => {
   const saleOfferA = await createSaleofferWithOneUnreadComment();
   const saleOfferB = await createSaleofferWithOneUnreadComment("m@live.dk");
   const countQuery = getUnreadCommentsCountQuery();
