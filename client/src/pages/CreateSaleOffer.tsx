@@ -12,6 +12,8 @@ import { Category } from "../types/category";
 import { City } from "../types/city";
 import { uploaderOptions } from "../uploader/uploaderOptions";
 import { uploader } from "../uploader/uploader";
+import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
+import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
 
 const CreateSaleOffer = () => {
   const auth = useAuth();
@@ -40,7 +42,7 @@ const CreateSaleOffer = () => {
   });
 
   const [createSaleOffer] = useMutation(CREATE_SALE_OFFER, {
-    refetchQueries: [GET_SALE_OFFERS_BY_USER],
+    refetchQueries: [GET_SALE_OFFERS_BY_USER, GET_RECENT_SALE_OFFERS_BY_AMOUNT, GET_RANDOM_SALE_OFFERS_BY_AMOUNT],
   });
 
   if (!auth.isAuthenticated) {
@@ -64,8 +66,9 @@ const CreateSaleOffer = () => {
       return;
     }
 
-    if (!price || +price < 1 || +price > 9999999) {
+    if (!price || isNaN(+price) || +price < 1 || +price > 9999999) {
       toast.error("Please enter a valid price");
+      return;
     }
 
     if (!images) {

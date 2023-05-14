@@ -17,6 +17,7 @@ import { MARK_THREAD_AS_READ } from "../GraphQL/mutations/markThreadAsRead";
 import { CREATE_COMMENT } from "../GraphQL/mutations/createComment";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
+import { GET_USER_NOTIFICATION_COUNT } from "../GraphQL/queries/getUserNotificationCount";
 
 const defaultSaleOffer: SaleOfferInterface = {
   id: "",
@@ -97,7 +98,9 @@ const SaleOffer = () => {
   });
 
   // mutations
-  const [markThreadAsRead] = useMutation(MARK_THREAD_AS_READ);
+  const [markThreadAsRead] = useMutation(MARK_THREAD_AS_READ, {
+    refetchQueries: [GET_SALE_OFFER_BY_ID, GET_USER_NOTIFICATION_COUNT],
+  });
   const [createComment] = useMutation(CREATE_COMMENT, {
     onCompleted() {
       refetch();

@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthProvider";
-import { Navigate, useLocation } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { GET_SALE_OFFERS_BY_USER } from "../GraphQL/queries/getSaleOfferByUser";
 import Moment from "react-moment";
 import { DELETE_SALE_OFFER_BY_ID } from "../GraphQL/mutations/deleteSaleOfferById";
@@ -18,6 +18,9 @@ import validator from "validator";
 import { AiOutlineSave } from "react-icons/ai";
 import { UPDATE_PASSWORD } from "../GraphQL/mutations/updatePassword";
 import { GET_SALE_OFFERS_BY_USER_INTERACTION } from "../GraphQL/queries/getSaleOffersByUserInteraction";
+import { DELETE_USER } from "../GraphQL/mutations/deleteUser";
+import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
+import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
 
 type User = {
   id: string;
@@ -31,6 +34,8 @@ type User = {
 const Profile = () => {
   const auth = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const client = useApolloClient();
   const [userData, setUserData] = useState<User>({
     id: "",
     email: "",
@@ -208,6 +213,26 @@ const Profile = () => {
     setEditPassword(!editPassword);
   };
 
+  const [deleteUser] = useMutation(DELETE_USER, {
+    refetchQueries: [GET_RANDOM_SALE_OFFERS_BY_AMOUNT, GET_RECENT_SALE_OFFERS_BY_AMOUNT],
+  });
+
+  const handleDeleteUser = () => {
+    let confirmation = confirm("Are you sure you want to delete your account?");
+    if (!confirmation) {
+      return;
+    }
+    toast.promise(deleteUser(), {
+      loading: "Loading...",
+      success: "Thanks for using EcoFlipr. Sad to see you go.",
+      error: "Something went wrong. Please try again later.",
+    });
+    setTimeout(() => {
+      localStorage.clear();
+      window.location.reload();
+    }, 500);
+  };
+
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
     return <Navigate to="/login" />;
@@ -218,7 +243,7 @@ const Profile = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       {/* Tab bar to switch between 'Mine annoncer' and 'Profiloplysninger'*/}
-      <div className="flex gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 mb-20 cursor-pointer">
+      <div className="flex xs:flex-col xs:gap-4 md:flex-row md:gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 xs:mb-8 md:mb-20 cursor-pointer">
         <button
           onClick={() => {
             setShowMySaleOffers(true);
@@ -507,6 +532,9 @@ const Profile = () => {
                 {editPassword ? <AiOutlineSave /> : <FiEdit />}
               </button>
             </div>
+          </div>
+          <div className="mt-20 text-red-400 text-sm font-medium text-center">
+            <button onClick={handleDeleteUser}>Delete Acccount</button>
           </div>
         </div>
       )}
