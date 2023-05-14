@@ -12,8 +12,8 @@ import { toast } from "react-hot-toast";
 import { UPDATE_SALE_OFFER } from "../GraphQL/mutations/updateSaleOffer";
 import { Category } from "../types/category";
 import { City } from "../types/city";
-import { uploader } from "../oploader/uploader";
-import { uploaderOptions } from "../oploader/uploaderOptions";
+import { uploader } from "../uploader/uploader";
+import { uploaderOptions } from "../uploader/uploaderOptions";
 
 const EditSaleOffer = () => {
   const auth = useAuth();

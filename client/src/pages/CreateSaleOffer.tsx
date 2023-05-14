@@ -10,8 +10,8 @@ import { CREATE_SALE_OFFER } from "../GraphQL/mutations/createSaleOffer";
 import { GET_SALE_OFFERS_BY_USER } from "../GraphQL/queries/getSaleOfferByUser";
 import { Category } from "../types/category";
 import { City } from "../types/city";
-import { uploaderOptions } from "../oploader/uploaderOptions";
-import { uploader } from "../oploader/uploader";
+import { uploaderOptions } from "../uploader/uploaderOptions";
+import { uploader } from "../uploader/uploader";
 
 const CreateSaleOffer = () => {
   const auth = useAuth();
@@ -184,7 +184,9 @@ const CreateSaleOffer = () => {
           <UploadDropzone
             uploader={uploader}
             options={uploaderOptions}
-            onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
+            onUpdate={(files) => {
+              files.map((x) => setImages([...images, x.fileUrl]));
+            }}
             onComplete={(files) => {
               files.map((x) => setImages([...images, x.fileUrl]));
             }}
