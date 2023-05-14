@@ -129,7 +129,9 @@ const SaleOffer = () => {
           setCurrentThreadId(data.getSaleOfferById.threads[0].id);
           setCurrentThread(data.getSaleOfferById.threads[0]);
         } else {
-          let currentThread = data.getSaleOfferById.threads.filter((thread:Thread) => thread.id === currentThreadId)[0];
+          let currentThread = data.getSaleOfferById.threads.filter(
+            (thread: Thread) => thread.id === currentThreadId
+          )[0];
           setCurrentThread(currentThread);
           setCurrentThreadId(currentThread.id);
         }

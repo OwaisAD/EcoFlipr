@@ -1,5 +1,5 @@
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { SaleOfferType} from "../types/saleOffer";
+import { SaleOfferType } from "../types/saleOffer";
 import SaleOffer from "./SaleOffer";
 
 type CarouselProps = {

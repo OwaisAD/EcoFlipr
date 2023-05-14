@@ -40,7 +40,7 @@ const CreateSaleOffer = () => {
   });
 
   const [createSaleOffer] = useMutation(CREATE_SALE_OFFER, {
-    refetchQueries:[GET_SALE_OFFERS_BY_USER]
+    refetchQueries: [GET_SALE_OFFERS_BY_USER],
   });
 
   if (!auth.isAuthenticated) {
@@ -114,7 +114,13 @@ const CreateSaleOffer = () => {
         />
 
         {/* OFFER CATEGORY */}
-        <select name="" title="select-offer" id="" className="border-none rounded-[12px]" onChange={(e) => setCategory(e.target.value)}>
+        <select
+          name=""
+          title="select-offer"
+          id=""
+          className="border-none rounded-[12px]"
+          onChange={(e) => setCategory(e.target.value)}
+        >
           <option disabled selected>
             Select a category
           </option>

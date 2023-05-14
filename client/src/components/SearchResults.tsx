@@ -49,7 +49,7 @@ const SearchResults = ({
       setPriceFilterOn(true);
     }
 
-    let filtered:any = [];
+    let filtered: any = [];
     if (type === "asc") {
       filtered = saleOffers.sort((a, b) => a.price - b.price);
     }

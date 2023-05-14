@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthProvider";
 
 const Signup = () => {
   const auth = useAuth();
-  const [createUser, { data}] = useMutation(CREATE_USER);
+  const [createUser, { data }] = useMutation(CREATE_USER);
   const initialState = {
     first_name: "",
     last_name: "",

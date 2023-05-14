@@ -35,11 +35,11 @@ export const Home = ({ searchQuery, setSearchQuery, isHeaderSearch, setIsHeaderS
     },
   });
 
-  const {data: data_recent} = useQuery(GET_RECENT_SALE_OFFERS_BY_AMOUNT, {
+  const { data: data_recent } = useQuery(GET_RECENT_SALE_OFFERS_BY_AMOUNT, {
     variables: { amount: 10 },
   });
 
-  const {data: data_random} = useQuery(GET_RANDOM_SALE_OFFERS_BY_AMOUNT, {
+  const { data: data_random } = useQuery(GET_RANDOM_SALE_OFFERS_BY_AMOUNT, {
     variables: { amount: 10 },
   });
 
