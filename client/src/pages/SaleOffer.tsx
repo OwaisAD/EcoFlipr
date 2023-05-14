@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { QueryHookOptions, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SALE_OFFER_BY_ID } from "../GraphQL/queries/getSaleOfferById";
 import { useParams } from "react-router-dom";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { SaleOfferInterface } from "../types/saleOffer";
 import Moment from "react-moment";
 import { FaShuttleVan } from "react-icons/fa";
@@ -80,30 +80,26 @@ const SaleOffer = () => {
   };
   const { loading, error, data, refetch } = useQuery(GET_SALE_OFFER_BY_ID, queryOptions);
 
-  const queryOptions2: QueryHookOptions = {
-    variables: { getUserDataByIdId: id },
-    skip: !auth.isAuthenticated,
-  };
-  const [getBuyerDataById, { loading: loading2, error: error2, data: data2 }] = useLazyQuery(GET_USER_DATA_BY_ID, {
+  const [getBuyerDataById] = useLazyQuery(GET_USER_DATA_BY_ID, {
     fetchPolicy: "no-cache",
-    onCompleted(data2) {
-      setBuyerData({ ...data2.getUserDataById });
-      console.log("BUYER DATA", data2.getUserDataById);
+    onCompleted(data) {
+      setBuyerData({ ...data.getUserDataById });
+      console.log("BUYER DATA", data.getUserDataById);
     },
   });
 
-  const [getSellerDataById, { loading: loading3, error: error3, data: data3 }] = useLazyQuery(GET_USER_DATA_BY_ID, {
+  const [getSellerDataById] = useLazyQuery(GET_USER_DATA_BY_ID, {
     fetchPolicy: "no-cache",
-    onCompleted(data3) {
-      setSellerData({ ...data3.getUserDataById });
-      console.log("SELLER DATA", data3.getUserDataById);
+    onCompleted(data) {
+      setSellerData({ ...data.getUserDataById });
+      console.log("SELLER DATA", data.getUserDataById);
     },
   });
 
   // mutations
-  const [markThreadAsRead, { data: data4, error: error4 }] = useMutation(MARK_THREAD_AS_READ);
-  const [createComment, { data: data5, error: error5 }] = useMutation(CREATE_COMMENT, {
-    onCompleted(data, clientOptions) {
+  const [markThreadAsRead] = useMutation(MARK_THREAD_AS_READ);
+  const [createComment] = useMutation(CREATE_COMMENT, {
+    onCompleted() {
       refetch();
     },
   });
@@ -131,11 +127,9 @@ const SaleOffer = () => {
       if (data.getSaleOfferById.threads && data.getSaleOfferById.threads.length > 1) {
         if (!currentThreadId) {
           setCurrentThreadId(data.getSaleOfferById.threads[0].id);
-          // markThreadAsRead({ variables: { threadId: data.getSaleOfferById.threads[0].id } });
           setCurrentThread(data.getSaleOfferById.threads[0]);
         } else {
-          //@ts-ignore
-          let currentThread = data.getSaleOfferById.threads.filter((thread) => thread.id === currentThreadId)[0];
+          let currentThread = data.getSaleOfferById.threads.filter((thread:Thread) => thread.id === currentThreadId)[0];
           setCurrentThread(currentThread);
           setCurrentThreadId(currentThread.id);
         }
@@ -169,7 +163,7 @@ const SaleOffer = () => {
   const handleCreateComment = () => {
     //  validate comment length
     if (!comment || comment.length < 5 || comment.length > 500) {
-      toast.error("Please enter a valid message between 1 and 500 characters");
+      toast.error("Please enter a valid message between 5 and 500 characters");
       return;
     }
 

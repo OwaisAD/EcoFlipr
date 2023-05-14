@@ -26,7 +26,7 @@ const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
   description: {
     type: String,
     required: true,
-    minLength: 10,
+    minLength: 5,
     maxLength: 300,
   },
   category: {

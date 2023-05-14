@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { isValidHttpUrl } from "../utils/urlValidator";
 import { SaleOfferBasic } from "../types/saleOffer";
 import { Link } from "react-router-dom";

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
 const Login = () => {
-  const [login, { data, error, loading }] = useMutation(LOGIN);
+  const [login, { data}] = useMutation(LOGIN);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -97,7 +97,7 @@ const Login = () => {
           />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <input type="checkbox" className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+              <input title="remember_30_days-checkbox" type="checkbox" className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
               <p className="font-medium text-sm">Remember for 30 days</p>
             </div>
             <div>

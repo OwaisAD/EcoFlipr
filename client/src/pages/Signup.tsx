@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthProvider";
 
 const Signup = () => {
   const auth = useAuth();
-  const [createUser, { data, error, loading }] = useMutation(CREATE_USER);
+  const [createUser, { data}] = useMutation(CREATE_USER);
   const initialState = {
     first_name: "",
     last_name: "",
@@ -206,6 +206,7 @@ const Signup = () => {
 
             <div className="flex items-center justify-center gap-2 my-3">
               <input
+                title="toc-checkbox"
                 type="checkbox"
                 onChange={(e) => setToc_confirmed(e.target.checked)}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"

@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import { HiDocumentText } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
-import { useApolloClient, useLazyQuery, useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import { toast } from "react-hot-toast";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
-import { Squash as Hamburger, Squash } from "hamburger-react";
+import { Squash } from "hamburger-react";
 import { GET_USER_NOTIFICATION_COUNT } from "../GraphQL/queries/getUserNotificationCount";
 
 type Props = {
@@ -38,7 +38,6 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
   const handleBurgerMenuClicked = () => setBurgerMenuOpen(!burgerMenuOpen);
 
   const handleLogOut = () => {
-    console.log("Logging out");
     localStorage.clear();
     client.clearStore();
     navigate("/");
@@ -53,7 +52,7 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
     navigate("/");
   };
 
-  const toggleDarkMode = (checked: boolean) => {
+  const toggleDarkMode = () => {
     handleThemeSwitch();
   };
 
@@ -93,7 +92,6 @@ const Header = ({ searchQuery, setSearchQuery, setIsHeaderSearch, handleThemeSwi
             )}
 
             {/* CREATE SAlE OFFER BUTTON */}
-
             <div
               className="bg-emerald-600 p-2 rounded-full hover:scale-105 cursor-pointer"
               onClick={() => navigate("/createoffer")}

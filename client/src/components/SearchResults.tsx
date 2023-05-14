@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SaleOffers } from "../types/saleOffer";
 import SaleOfferBox from "./SaleOfferBox";
 import { RxCross2 } from "react-icons/rx";
@@ -31,19 +31,15 @@ const SearchResults = ({
   setPage,
   getSaleOffers,
 }: SearchResultsProps) => {
-  const [initialSaleOffers, setInitialSaleOffers] = useState(saleOffers);
   // price filtering
   const [priceFilterOn, setPriceFilterOn] = useState(false);
   const [priceFiltering, setPriceFiltering] = useState(false);
   // city filtering
   const [cityFiltering, setCityFiltering] = useState(false);
   const [cityFilteringOn, setCityFilteringOn] = useState(false);
-
   // category filtering
   const [categoryFiltering, setCategoryFiltering] = useState(false);
   const [categoryFilteringOn, setCategoryFilteringOn] = useState(false);
-
-  // is_shippable filtering
 
   const [tempSaleOffers, setTempSaleOffers] = useState<any>([]);
 
@@ -53,16 +49,12 @@ const SearchResults = ({
       setPriceFilterOn(true);
     }
 
-    // set midlertidig state til at være den gamle saleOffer
-    // set saleOffers til at være filteret alt efter price ascending eller descending
-    let filtered: any = [];
+    let filtered:any = [];
     if (type === "asc") {
-      console.log("sorting asc");
       filtered = saleOffers.sort((a, b) => a.price - b.price);
     }
 
     if (type === "desc") {
-      console.log("sorting desc");
       filtered = saleOffers.sort((a, b) => b.price - a.price);
     }
     setSaleOffers(filtered);
@@ -70,7 +62,6 @@ const SearchResults = ({
   };
 
   const handleCityFilterChange = (city: string) => {
-    console.log("filtering city", city);
     if (!cityFilteringOn) {
       setTempSaleOffers([...saleOffers]);
       setCityFilteringOn(true);
@@ -84,7 +75,6 @@ const SearchResults = ({
   };
 
   const handleCategoryFilterChange = (category: string) => {
-    console.log("filtering category", category);
     if (!categoryFilteringOn) {
       setTempSaleOffers(saleOffers);
       setCategoryFilteringOn(true);
@@ -106,17 +96,6 @@ const SearchResults = ({
     setCategoryFilteringOn(false);
     setCityFilteringOn(false);
   };
-
-  console.log(
-    "page",
-    page,
-    "pageCount",
-    pageCount,
-    "saleOfferCount",
-    saleOfferCount,
-    "saleOffers.length",
-    saleOffers.length
-  );
 
   const [displayCount, setDisplayCount] = useState(saleOffers.length + (page - 1) * 10);
   const calculateCount = () => {
