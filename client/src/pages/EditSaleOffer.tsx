@@ -12,8 +12,8 @@ import { toast } from "react-hot-toast";
 import { UPDATE_SALE_OFFER } from "../GraphQL/mutations/updateSaleOffer";
 import { Category } from "../types/category";
 import { City } from "../types/city";
-import { uploader } from "../oploader/uploader";
-import { uploaderOptions } from "../oploader/uploaderOptions";
+import { uploader } from "../uploader/uploader";
+import { uploaderOptions } from "../uploader/uploaderOptions";
 
 const EditSaleOffer = () => {
   const auth = useAuth();
@@ -262,9 +262,13 @@ const EditSaleOffer = () => {
           <UploadDropzone
             uploader={uploader}
             options={uploaderOptions}
-            onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
+            onUpdate={(files) => {
+              let newImages = files.map((x) => x.fileUrl);
+              setUpdatedImages([...updatedImages, ...newImages]);
+            }}
             onComplete={(files) => {
-              files.map((x) => setUpdatedImages([...updatedImages, x.fileUrl]));
+              let newImages = files.map((x) => x.fileUrl);
+              setUpdatedImages([...updatedImages, ...newImages]);
             }}
             height="240px"
           />
