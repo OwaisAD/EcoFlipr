@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
 import { CommentDocument } from "./comment";
-import Thread from "./thread";
+import Thread, { ThreadDocument } from "./thread";
 
 export interface SaleOfferDocument extends Document {
   creator_id: mongoose.Types.ObjectId;
@@ -16,7 +16,7 @@ export interface SaleOfferDocument extends Document {
   city: mongoose.Types.ObjectId;
   price: number;
   imgs: string[];
-  threads: mongoose.Types.ObjectId[];
+  threads: ThreadDocument[];
   created_at: Date;
   updated_at: Date;
 }

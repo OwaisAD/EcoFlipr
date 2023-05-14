@@ -5,7 +5,7 @@ import { Context } from "../../types/context";
 import SaleOffer from "../../models/saleoffer";
 import { validateId } from "../../utils/validator";
 import User from "../../models/user";
-import Thread from "../../models/thread";
+import Thread, { ThreadDocument } from "../../models/thread";
 import { IThread } from "../../types/thread";
 import { infoLog } from "../../utils/logger";
 import { throwError } from "../../utils/errorHandler";
@@ -36,7 +36,7 @@ export const commentResolver = {
 
       if (saleOfferOwner._id.toString() === currentUser!._id.toString()) {
         infoLog("OWNER OF SALEOFFER");
-        const isValidThreadId = validateId(threadId);
+        const isValidThreadId = validateId(threadId!);
         if (!threadId || !isValidThreadId) {
           throwError("Please enter a valid thread id");
         }
@@ -99,7 +99,7 @@ export const commentResolver = {
           } else {
             infoLog(`no threads for ${currentUser!.first_name}, creating a new thread`);
             await Thread.create({ sale_offer_id: saleOffer!._id, creator_id: currentUser!._id });
-            const getTheNewThread: IThread | null = await Thread.findOne({
+            const getTheNewThread: ThreadDocument | null = await Thread.findOne({
               sale_offer_id: saleOffer!._id,
               creator_id: currentUser!._id,
             });

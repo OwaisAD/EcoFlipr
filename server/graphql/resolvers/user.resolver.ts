@@ -2,10 +2,8 @@ import User from "../../models/user";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { validateUserInput, validateId, validatePassword } from "../../utils/validator";
-import { AuthenticationError } from "apollo-server-express";
 import { Context } from "../../types/context";
 import { GraphQLError } from "graphql";
-import { errorLog } from "../../utils/logger";
 import { UserUpdatePassInput } from "../../types/user";
 import { throwError } from "../../utils/errorHandler";
 import Thread from "../../models/thread";
@@ -18,7 +16,7 @@ type User = {
 
 export const userResolver = {
   Query: {
-    getUser: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    getUser: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -26,10 +24,10 @@ export const userResolver = {
           },
         });
       }
-
       return await User.findById(currentUser._id, { sale_offers: false });
     },
-    getUserDataById: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    //TODO: kig på id'et om det kan være andet end any
+    getUserDataById: async (_parent: never, {id}: any, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -37,8 +35,6 @@ export const userResolver = {
           },
         });
       }
-
-      const { id } = args;
 
       const isValidId = validateId(id);
 
@@ -54,7 +50,7 @@ export const userResolver = {
         phone_number: userFromDB?.phone_number,
       };
     },
-    getUserNotificationCount: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+    getUserNotificationCount: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -64,7 +60,6 @@ export const userResolver = {
       }
 
       // CALCULATE NOTIFICATION COUNT BASED ON SALE OFFERS YOU CREATED AND THREADS
-      // løb igennem dine sale offers tråde og tjek
       let notificationCount = 0;
 
       const saleOffers = await SaleOffer.find({ creator_id: currentUser._id })
@@ -75,7 +70,6 @@ export const userResolver = {
       // calculate notifications
       saleOffers.forEach((saleOffer) => {
         saleOffer.threads.forEach((thread) => {
-          //@ts-ignore
           thread.comments.forEach((comment) => {
             if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
               notificationCount++;
@@ -84,7 +78,7 @@ export const userResolver = {
         });
       });
 
-      // løb igennem threads du har oprettet
+      // run through threads you have generated
       const threads = await Thread.find({ creator_id: currentUser._id });
 
       if (!threads) {
@@ -100,9 +94,7 @@ export const userResolver = {
       // calculate notifications
       saleOffersInteractedWith.forEach((saleOffer) => {
         saleOffer.threads.forEach((thread) => {
-          //@ts-ignore
           if (thread && thread.creator_id.toString() === currentUser._id.toString()) {
-            //@ts-ignore
             thread.comments.forEach((comment) => {
               if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
                 notificationCount++;
@@ -111,12 +103,11 @@ export const userResolver = {
           }
         });
       });
-
       return notificationCount;
     },
   },
   Mutation: {
-    createUser: async (_parent: any, args: any, _context: any, _info: any) => {
+    createUser: async (_parent: never, args: any, _context: never) => {
       let { email, first_name, last_name, phone_number, address, password } = args.input;
       validateUserInput({ email, first_name, last_name, phone_number, address, password });
 
