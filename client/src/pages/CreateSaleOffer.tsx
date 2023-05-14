@@ -1,55 +1,19 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { Uploader } from "uploader";
 import { UploadDropzone } from "react-uploader";
 import { toast } from "react-hot-toast";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_ALL_CATEGORIES } from "../GraphQL/queries/getAllCategories";
 import { GET_CITY_BY_ZIP_CODE } from "../GraphQL/queries/getCityByZipCode";
 import { CREATE_SALE_OFFER } from "../GraphQL/mutations/createSaleOffer";
-
-// https://www.npmjs.com/package/uploader
-// Initialize once (at the start of your app).
-const uploader = Uploader({ apiKey: import.meta.env.VITE_IMAGE_UPLOADER_API });
-const uploaderOptions = {
-  multi: true,
-
-  // Comment out this line & use 'onUpdate' instead of
-  // 'onComplete' to have the dropzone close after upload.
-  showFinishButton: true,
-
-  styles: {
-    colors: {
-      active: "#528fff",
-      error: "#d23f4d",
-      primary: "#377dff",
-      shade100: "#333",
-      shade200: "#7a7a7a",
-      shade300: "#999",
-      shade400: "#a5a6a8",
-      shade500: "#d3d3d3",
-      shade600: "#dddddd",
-      shade700: "#f0f0f0",
-      shade800: "#f8f8f8",
-      shade900: "#fff",
-    },
-    fontSizes: {
-      base: 16,
-    },
-  },
-};
-
-type Category = {
-  id: string;
-  name: string;
-};
-
-type City = {
-  id: string;
-  name: string;
-  zip_code: string;
-};
+import { GET_SALE_OFFERS_BY_USER } from "../GraphQL/queries/getSaleOfferByUser";
+import { Category } from "../types/category";
+import { City } from "../types/city";
+import { uploaderOptions } from "../uploader/uploaderOptions";
+import { uploader } from "../uploader/uploader";
+import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
+import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
 
 const CreateSaleOffer = () => {
   const auth = useAuth();
@@ -62,23 +26,24 @@ const CreateSaleOffer = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [shipping, setShipping] = useState(false);
-  const [zipCode, setZipCode] = useState("");
   const [price, setPrice] = useState("");
   const [images, setImages] = useState<string[]>([]);
 
-  const { data, loading, error } = useQuery(GET_ALL_CATEGORIES, {
+  useQuery(GET_ALL_CATEGORIES, {
     onCompleted(data) {
       setCategories(data.getAllCategories);
     },
   });
 
-  const [getCityByZipCode, { data: data1, loading: loading1, error: error1 }] = useLazyQuery(GET_CITY_BY_ZIP_CODE, {
+  const [getCityByZipCode] = useLazyQuery(GET_CITY_BY_ZIP_CODE, {
     onCompleted(data) {
       setFoundCity(data.getCityByZipCode);
     },
   });
 
-  const [createSaleOffer, { data: data2 }] = useMutation(CREATE_SALE_OFFER);
+  const [createSaleOffer] = useMutation(CREATE_SALE_OFFER, {
+    refetchQueries: [GET_SALE_OFFERS_BY_USER, GET_RECENT_SALE_OFFERS_BY_AMOUNT, GET_RANDOM_SALE_OFFERS_BY_AMOUNT],
+  });
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -86,32 +51,25 @@ const CreateSaleOffer = () => {
   }
 
   const handleCreateSaleOffer = () => {
-    console.log(description);
-    if (!description || description.length < 10 || description.length > 300) {
+    if (!description || description.length < 5 || description.length > 300) {
       toast.error("Please add a valid description with length between 5 and 300 characters");
       return;
     }
 
-    console.log(category);
     if (!category) {
       toast.error("Please select a category");
       return;
     }
 
-    console.log(shipping);
-
-    console.log(zipCode);
     if (!foundCity.name) {
       toast.error("Please enter a valid zip code");
       return;
     }
 
-    console.log(price);
-    if (!price || +price < 1 || +price > 9999999) {
+    if (!price || isNaN(+price) || +price < 1 || +price > 9999999) {
       toast.error("Please enter a valid price");
+      return;
     }
-
-    console.log(images);
 
     if (!images) {
       let confirmation = confirm("Are you sure you want to create an offer with no images");
@@ -130,14 +88,12 @@ const CreateSaleOffer = () => {
       price: +price,
     };
 
-    console.log(offer);
     createSaleOffer({ variables: { input: offer } });
     navigate("/profile");
   };
 
   const handleFindCity = (zipCode: string) => {
     if (isNaN(+zipCode)) {
-      console.log("Not a number");
       return;
     }
 
@@ -161,7 +117,13 @@ const CreateSaleOffer = () => {
         />
 
         {/* OFFER CATEGORY */}
-        <select name="" id="" className="border-none rounded-[12px]" onChange={(e) => setCategory(e.target.value)}>
+        <select
+          name=""
+          title="select-offer"
+          id=""
+          className="border-none rounded-[12px]"
+          onChange={(e) => setCategory(e.target.value)}
+        >
           <option disabled selected>
             Select a category
           </option>
@@ -176,9 +138,10 @@ const CreateSaleOffer = () => {
         <div className="flex items-center gap-4">
           <p className="text-lg">Do you offer shipping?</p>
           <input
+            title="is_shippable-checkbox"
             type="checkbox"
             className="w-6 h-6 text-blue-600  border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            onChange={(e) => setShipping(!shipping)}
+            onChange={() => setShipping(!shipping)}
           />
         </div>
 
@@ -224,9 +187,13 @@ const CreateSaleOffer = () => {
           <UploadDropzone
             uploader={uploader}
             options={uploaderOptions}
-            onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
+            onUpdate={(files) => {
+              let newImages = files.map((x) => x.fileUrl);
+              setImages([...images, ...newImages]);
+            }}
             onComplete={(files) => {
-              files.map((x) => setImages([...images, x.fileUrl]));
+              let newImages = files.map((x) => x.fileUrl);
+              setImages([...images, ...newImages]);
             }}
             height="240px"
           />

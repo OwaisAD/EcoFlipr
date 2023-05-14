@@ -1,65 +1,26 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
-import { Uploader } from "uploader";
 import { UploadDropzone } from "react-uploader";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SALE_OFFER_BY_ID } from "../GraphQL/queries/getSaleOfferById";
-import { SaleOffer } from "../types/saleOffer";
+import { SaleOfferType } from "../types/saleOffer";
 import { GET_ALL_CATEGORIES } from "../GraphQL/queries/getAllCategories";
 import { GET_CITY_BY_ZIP_CODE } from "../GraphQL/queries/getCityByZipCode";
 import { IoRemoveCircle } from "react-icons/io5";
 import { toast } from "react-hot-toast";
 import { UPDATE_SALE_OFFER } from "../GraphQL/mutations/updateSaleOffer";
-
-// https://www.npmjs.com/package/uploader
-// Initialize once (at the start of your app).
-const uploader = Uploader({ apiKey: import.meta.env.VITE_IMAGE_UPLOADER_API });
-const uploaderOptions = {
-  multi: true,
-
-  // Comment out this line & use 'onUpdate' instead of
-  // 'onComplete' to have the dropzone close after upload.
-  showFinishButton: true,
-
-  styles: {
-    colors: {
-      active: "#528fff",
-      error: "#d23f4d",
-      primary: "#377dff",
-      shade100: "#333",
-      shade200: "#7a7a7a",
-      shade300: "#999",
-      shade400: "#a5a6a8",
-      shade500: "#d3d3d3",
-      shade600: "#dddddd",
-      shade700: "#f0f0f0",
-      shade800: "#f8f8f8",
-      shade900: "#fff",
-    },
-    fontSizes: {
-      base: 16,
-    },
-  },
-};
-
-type Category = {
-  id: string;
-  name: string;
-};
-
-type City = {
-  id: string;
-  name: string;
-  zip_code: string;
-};
+import { Category } from "../types/category";
+import { City } from "../types/city";
+import { uploader } from "../uploader/uploader";
+import { uploaderOptions } from "../uploader/uploaderOptions";
 
 const EditSaleOffer = () => {
   const auth = useAuth();
   const location = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [saleOfferData, setSaleOfferData] = useState<SaleOffer>();
+  const [saleOfferData, setSaleOfferData] = useState<SaleOfferType>();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [foundCity, setFoundCity] = useState<City>({ id: "", name: "", zip_code: "" });
@@ -71,13 +32,13 @@ const EditSaleOffer = () => {
   const [updatedPrice, setUpdatedPrice] = useState("");
   const [updatedImages, setUpdatedImages] = useState<string[]>([]);
 
-  const { data, loading, error } = useQuery(GET_ALL_CATEGORIES, {
+  useQuery(GET_ALL_CATEGORIES, {
     onCompleted(data) {
       setCategories(data.getAllCategories);
     },
   });
 
-  const [getCityByZipCode, { data: data1, loading: loading1, error: error1 }] = useLazyQuery(GET_CITY_BY_ZIP_CODE, {
+  const [getCityByZipCode] = useLazyQuery(GET_CITY_BY_ZIP_CODE, {
     onCompleted(data) {
       setFoundCity(data.getCityByZipCode);
     },
@@ -90,7 +51,6 @@ const EditSaleOffer = () => {
         navigate("/error");
       } else {
         setSaleOfferData(data.getSaleOfferById);
-        //
         setUpdatedDescription(data.getSaleOfferById.description);
         setUpdatedCategory(data.getSaleOfferById.category.id);
         setUpdatedZipCode(data.getSaleOfferById.city.zip_code);
@@ -100,12 +60,12 @@ const EditSaleOffer = () => {
         getCityByZipCode({ variables: { zipCode: data.getSaleOfferById.city.zip_code } });
       }
     },
-    onError(error) {
+    onError() {
       navigate("/error");
     },
   });
 
-  const [updateSaleOffer, { data: data2, loading: loading2, error: error2 }] = useMutation(UPDATE_SALE_OFFER);
+  const [updateSaleOffer] = useMutation(UPDATE_SALE_OFFER);
 
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
@@ -113,9 +73,7 @@ const EditSaleOffer = () => {
   }
 
   const handleEditSaleOffer = () => {
-    // VALIDATE IF ANYTHING HAS CHANGED..
-    console.log(saleOfferData);
-
+    // VALIDATE IF ANYTHING HAS CHANGED.
     if (
       saleOfferData?.description === updatedDescription &&
       saleOfferData.category.id === updatedCategory &&
@@ -131,32 +89,25 @@ const EditSaleOffer = () => {
         return;
       }
     }
-    console.log(updatedDescription);
-    if (!updatedDescription || updatedDescription.length < 10 || updatedDescription.length > 300) {
+    if (!updatedDescription || updatedDescription.length < 5 || updatedDescription.length > 300) {
       toast.error("Please add a valid description with length between 5 and 300 characters");
       return;
     }
 
-    console.log(updatedCategory);
     if (!updatedCategory) {
       toast.error("Please select a category");
       return;
     }
 
-    console.log(updatedShipping);
-
-    console.log(updatedZipCode);
     if (!foundCity.name) {
       toast.error("Please enter a valid zip code");
       return;
     }
 
-    console.log(updatedPrice);
     if (!updatedPrice || +updatedPrice < 1 || +updatedPrice > 9999999) {
       toast.error("Please enter a valid price");
     }
 
-    console.log(updatedImages);
     if (!updatedImages) {
       let confirmation = confirm("Are you sure you want to create an offer with no images");
       if (!confirmation) {
@@ -196,7 +147,6 @@ const EditSaleOffer = () => {
   const handleFindCity = (zipCode: string) => {
     setUpdatedZipCode(zipCode);
     if (isNaN(+zipCode)) {
-      console.log("Not a number");
       return;
     }
 
@@ -208,11 +158,7 @@ const EditSaleOffer = () => {
   };
 
   const handleRemoveImage = (link: string) => {
-    console.log("Trying to remove", link);
-
     const updatedImageList = updatedImages.filter((string) => string !== link);
-    console.log("current", saleOfferData!.imgs);
-    console.log(updatedImageList);
     setUpdatedImages(updatedImageList);
   };
 
@@ -232,6 +178,7 @@ const EditSaleOffer = () => {
         <select
           name=""
           id=""
+          title="select-category"
           className="border-none rounded-[12px]"
           onChange={(e) => setUpdatedCategory(e.target.value)}
         >
@@ -249,10 +196,11 @@ const EditSaleOffer = () => {
         <div className="flex items-center justify-between">
           <p className="text-lg">Do you offer shipping?</p>
           <input
+            title="is_shippable-checkbox"
             type="checkbox"
             className="w-6 h-6 text-blue-600  border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             checked={updatedShipping}
-            onChange={(e) => setUpdatedShipping(!updatedShipping)}
+            onChange={() => setUpdatedShipping(!updatedShipping)}
           />
         </div>
 
@@ -314,9 +262,13 @@ const EditSaleOffer = () => {
           <UploadDropzone
             uploader={uploader}
             options={uploaderOptions}
-            onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
+            onUpdate={(files) => {
+              let newImages = files.map((x) => x.fileUrl);
+              setUpdatedImages([...updatedImages, ...newImages]);
+            }}
             onComplete={(files) => {
-              files.map((x) => setUpdatedImages([...updatedImages, x.fileUrl]));
+              let newImages = files.map((x) => x.fileUrl);
+              setUpdatedImages([...updatedImages, ...newImages]);
             }}
             height="240px"
           />

@@ -1,9 +1,7 @@
 import startServer from "../app";
 import request from "supertest";
-import { cityResolver } from "../graphql/resolvers/city.resolver";
 import City from "../models/city";
 import mongoose, { Error } from "mongoose";
-import { PORT, MONGO_URI } from "../utils/config";
 import Category from "../models/category";
 import SaleOffer from "../models/saleoffer";
 import Thread from "../models/thread";
@@ -153,7 +151,6 @@ function deleteUserQuery() {
 }
 
 function deleteSaleOfferQuery(saleOfferId: string) {
-  //console.log('saleOfferId in query:',saleOfferId);
   return {
     query: `
         mutation DeleteSaleOfferById($deleteSaleOfferByIdId: ID!) {
@@ -212,14 +209,6 @@ beforeAll(async () => {
 
   city = await createCity();
   category = await createCategory();
-
-  //Should be debugged later (namespace error sometimes):
-  // await mongoose.connection.collections["cities"].drop()
-  // await mongoose.connection.collections["categories"].drop()
-  // await mongoose.connection.collections["users"].drop()
-  // await mongoose.connection.collections["saleoffers"].drop()
-  // await mongoose.connection.collections["threads"].drop()
-  // await mongoose.connection.collections["comments"].drop()
 });
 
 beforeEach(async () => {
@@ -267,7 +256,7 @@ test("markThreadAsRead", async () => {
   const saleOfferFromDB = await createSaleofferWithOneUnreadComment();
 
   const threadId = saleOfferFromDB!.threads[0]._id.toString();
-  const threadFromDB = await Thread.findById(threadId).populate("comments");
+  await Thread.findById(threadId).populate("comments");
 
   const ownerJWT = token;
   const createMarkReadQuery = markThreadAsReadQuery(threadId);
@@ -348,9 +337,12 @@ test("deleteMeAsBuyer", async () => {
   expect(updatedCommentFromDB).toBe(null);
 });
 
-test("countUnreadComments", async () => {
-  const saleOfferA = await createSaleofferWithOneUnreadComment();
-  const saleOfferB = await createSaleofferWithOneUnreadComment("m@live.dk");
+
+test.only("countUnreadComments", async () => {
+  await createSaleofferWithOneUnreadComment();
+  await createSaleofferWithOneUnreadComment("m@live.dk");
+
+
   const countQuery = getUnreadCommentsCountQuery();
 
   const response = await createRequest(countQuery, token);

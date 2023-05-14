@@ -1,12 +1,8 @@
-import { NextFunction } from "express";
-import { Types, CallbackError, Date, Document } from "mongoose";
+import { CallbackError, Date, Document } from "mongoose";
 import type { SaleOffer } from "../types/saleoffer";
-
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import validator from "validator";
-import { CommentDocument } from "./comment";
-import Thread from "./thread";
+import { ThreadDocument } from "./thread";
 
 export interface SaleOfferDocument extends Document {
   creator_id: mongoose.Types.ObjectId;
@@ -16,9 +12,10 @@ export interface SaleOfferDocument extends Document {
   city: mongoose.Types.ObjectId;
   price: number;
   imgs: string[];
-  threads: mongoose.Types.ObjectId[];
+  threads: ThreadDocument[];
   created_at: Date;
   updated_at: Date;
+  notification_count: number;
 }
 
 const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
@@ -29,7 +26,7 @@ const saleOfferSchema = new mongoose.Schema<SaleOfferDocument>({
   description: {
     type: String,
     required: true,
-    minLength: 10,
+    minLength: 5,
     maxLength: 300,
   },
   category: {
@@ -74,7 +71,7 @@ saleOfferSchema.pre("save", function (this: SaleOffer, next: (err?: CallbackErro
 });
 
 saleOfferSchema.set("toJSON", {
-  transform: (document: Document, returnedObject: Record<string, any>) => {
+  transform: (_document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

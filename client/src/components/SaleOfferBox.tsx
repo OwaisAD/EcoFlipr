@@ -1,4 +1,3 @@
-import React from "react";
 import { SaleOfferData } from "../types/saleOffer";
 import Moment from "react-moment";
 import { isValidHttpUrl } from "../utils/urlValidator";

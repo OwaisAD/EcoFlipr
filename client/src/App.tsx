@@ -7,7 +7,7 @@ import CreateSaleOffer from "./pages/CreateSaleOffer";
 import SaleOffer from "./pages/SaleOffer";
 import Profile from "./pages/Profile";
 import EditSaleOffer from "./pages/EditSaleOffer";
-import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from, useQuery } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { Toaster, toast } from "react-hot-toast";
 import Error from "./pages/Error";
@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import { setContext } from "@apollo/client/link/context";
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) {
     if (graphQLErrors[0].message === "Cannot read properties of undefined (reading 'thread_id')") return;
     graphQLErrors.map(({ message }) => {

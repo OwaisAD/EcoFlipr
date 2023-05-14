@@ -1,11 +1,10 @@
 import { useAuth } from "../context/AuthProvider";
-import { Navigate, useLocation } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { GET_SALE_OFFERS_BY_USER } from "../GraphQL/queries/getSaleOfferByUser";
-import { Carousel } from "react-responsive-carousel";
 import Moment from "react-moment";
 import { DELETE_SALE_OFFER_BY_ID } from "../GraphQL/mutations/deleteSaleOfferById";
-import { SaleOffer, SaleOfferInterface } from "../types/saleOffer";
+import { SaleOfferType } from "../types/saleOffer";
 import { isValidHttpUrl } from "../utils/urlValidator";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -19,6 +18,9 @@ import validator from "validator";
 import { AiOutlineSave } from "react-icons/ai";
 import { UPDATE_PASSWORD } from "../GraphQL/mutations/updatePassword";
 import { GET_SALE_OFFERS_BY_USER_INTERACTION } from "../GraphQL/queries/getSaleOffersByUserInteraction";
+import { DELETE_USER } from "../GraphQL/mutations/deleteUser";
+import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
+import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
 
 type User = {
   id: string;
@@ -32,6 +34,8 @@ type User = {
 const Profile = () => {
   const auth = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const client = useApolloClient();
   const [userData, setUserData] = useState<User>({
     id: "",
     email: "",
@@ -48,8 +52,8 @@ const Profile = () => {
   const [updatedPass, setUpdatedPass] = useState("");
   const [updatedPassConfirm, setUpdatedPassConfirm] = useState("");
 
-  const [userSaleOffers, setUserSaleOffers] = useState<SaleOffer[]>([]);
-  const [userSaleOffersInteractions, setUserSaleOffersInteractions] = useState<SaleOffer[]>([]);
+  const [userSaleOffers, setUserSaleOffers] = useState<SaleOfferType[]>([]);
+  const [userSaleOffersInteractions, setUserSaleOffersInteractions] = useState<SaleOfferType[]>([]);
 
   const [showMySaleOffers, setShowMySaleOffers] = useState(true);
   const [showMyInteractedSaleOffers, setShowMyInteractedSaleOffers] = useState(false);
@@ -58,34 +62,26 @@ const Profile = () => {
   const [editProfileInfo, setEditProfileInfo] = useState(false);
   const [editPassword, setEditPassword] = useState(false);
 
-  const { loading, error, data } = useQuery(GET_SALE_OFFERS_BY_USER, {
+  const { loading, error } = useQuery(GET_SALE_OFFERS_BY_USER, {
     onCompleted(data) {
       let saleOffers = [...data.getSaleOffersByUser].sort(
-        (a: SaleOffer, b: SaleOffer) => b.notification_count - a.notification_count
+        (a: SaleOfferType, b: SaleOfferType) => b.notification_count - a.notification_count
       );
       setUserSaleOffers(saleOffers);
     },
   });
 
-  const {
-    loading: loading6,
-    error: error6,
-    data: data6,
-  } = useQuery(GET_SALE_OFFERS_BY_USER_INTERACTION, {
+  useQuery(GET_SALE_OFFERS_BY_USER_INTERACTION, {
     onCompleted(data) {
       setUserSaleOffersInteractions(data.getSaleOffersByUserInteraction);
     },
   });
 
-  const [deleteSaleOffer, { data: data2, loading: loading2, error: error2 }] = useMutation(DELETE_SALE_OFFER_BY_ID, {
+  const [deleteSaleOffer] = useMutation(DELETE_SALE_OFFER_BY_ID, {
     refetchQueries: [GET_SALE_OFFERS_BY_USER],
   });
 
-  const {
-    data: data3,
-    loading: loading3,
-    error: error3,
-  } = useQuery(GET_USER, {
+  useQuery(GET_USER, {
     onCompleted(data) {
       setUserData(data.getUser);
       setUpdatedFirstName(data.getUser.first_name);
@@ -96,9 +92,9 @@ const Profile = () => {
     },
   });
 
-  const [updateUser, { data: data4, loading: loading4, error: error4 }] = useMutation(UPDATE_USER);
+  const [updateUser] = useMutation(UPDATE_USER);
 
-  const [updatePassword, { data: data5, loading: loading5, error: error5 }] = useMutation(UPDATE_PASSWORD);
+  const [updatePassword] = useMutation(UPDATE_PASSWORD);
 
   const handleDeleteSaleOffer = (saleOfferId: string) => {
     let confirmation = confirm("Are you sure you want to delete the offer?");
@@ -124,7 +120,6 @@ const Profile = () => {
         userData.phone_number !== updatedPhoneNumber ||
         userData.address !== updatedAddress
       ) {
-        console.log("Trying to update");
         if (!updatedFirstName || updatedFirstName.length < 2 || updatedFirstName.length > 50) {
           toast.error("Please enter a valid first name");
           setUpdatedFirstName(userData.first_name);
@@ -218,6 +213,26 @@ const Profile = () => {
     setEditPassword(!editPassword);
   };
 
+  const [deleteUser] = useMutation(DELETE_USER, {
+    refetchQueries: [GET_RANDOM_SALE_OFFERS_BY_AMOUNT, GET_RECENT_SALE_OFFERS_BY_AMOUNT],
+  });
+
+  const handleDeleteUser = () => {
+    let confirmation = confirm("Are you sure you want to delete your account?");
+    if (!confirmation) {
+      return;
+    }
+    toast.promise(deleteUser(), {
+      loading: "Loading...",
+      success: "Thanks for using EcoFlipr. Sad to see you go.",
+      error: "Something went wrong. Please try again later.",
+    });
+    setTimeout(() => {
+      localStorage.clear();
+      window.location.reload();
+    }, 500);
+  };
+
   if (!auth.isAuthenticated) {
     localStorage.setItem("lastPath", location.pathname);
     return <Navigate to="/login" />;
@@ -228,7 +243,7 @@ const Profile = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       {/* Tab bar to switch between 'Mine annoncer' and 'Profiloplysninger'*/}
-      <div className="flex gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 mb-20 cursor-pointer">
+      <div className="flex xs:flex-col xs:gap-4 md:flex-row md:gap-32 text-lg font-light bg-[#D9D9D9] p-3 rounded-[12px] mt-10 xs:mb-8 md:mb-20 cursor-pointer">
         <button
           onClick={() => {
             setShowMySaleOffers(true);
@@ -315,6 +330,7 @@ const Profile = () => {
                 </div>
               </Link>
               <button
+                title="delete_sale_offer"
                 className="absolute top-0 right-[-30px] hover:scale-110 duration:100"
                 onClick={() => handleDeleteSaleOffer(userSaleOffer.id)}
               >
@@ -381,6 +397,7 @@ const Profile = () => {
                 </div>
               </Link>
               <button
+                title="delete_sale_offer"
                 className="absolute top-0 right-[-30px] hover:scale-110 duration:100"
                 onClick={() => handleDeleteSaleOffer(userSaleOffer.id)}
               >
@@ -500,7 +517,7 @@ const Profile = () => {
                   </label>
                   <input
                     type="password"
-                    id="password"
+                    id="password_confirmed"
                     placeholder="******************"
                     className="border-none rounded-[12px] disabled:bg-gray-300"
                     disabled={!editPassword}
@@ -515,6 +532,9 @@ const Profile = () => {
                 {editPassword ? <AiOutlineSave /> : <FiEdit />}
               </button>
             </div>
+          </div>
+          <div className="mt-20 text-red-400 text-sm font-medium text-center">
+            <button onClick={handleDeleteUser}>Delete Acccount</button>
           </div>
         </div>
       )}

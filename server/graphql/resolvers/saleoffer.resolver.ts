@@ -9,8 +9,7 @@ import {
   SaleOffersAmountInput,
 } from "../../types/saleoffer";
 import { validateId } from "../../utils/validator";
-import User from "../../models/user";
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 import Thread from "../../models/thread";
 import Comment from "../../models/comment";
 import Category from "../../models/category";
@@ -37,7 +36,7 @@ interface Thread {
 
 export const saleOfferResolver = {
   Query: {
-    getSaleOfferById: async (_parent: never, { id }: SaleOfferById, { currentUser }: Context, _info: any) => {
+    getSaleOfferById: async (_parent: never, { id }: SaleOfferById, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -56,7 +55,7 @@ export const saleOfferResolver = {
         });
       }
 
-      // remember to populate threads and comments
+      // Populate threads and comments
       const saleOffer = await SaleOffer.findById(id)
         .populate("category")
         .populate("city")
@@ -79,15 +78,12 @@ export const saleOfferResolver = {
 
       // if it is someone who is asking about the sale offer - return only the one thread regarding the person
       const filterUserThread = saleOffer.threads.filter((thread) => {
-        //@ts-ignore
         return thread.creator_id.toString() === currentUser._id.toString();
       });
 
       if (filterUserThread.length > 0) {
-        console.log("THERE IS A THREAD");
         const id = filterUserThread[0]!._id;
 
-        console.log("THREAD ID", id);
         const saleOfferFromDb = await SaleOffer.findOne({ _id: saleOffer._id }, { threads: false })
           .populate("category")
           .populate("city")
@@ -113,14 +109,13 @@ export const saleOfferResolver = {
           updated_at: saleOfferFromDb?.updated_at,
         };
       } else {
-        console.log("NO THREAD FOUND");
         return await SaleOffer.findOne({ _id: saleOffer._id }, { threads: false })
           .populate("category")
           .populate("city")
           .populate({ path: "threads", model: Thread, populate: { path: "comments", model: Comment } });
       }
     },
-    getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+    getSaleOffersByUser: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -139,20 +134,18 @@ export const saleOfferResolver = {
       saleOffers.forEach((saleOffer) => {
         let notificationCount = 0;
         saleOffer.threads.forEach((thread) => {
-          //@ts-ignore
           thread.comments.forEach((comment) => {
             if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
               notificationCount++;
             }
           });
         });
-        //@ts-ignore
         saleOffer.notification_count = notificationCount;
       });
 
       return saleOffers;
     },
-    getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+    getSaleOffersByUserInteraction: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -168,8 +161,6 @@ export const saleOfferResolver = {
       }
       let threadIds = threads.map((thread) => new mongoose.Types.ObjectId(thread.sale_offer_id));
 
-      console.log(threadIds);
-
       const saleOffers = await SaleOffer.find({ _id: { $in: threadIds } })
         .populate("category")
         .populate("city")
@@ -179,9 +170,7 @@ export const saleOfferResolver = {
       saleOffers.forEach((saleOffer) => {
         let notificationCount = 0;
         saleOffer.threads.forEach((thread) => {
-          //@ts-ignore
           if (thread && thread.creator_id.toString() === currentUser._id.toString()) {
-            //@ts-ignore
             thread.comments.forEach((comment) => {
               if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
                 notificationCount++;
@@ -189,18 +178,15 @@ export const saleOfferResolver = {
             });
           }
         });
-        //@ts-ignore
         saleOffer.notification_count = notificationCount;
       });
 
       // filter threads that are mine
       saleOffers.forEach((saleOffer) => {
         saleOffer.threads = saleOffer.threads.filter((thread) => {
-          //@ts-ignore
           thread.creator_id.toString() === currentUser._id;
         });
       });
-
       return saleOffers;
     },
     getSaleOfferBySearchQuery: async (_parent: never, args: SaleOfferSearch) => {
@@ -246,7 +232,6 @@ export const saleOfferResolver = {
       }
 
       // for instance, if we have 400 items and 20 items per page, then we can calculate the amount of pages
-
       const pageCount = Math.ceil(count.length / ITEMS_PER_PAGE);
 
       return { pagination: { count: count.length, pageCount: pageCount }, saleOffers };
@@ -284,7 +269,7 @@ export const saleOfferResolver = {
     },
   },
   Mutation: {
-    createSaleOffer: async (_parent: never, args: SaleOfferInput, { currentUser }: Context, _info: any) => {
+    createSaleOffer: async (_parent: never, args: SaleOfferInput, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -293,8 +278,6 @@ export const saleOfferResolver = {
         });
       }
       let { description, category, is_shippable, city, price, imgs } = args.input;
-
-      console.log({ description, category, is_shippable, city, price, imgs });
 
       const newSaleOffer = await SaleOffer.create({
         creator_id: currentUser._id,
@@ -314,12 +297,7 @@ export const saleOfferResolver = {
       ]);
       return getSaleOffer;
     },
-    updateSaleOffer: async (
-      _parent: never,
-      { id, input }: SaleOfferUpdateInput,
-      { currentUser }: Context,
-      _info: any
-    ) => {
+    updateSaleOffer: async (_parent: never, { id, input }: SaleOfferUpdateInput, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -352,7 +330,7 @@ export const saleOfferResolver = {
 
       return updated;
     },
-    deleteSaleOfferById: async (_parent: never, { id }: SaleOfferById, { currentUser }: Context, _info: any) => {
+    deleteSaleOfferById: async (_parent: never, { id }: SaleOfferById, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -383,14 +361,13 @@ export const saleOfferResolver = {
       // delete comments
       const commentIds = saleOffer?.threads
         .map((threads) => {
-          //@ts-ignore
           return threads.comments.map((comment) => comment._id);
         })
         .flat();
 
       await Comment.deleteMany({ _id: { $in: commentIds } });
 
-      // then threads
+      // delete threads with no comments
       const threadIds = saleOffer?.threads.map((thread) => thread._id);
       await Thread.deleteMany({ _id: { $in: threadIds } });
 

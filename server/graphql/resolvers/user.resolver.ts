@@ -2,23 +2,17 @@ import User from "../../models/user";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { validateUserInput, validateId, validatePassword } from "../../utils/validator";
-import { AuthenticationError } from "apollo-server-express";
 import { Context } from "../../types/context";
 import { GraphQLError } from "graphql";
-import { errorLog } from "../../utils/logger";
-import { UserUpdatePassInput } from "../../types/user";
+import { UserId, UserInputWithPass, UserInputWithoutPass, UserUpdatePassInput } from "../../types/user";
 import { throwError } from "../../utils/errorHandler";
 import Thread from "../../models/thread";
 import SaleOffer from "../../models/saleoffer";
 import Comment from "../../models/comment";
 
-type User = {
-  id: mongoose.Types.ObjectId;
-};
-
 export const userResolver = {
   Query: {
-    getUser: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    getUser: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -26,10 +20,9 @@ export const userResolver = {
           },
         });
       }
-
       return await User.findById(currentUser._id, { sale_offers: false });
     },
-    getUserDataById: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    getUserDataById: async (_parent: never, { id }: UserId, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -37,8 +30,6 @@ export const userResolver = {
           },
         });
       }
-
-      const { id } = args;
 
       const isValidId = validateId(id);
 
@@ -54,7 +45,7 @@ export const userResolver = {
         phone_number: userFromDB?.phone_number,
       };
     },
-    getUserNotificationCount: async (_parent: never, _args: never, { currentUser }: Context, _info: any) => {
+    getUserNotificationCount: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -64,7 +55,6 @@ export const userResolver = {
       }
 
       // CALCULATE NOTIFICATION COUNT BASED ON SALE OFFERS YOU CREATED AND THREADS
-      // løb igennem dine sale offers tråde og tjek
       let notificationCount = 0;
 
       const saleOffers = await SaleOffer.find({ creator_id: currentUser._id })
@@ -75,7 +65,6 @@ export const userResolver = {
       // calculate notifications
       saleOffers.forEach((saleOffer) => {
         saleOffer.threads.forEach((thread) => {
-          //@ts-ignore
           thread.comments.forEach((comment) => {
             if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
               notificationCount++;
@@ -84,7 +73,7 @@ export const userResolver = {
         });
       });
 
-      // løb igennem threads du har oprettet
+      // run through threads you have generated
       const threads = await Thread.find({ creator_id: currentUser._id });
 
       if (!threads) {
@@ -100,9 +89,7 @@ export const userResolver = {
       // calculate notifications
       saleOffersInteractedWith.forEach((saleOffer) => {
         saleOffer.threads.forEach((thread) => {
-          //@ts-ignore
           if (thread && thread.creator_id.toString() === currentUser._id.toString()) {
-            //@ts-ignore
             thread.comments.forEach((comment) => {
               if (!comment.is_read && comment.author_id.toString() !== currentUser._id.toString()) {
                 notificationCount++;
@@ -111,14 +98,14 @@ export const userResolver = {
           }
         });
       });
-
       return notificationCount;
     },
   },
   Mutation: {
-    createUser: async (_parent: any, args: any, _context: any, _info: any) => {
+    createUser: async (_parent: never, args: UserInputWithPass, _context: never) => {
       let { email, first_name, last_name, phone_number, address, password } = args.input;
-      validateUserInput({ email, first_name, last_name, phone_number, address, password });
+
+      validateUserInput(args);
 
       email = email.toLowerCase();
       try {
@@ -135,11 +122,11 @@ export const userResolver = {
           throw new Error("Something went wrong");
         }
         return "Success";
-      } catch (error: any) {
-        throw new Error(error.message);
+      } catch (error: unknown) {
+        throw new Error("Couldn't create new user");
       }
     },
-    updateUser: async (_parent: any, args: any, { currentUser }: Context, _info: any) => {
+    updateUser: async (_parent: never, args: UserInputWithoutPass, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -149,8 +136,7 @@ export const userResolver = {
       }
 
       const { email, first_name, last_name, phone_number, address } = args.input;
-
-      validateUserInput({ email, first_name, last_name, phone_number, address });
+      validateUserInput(args);
 
       try {
         const userFromDb = await User.findById(currentUser._id);
@@ -176,11 +162,11 @@ export const userResolver = {
         }
 
         return await User.findById(currentUser._id, { sale_offers: false });
-      } catch (error: any) {
-        throw new Error(error.message);
+      } catch (error: unknown) {
+        throw new Error("Couldn't update user");
       }
     },
-    deleteUser: async (_parent: any, _args: never, { currentUser }: Context, _info: any) => {
+    deleteUser: async (_parent: never, _args: never, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -200,7 +186,6 @@ export const userResolver = {
         }
 
         const saleOfferIds = userFromDb.sale_offers.map((sale_offer) => sale_offer._id);
-        console.log("saleOfferIds", saleOfferIds);
         await SaleOffer.deleteMany({ _id: { $in: saleOfferIds } });
 
         const threadIds = userFromDb.sale_offers
@@ -208,19 +193,16 @@ export const userResolver = {
             return sale_offer.threads.map((thread) => thread._id);
           })
           .flat();
-        console.log("threadIds", threadIds);
         await Thread.deleteMany({ _id: { $in: threadIds } });
 
         const commentIds = userFromDb.sale_offers
           .map((sale_offer) => {
-            //@ts-ignore
             return sale_offer.threads.map((thread) => thread.comments.map((comment) => comment._id));
           })
           .flat(2);
-        console.log("commentIds", commentIds);
         await Comment.deleteMany({ _id: { $in: commentIds } });
 
-        // find tråde
+        // find threads
         const userCreatedThreads = await Thread.find({ creator_id: currentUser._id }).populate("comments");
         const userCreatedThreadsIds = userCreatedThreads.map((thread) => thread._id);
 
@@ -231,25 +213,19 @@ export const userResolver = {
         );
         foundSaleOffers.forEach((saleOffer) => {
           saleOffer.threads = saleOffer.threads.filter(
-            //@ts-ignore
             (thread) => thread.creator_id.toString() !== currentUser._id.toString()
           );
           saleOffer.save();
         });
-
-        console.log("userCreatedThreadIds", userCreatedThreadsIds);
         await Thread.deleteMany({ _id: { $in: userCreatedThreadsIds } });
 
-        // find kommentarer
+        // find comments
         const otherCommentsToDelete = userCreatedThreads
           .map((thread) => {
-            //@ts-ignore
             return thread.comments.map((comment) => comment._id);
           })
           .flat();
-        console.log("otherComments..", otherCommentsToDelete);
         await Comment.deleteMany({ _id: { $in: otherCommentsToDelete } });
-
         await User.deleteOne(currentUser._id);
 
         return { id: currentUser._id };
@@ -257,7 +233,7 @@ export const userResolver = {
         //
       }
     },
-    updateUserPassword: async (_parent: never, args: UserUpdatePassInput, { currentUser }: Context, _info: any) => {
+    updateUserPassword: async (_parent: never, args: UserUpdatePassInput, { currentUser }: Context) => {
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
           extensions: {
@@ -268,7 +244,7 @@ export const userResolver = {
 
       const { newPassword } = args.input;
 
-      const isValidPassword = validatePassword(newPassword);
+      validatePassword(newPassword);
 
       const saltRounds = 10;
       const passwordHash = await bcrypt.hash(newPassword, saltRounds);

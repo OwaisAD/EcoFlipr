@@ -1,11 +1,10 @@
-import React from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { SaleOffersBasic } from "../types/saleOffer";
+import { SaleOfferType } from "../types/saleOffer";
 import SaleOffer from "./SaleOffer";
 
 type CarouselProps = {
   rowID: string;
-  saleOffers: SaleOffersBasic[] | [];
+  saleOffers: SaleOfferType[] | [];
 };
 
 const Carousel = ({ rowID, saleOffers }: CarouselProps) => {

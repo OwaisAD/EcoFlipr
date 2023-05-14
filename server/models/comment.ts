@@ -1,8 +1,6 @@
 import { Document } from "mongoose";
-
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import validator from "validator";
 
 export interface CommentDocument extends Document {
   thread_id: mongoose.Schema.Types.ObjectId;
@@ -40,7 +38,7 @@ const commentSchema = new mongoose.Schema<CommentDocument>({
 commentSchema.plugin(uniqueValidator);
 
 commentSchema.set("toJSON", {
-  transform: (document: Document, returnedObject: Record<string, any>) => {
+  transform: (_document: Document, returnedObject: Record<string, any>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

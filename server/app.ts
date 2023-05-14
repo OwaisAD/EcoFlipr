@@ -1,6 +1,13 @@
 import mongoose, { Error } from "mongoose";
 import express, { Application } from "express";
-require("express-async-errors"); //The 'magic' of the library allows us to eliminate the try-catch blocks completely. Because of the library, we do not need the next(exception) call anymore. The library handles everything under the hood. If an exception occurs in an async route, the execution is automatically passed to the error handling middleware.
+
+/*The 'magic' of the library allows us to eliminate the try-catch blocks completely. 
+Because of the library, we do not need the next(exception) call anymore. 
+The library handles everything under the hood. 
+If an exception occurs in an async route, the execution is automatically passed 
+to the error handling middleware.*/
+require("express-async-errors");
+
 import cors from "cors";
 import dotenv from "dotenv";
 import { requestLogger, unknownEndpoint, errorHandler } from "./utils/middleware";
@@ -11,7 +18,7 @@ import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { PORT, MONGO_URI } from "./utils/config";
 import User from "./models/user";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import Category from "./models/category";
 import { categories } from "./data/categories";
 import City from "./models/city";
@@ -19,15 +26,13 @@ import { cities } from "./data/zipsAndCities";
 
 dotenv.config();
 
-type decodedToken = JwtPayload | string;
-
 const startServer = async () => {
   const app: Application = express();
 
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req, res }) => {
+    context: async ({ req }) => {
       const auth = req ? req.headers.authorization : null;
       if (auth && auth.startsWith("Bearer ")) {
         const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET!);
@@ -42,7 +47,7 @@ const startServer = async () => {
   await apolloServer.start(); // recommended to use .start() before listening to port with express
   apolloServer.applyMiddleware({ app, path: "/graphql" });
 
-  app.use((req, res) => {
+  app.use((_req, res) => {
     res.send("Hello from express apollo server!");
   });
 
@@ -54,6 +59,8 @@ const startServer = async () => {
     .connect(URL)
     .then(() => {
       infoLog("connected to MongoDB");
+      // Category.insertMany(categories);
+      // City.insertMany(cities);
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);
