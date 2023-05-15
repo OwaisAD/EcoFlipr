@@ -4,7 +4,7 @@
   "description": "backend built with typescript with following npm dependencies:",
   "main": "index.ts",
   "scripts": {
-    "start": "NODE_ENV=production node index.ts",
+    "start": "NODE_ENV=production ts-node index.ts",
     "dev": "NODE_ENV=development nodemon index.ts",
     "andreas": "set NODE_ENV=development&&nodemon index.ts",
     "lint": "eslint .",
