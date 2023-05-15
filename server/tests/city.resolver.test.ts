@@ -166,7 +166,7 @@ function deleteSaleOfferQuery(saleOfferId: string) {
 }
 
 async function createRequest(queryData: {}, jwt = token) {
-  return await request("http://localhost:3004/graphql")
+  return await request("http://localhost:3001/graphql")
     .post("")
     .send(queryData)
     .set({ Authorization: `Bearer ${jwt}`, Accept: "application/json" });
@@ -189,7 +189,7 @@ async function login(email: string): Promise<string> {
     },
   };
 
-  const response = await request("http://localhost:3004/graphql").post("").send(queryData);
+  const response = await request("http://localhost:3001/graphql").post("").send(queryData);
 
   if (response.statusCode !== 200) {
     throw new Error(`Invalid response status code: ${response.statusCode}`);
@@ -338,7 +338,7 @@ test("deleteMeAsBuyer", async () => {
 });
 
 
-test.only("countUnreadComments", async () => {
+test("countUnreadComments", async () => {
   await createSaleofferWithOneUnreadComment();
   await createSaleofferWithOneUnreadComment("m@live.dk");
 
