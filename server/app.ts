@@ -43,7 +43,7 @@ const startServer = async () => {
         return { currentUser };
       }
     },
-    persistedQueries: false
+    persistedQueries: false,
   });
   await apolloServer.start(); // recommended to use .start() before listening to port with express
   apolloServer.applyMiddleware({ app, path: "/graphql" });
