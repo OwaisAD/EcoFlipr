@@ -26,7 +26,7 @@ Technologies used:
   - User interface made with React (built using Vite) and styled with Tailwind CSS (also used for DARK-mode).
   - Implements react-routing with protected routes.
   - [React-hot-toast](https://react-hot-toast.com/) for notifications.
-  - Downscale images for fast load: [here](https://www.iloveimg.com/resize-image#resize-options,percentage) 
+  - Downscale images for fast load: [here](https://www.iloveimg.com/resize-image#resize-options,percentage)
 - Both:
   - Using Prettier for formatting and Husky for auto formatting using pre-commit hook
 
@@ -47,21 +47,36 @@ Start by running the backend:
 4. Create a ".env" file in the folder and add the following key and values:
 
 ```
-MONGODB_URI=YOUR_MONGO_DB_URI
+MONGO_PRODUCTION_URI=YOUR_MONGO_PRODUCTION_DB_URL
+MONGO_DEVELOPMENT_URI=YOUR_MONGO_DEVELOPMENT_DB_URL
+MONGO_TEST_URI=YOUR_MONGO_TEST_DB_URL
 JWT_SECRET=ThisCouldBeYourJWT_SECRET
+JWT_EXPIRES_IN=1h
 PORT=5000
 ```
 
-5. Fire up the server: `npm run dev`
+5. ONLY WHEN RUNNING FIRST TIME: In app.ts, uncomment line 63 and 64 to seed/populate the db with categories and cities. Remember to shutdown the server and comment out the lines after first execution.
+6. Now fire up the server: `npm run dev`
 
-Your backend should now be running on `http://localhost:5000` and that should be it for the backend. Before continuing to the frontend you might want to run the backend once with line 39 uncommented in the app.ts to seed/populate the db with categories. <br> <br>
+Your backend should now be running on `http://localhost:5000` and that should be it. <br> <br>
 Now for the fronend:
 
 1. Right click client folder
 2. Click: _Open in integrated terminal_
    In the terminal write:
 3. Install dependencies: `npm i`
-4. Run: `npm run dev`
+4. Create a ".env" file in the folder and add the following key and values:
+
+You would have to create 2 api keys:
+- Google Maps Api
+- Upload JS Api
+
+```
+VITE_GOOGLE_MAPS_API=GOOGLE_MAPS_API
+VITE_IMAGE_UPLOADER_API=UPLOADER_JS_API
+```
+
+5. Finally run: `npm run dev`
 
 That should be it for the frontend. Enjoy.
 
