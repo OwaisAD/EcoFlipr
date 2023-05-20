@@ -58,10 +58,10 @@ const startServer = async () => {
 
   await mongoose
     .connect(URL)
-    .then(() => {
+    .then(async () => {
       infoLog("connected to MongoDB");
-      // Category.insertMany(categories);
-      // City.insertMany(cities);
+       // await Category.insertMany(categories);
+       // await City.insertMany(cities);
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);
