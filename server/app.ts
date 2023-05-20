@@ -60,8 +60,8 @@ const startServer = async () => {
     .connect(URL)
     .then(async () => {
       infoLog("connected to MongoDB");
-       // await Category.insertMany(categories);
-       // await City.insertMany(cities);
+      // await Category.insertMany(categories);
+      // await City.insertMany(cities);
     })
     .catch((err: Error) => {
       errorLog("error connecting to MongoDB:", err.message);
