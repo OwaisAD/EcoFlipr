@@ -6,11 +6,12 @@
   - [Table of content](#table-of-content)
   - [About](#about)
   - [Technologies](#Technologies)
+  - [Schedule and logbook](#Schedule and logbook)
   - [Setup project instructions](#setup-project-instructions)
 
 ## About
 
-Semester project, 4th semester, Full Stack.
+Semester project, 4th semester, Full Stack application using TypeScript, React.js, GraphQL, Mongoose, MongoDB, Express, Node.js.
 <br>
 
 ## Technologies
@@ -19,12 +20,13 @@ Technologies used:
 
 - Backend:
   - GraphQL (Apollo GraphQL) as middleware with Express for API, MongoDB as document DB using Mongoose for Object Document Mapping, written in TypeScript.
-  - JWT token auth, with bcrypt
+  - JWT token auth, with bcrypt checked on specific requests.
+  - Integration testing done with JEST
 - Frontend:
   - User interface made with React (built using Vite) and styled with Tailwind CSS (also used for DARK-mode).
   - Implements react-routing with protected routes.
   - [React-hot-toast](https://react-hot-toast.com/) for notifications.
-  - Downscale images for fast load: https://www.iloveimg.com/resize-image#resize-options,percentage
+  - Downscale images for fast load: [here](https://www.iloveimg.com/resize-image#resize-options,percentage) 
 - Both:
   - Using Prettier for formatting and Husky for auto formatting using pre-commit hook
 
