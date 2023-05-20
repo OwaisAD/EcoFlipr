@@ -6,7 +6,7 @@
   - [Table of content](#table-of-content)
   - [About](#about)
   - [Technologies](#Technologies)
-  - [Schedule and logbook](#Schedule and logbook)
+  - [Schedule and logbook](#Schedule-and-logbook)
   - [Setup project instructions](#setup-project-instructions)
 
 ## About
@@ -68,6 +68,7 @@ Now for the fronend:
 4. Create a ".env" file in the folder and add the following key and values:
 
 You would have to create 2 api keys:
+
 - Google Maps Api
 - Upload JS Api
 
