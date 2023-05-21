@@ -6,7 +6,6 @@
   - [Table of content](#table-of-content)
   - [About](#about)
   - [Technologies](#Technologies)
-  - [Schedule and logbook](#Schedule-and-logbook)
   - [Setup project instructions](#setup-project-instructions)
 
 ## About
@@ -31,10 +30,6 @@ Technologies used:
   - Using Prettier for formatting and Husky for auto formatting using pre-commit hook
 
 [Check out documentation](https://docs.google.com/document/d/10sMMaLOVtc_BvnQ9Vex5iBIQ9JwFXJkzIGE3BPa0lm0/edit#heading=h.3s0pjx1iz31z)
-
-# Schedule and logbook
-
-[Check here](https://docs.google.com/document/d/1K37tl6oRl87TXao0XZYDJWe2MWxayhGbHhlyad1OgWg/edit?usp=sharing)
 
 # Setup project instructions
 
