@@ -65,6 +65,8 @@ const EditSaleOffer = () => {
     },
   });
 
+  console.log(updatedImages);
+
   const [updateSaleOffer] = useMutation(UPDATE_SALE_OFFER);
 
   if (!auth.isAuthenticated) {
@@ -262,13 +264,9 @@ const EditSaleOffer = () => {
           <UploadDropzone
             uploader={uploader}
             options={uploaderOptions}
-            onUpdate={(files) => {
-              let newImages = files.map((x) => x.fileUrl);
-              setUpdatedImages([...updatedImages, ...newImages]);
-            }}
             onComplete={(files) => {
               let newImages = files.map((x) => x.fileUrl);
-              setUpdatedImages([...updatedImages, ...newImages]);
+              setUpdatedImages((prevImages) => [...prevImages, ...newImages]);
             }}
             height="240px"
           />
