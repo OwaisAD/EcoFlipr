@@ -3,6 +3,7 @@ import Moment from "react-moment";
 import { isValidHttpUrl } from "../utils/urlValidator";
 import { Link } from "react-router-dom";
 import { FaShuttleVan } from "react-icons/fa";
+import { formatNumber } from "../utils/currencyFormat";
 
 const SaleOfferBox = ({ data }: SaleOfferData) => {
   return (
@@ -34,7 +35,7 @@ const SaleOfferBox = ({ data }: SaleOfferData) => {
             <p className="text-xs">
               <Moment fromNow>{data.created_at}</Moment>
             </p>
-            <p className="text-xl font-semibold">{data.price},- kr</p>
+            <p className="text-xl font-semibold">{formatNumber(data.price)},- kr</p>
           </div>
           <div className="text-sm">
             <div>

@@ -31,7 +31,6 @@ const Carousel = ({ rowID, saleOffers }: CarouselProps) => {
           id={"slider" + rowID}
           className="w-full h-full overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide relative"
         >
-          {/* MAP OVER THE IMAGES AND DISPLAY - TS BUG with the type - it is correct object passed down? */}
           {saleOffers.map((saleOffer, idx) => (
             <SaleOffer key={idx} saleOffer={saleOffer} />
           ))}

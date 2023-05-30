@@ -19,10 +19,12 @@ export const AuthProvider = (props: { children: JSX.Element }) => {
     try {
       const decoded = jwtDecode(token!) as any;
       setUserId(decoded.id);
+      setAuthenticated(isTokenValid());
     } catch (error) {
       setUserId("");
+      setAuthenticated(false);
     }
-  }, []);
+  });
 
   const isTokenValid = () => {
     const token = localStorage.getItem("ecoflipr-user-token");

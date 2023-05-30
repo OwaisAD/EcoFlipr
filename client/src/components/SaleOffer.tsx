@@ -2,6 +2,7 @@ import { useState } from "react";
 import { isValidHttpUrl } from "../utils/urlValidator";
 import { SaleOfferBasic } from "../types/saleOffer";
 import { Link } from "react-router-dom";
+import { formatNumber } from "../utils/currencyFormat";
 
 type SaleOfferProps = {
   saleOffer: SaleOfferBasic;
@@ -25,14 +26,16 @@ const SaleOffer = ({ saleOffer }: SaleOfferProps) => {
         >
           <div className="white-space-normal text-xs md:text-sm flex flex-col justify-center items-center h-full text-center font-light gap-2">
             <p className="text-base">{saleOffer.description.substring(0, 15)}</p>
-            <p className="text-xl">{saleOffer.price},-</p>
+            <p className="text-xl">{formatNumber(saleOffer.price)},-</p>
             <p className="mt-2">{saleOffer.city.name}</p>
           </div>
         </div>
         {!isHovered && (
           <div className="absolute bottom-3 right-7 text-blue rounded-xl m-2 xs:right-[-4px] sm:right-4 md:right-6">
             <div className="white-space-normal flex flex-col justify-center items-center h-full text-center font-bold gap-2">
-              <p className="bg-white rounded-md shadow-md shadow-gray-400 text-sm p-[1px]">{saleOffer.price},-</p>
+              <p className="bg-white rounded-md shadow-md shadow-gray-400 text-sm p-[1px]">
+                {formatNumber(saleOffer.price)},-
+              </p>
             </div>
           </div>
         )}

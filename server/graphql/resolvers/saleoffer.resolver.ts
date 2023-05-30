@@ -193,17 +193,14 @@ export const saleOfferResolver = {
       const ITEMS_PER_PAGE = 10;
 
       let searchWords = args.searchQuery;
-      if (!searchWords) {
-        throwError("Please enter a valid search query");
-      }
-      searchWords = searchWords.trim();
-
       if (!searchWords || searchWords.length > 100) {
         let errorMsg = !searchWords
           ? `Please enter a valid search query`
           : `Could not find any results for: ${searchWords.substring(0, 20)}...`;
         throwError(errorMsg);
       }
+
+      searchWords = searchWords.trim();
 
       let page = args.page || 1;
       if (page < 1) {
@@ -214,13 +211,12 @@ export const saleOfferResolver = {
       const regex = new RegExp(searchTerms.join("|"), "i");
 
       const skip = (page - 1) * ITEMS_PER_PAGE;
-      const countPromise = SaleOffer.find({ description: regex });
+      const countPromise = SaleOffer.countDocuments({ description: regex });
 
       const saleOffersPromise = SaleOffer.find({ description: regex }, { threads: false })
         .populate([
           { path: "city", model: City },
           { path: "category", model: Category },
-          { path: "threads", model: Thread, populate: { path: "comments", model: Comment } },
         ])
         .skip(skip)
         .limit(ITEMS_PER_PAGE);
@@ -232,9 +228,9 @@ export const saleOfferResolver = {
       }
 
       // for instance, if we have 400 items and 20 items per page, then we can calculate the amount of pages
-      const pageCount = Math.ceil(count.length / ITEMS_PER_PAGE);
+      const pageCount = Math.ceil(count / ITEMS_PER_PAGE);
 
-      return { pagination: { count: count.length, pageCount: pageCount }, saleOffers };
+      return { pagination: { count, pageCount }, saleOffers };
     },
     getRecentSaleOffersByAmount: async (_parent: never, { amount }: SaleOffersAmountInput) => {
       if (amount < 1) {

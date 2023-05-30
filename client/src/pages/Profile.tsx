@@ -21,6 +21,7 @@ import { GET_SALE_OFFERS_BY_USER_INTERACTION } from "../GraphQL/queries/getSaleO
 import { DELETE_USER } from "../GraphQL/mutations/deleteUser";
 import { GET_RANDOM_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRandomSaleOffersByAmount";
 import { GET_RECENT_SALE_OFFERS_BY_AMOUNT } from "../GraphQL/queries/getRecentSaleOffersByAmount";
+import { formatNumber } from "../utils/currencyFormat";
 
 type User = {
   id: string;
@@ -319,7 +320,7 @@ const Profile = () => {
                       <p className="text-xs">
                         <Moment fromNow>{userSaleOffer.created_at}</Moment>
                       </p>
-                      <p className="text-xl font-semibold">{userSaleOffer.price},- kr</p>
+                      <p className="text-xl font-semibold">{formatNumber(userSaleOffer.price)},- kr</p>
                     </div>
                     <div className="text-sm">
                       <div>
@@ -386,7 +387,7 @@ const Profile = () => {
                       <p className="text-xs">
                         <Moment fromNow>{userSaleOffer.created_at}</Moment>
                       </p>
-                      <p className="text-xl font-semibold">{userSaleOffer.price},- kr</p>
+                      <p className="text-xl font-semibold">{formatNumber(userSaleOffer.price)},- kr</p>
                     </div>
                     <div className="text-sm">
                       <div>
