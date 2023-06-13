@@ -10,7 +10,7 @@
 
 ## About
 
-Semester project, 4th semester, Full Stack application using TypeScript, React.js, GraphQL, Mongoose, MongoDB, Express, Node.js.
+Full Stack application using TypeScript, React.js, GraphQL, Mongoose, MongoDB, Express, Node.js.
 <br>
 
 ## Technologies
