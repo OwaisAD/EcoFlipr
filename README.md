@@ -39,7 +39,7 @@ Start by running the backend:
 2. Click: _Open in integrated terminal_
    In the terminal write:
 3. Install dependencies: `npm i`
-4. Create a ".env" file in the folder and add the following key and values:
+4. Create a ".env" file in the folder and add the following key and values (or use the .env.template):
 
 ```
 MONGO_PRODUCTION_URI=YOUR_MONGO_PRODUCTION_DB_URL
@@ -75,7 +75,3 @@ VITE_IMAGE_UPLOADER_API=UPLOADER_JS_API
 5. Finally run: `npm run dev`
 
 That should be it for the frontend. Enjoy.
-
-# Hand-ins
-
-- Check part 1 for first hand-in [here](PART1.MD)
